@@ -1,6 +1,8 @@
 
 import java.io.Serializable;
 import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.JOptionPane;
 
@@ -13,6 +15,8 @@ public class Mysql extends Login_modules implements Serializable{
 	Connection ct;
 	PreparedStatement ps;
 	ResultSet rs;
+
+	public boolean registeredBoolean = false; 											// 布尔判断是否可以注册
 	
 	//user_paswd
 	String user_name, password;
@@ -34,23 +38,35 @@ public class Mysql extends Login_modules implements Serializable{
 		}
 	}
 	
-	// 用户注册的方法，检测用户名或密码是否有误
-	public void UserRegis(String a,String b)
+	// 用户注册的方法，将用户名、密码、注册时间写入数据库
+	public void UserRegis(String a,String b,String c)
 	{
-		
 		try {
-			ps=ct.prepareStatement("insert into user_info_list values(?,?)");
-			ps.setString(1,a);
-			ps.setString(2,b);
+			ps=ct.prepareStatement("insert into user_info_list(user_name, password, create_time) VALUES (?,?,?)");
+//			ps=ct.prepareStatement("insert into user_info_list values(?,?)");
+			ps.setString(1, a);
+			ps.setString(2, b);
+			ps.setString(3, c);
 			
-			
-			int i=ps.executeUpdate();
-			if(i==1)
-			{
-				JOptionPane.showMessageDialog(null, "账号错误","请重新输入！",JOptionPane.WARNING_MESSAGE);   
-			}else
-			{
-				JOptionPane.showMessageDialog(null, "密码错误","请重新输入！",JOptionPane.ERROR_MESSAGE);
+			int i = ps.executeUpdate();
+			if(i == 1){
+				JOptionPane.showMessageDialog(null, "注册成功！", "succeed", JOptionPane.INFORMATION_MESSAGE);
+				this.setVisible(false);													// 关闭当前页面
+				Login_modules L_m = new Login_modules();
+				L_m.concealRegister();													// 调用Login_modules类中隐藏注册面板的方法，隐藏注册面板
+				L_m.showLogin();														// 调用Login_modules类中显示登录面板的方法，显示登录面板
+			}else if(i == 2){
+				JOptionPane.showMessageDialog(null, "注册成功！", "succeed", JOptionPane.INFORMATION_MESSAGE);
+				this.setVisible(false);
+//				Login_modules L_m = new Login_modules();
+//				L_m.concealRegister();
+//				L_m.showLogin();
+			}else {
+				JOptionPane.showMessageDialog(null, "注册成功！", "succeed", JOptionPane.INFORMATION_MESSAGE);
+				this.setVisible(false);
+//				Login_modules L_m = new Login_modules();
+//				L_m.concealRegister();
+//				L_m.showLogin();
 			}
 			
 		} catch (SQLException e) {
@@ -81,9 +97,8 @@ public class Mysql extends Login_modules implements Serializable{
 				password = rs.getString(3);										// 第三列是password列
 				//JOptionPane.showMessageDialog(null, "", "", JOptionPane.WARNING_MESSAGE);
 				System.out.println("登录成功！");
+				this.setVisible(false);											// 关闭当前页面
 				//System.out.println(user + "\t" + passwd + "\t");
-				   
-				
 			}else
 			{
 				JOptionPane.showMessageDialog(null, "用户名或密码错误，请重新输入！", "error", JOptionPane.ERROR_MESSAGE);
@@ -111,10 +126,16 @@ public class Mysql extends Login_modules implements Serializable{
 			if(rs.next())
 			{
 				JOptionPane.showMessageDialog(null, "该用户名已存在", "请直接登录或者换个用户名注册", JOptionPane.WARNING_MESSAGE);
-			}else
+				this.setVisible(false);											// 关闭当前页面
+				Login_modules L_m = new Login_modules();
+				L_m.showRegister();												// 调用Login_modules类中显示注册面板的方法，显示注册面板
+				L_m.concealLogin();												// 调用Login_modules类中隐藏登录面板的方法，隐藏登录面板
+			}
+			else
 			{
-				Login_modules cf = new Login_modules();
-				this.UserRegis(cf.username_register.getText(),cf.password_register.getText());
+				registeredBoolean = true;
+//				Login_modules cf = new Login_modules();
+//				this.UserRegis(cf.username_register.getText(),cf.password_register.getText(),cf.depositTime.getText());
 			}
 			
 		} catch (SQLException e) {

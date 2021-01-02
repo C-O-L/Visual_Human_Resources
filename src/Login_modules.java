@@ -12,6 +12,8 @@ import java.awt.event.MouseListener;
 import javax.security.auth.spi.LoginModule;
 import javax.swing.*;
 import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 // 用户登录注册的类
 public class Login_modules extends JFrame implements ActionListener{
@@ -38,6 +40,8 @@ public class Login_modules extends JFrame implements ActionListener{
 	JPasswordField password_register;								// 密码文本框——注册面板
 	JPasswordField password_registertwo;						    // 确认密码文本框——注册面板
 	
+	JTextField depositTime;											// 存放时间的文本框
+	
 	private JButton loginButton; 									// 登录按钮
 	private JButton register_loginButton;							// 登陆面板上的注册按钮，点击之后跳转到注册界面
 	private JButton helpButton;										// 帮助按钮
@@ -51,6 +55,8 @@ public class Login_modules extends JFrame implements ActionListener{
 	private JLabel passWordregister;								// 注册界面的密码提示文字标签
 	private JLabel passWordregistertwo;								// 注册界面的确认密码提示文字标签
 	private JLabel veriflcationCode;								// 注册界面的验证码提示文字标签
+
+	String time;													// 存放当前时间
 	
 	// 构造方法，实现用户登录注册界面	
 	public Login_modules() {
@@ -186,6 +192,11 @@ public class Login_modules extends JFrame implements ActionListener{
 		// 给register_registerButton按钮添加事件监听
 		register_registerButton.addActionListener((ActionListener) this);
 		
+		// 设置存放时间的文本框
+		depositTime = new JTextField();
+		showDate();													// 调用获取时间的方法
+		depositTime.setText(time);									// 将获取的时间存放在depositTime文本框中
+		
 		// 设置注册信息面板
 		registerInformation = new JPanel();
 		registerInformation.setOpaque(false); 						// 设置registerInformation透明
@@ -290,8 +301,10 @@ public class Login_modules extends JFrame implements ActionListener{
 			showRegister();											// 显示注册界面
 		}else if(e.getSource() == loginButton) {					// 如果按下登录界面的登录按钮
 			this.login();											// 调用登录方法
+			this.setVisible(false); 								// 关闭当前页面
 		}else if(e.getSource() == register_registerButton) {		// 如果按下注册界面的注册按钮
 			this.register();										// 调用注册方法
+			this.setVisible(false);									// 关闭当前页面
 //			showLogin();											// 显示登录界面	    	    
 //			concealRegister();										// 隐藏注册界面	
 			
@@ -331,11 +344,16 @@ public class Login_modules extends JFrame implements ActionListener{
  		Mysql co = new Mysql();
  		    co.ConnectSQL();
  		    co.ZhuceVerify(username_register.getText()); 			// 将username_register中的内容传到Mysql类的ZhuceVerify方法中
- 		    // 将username_register和password_register中的内容传到Mysql类的UserRegis方法中
-            co.UserRegis(username_register.getText(),password_register.getText());
-            
+ 		    
+ 		    if(co.registeredBoolean == true) {
+	 		    // 将username_register和password_register中的内容传到Mysql类的UserRegis方法中
+	 		    co.UserRegis(username_register.getText(),password_register.getText(),depositTime.getText());
+ 		    }
+ 		    
  		    this.username_register.setText("");						// 清空username_register的内容
  		    this.password_register.setText("");						// 清空password_register的内容
+ 		    this.password_registertwo.setText(""); 					// 清空password_registertwo的内容
+ 		    this.depositTime.setText(""); 							// 清空depositTime的内容
  		}
 	}
 
@@ -351,21 +369,21 @@ public class Login_modules extends JFrame implements ActionListener{
 	}
 	
 	// 显示登录界面的方法
-	void showLogin() {
+	public void showLogin() {
 		loginInformation.setVisible(true);
 	    loginRegister.setVisible(true);
 	    loginJLabel.setVisible(true);
 	}
 	
     // 隐藏登录界面的方法
-	void concealLogin() {
+	public void concealLogin() {
 		loginInformation.setVisible(false);
 	    loginRegister.setVisible(false);
 	    loginJLabel.setVisible(false);
 	}
 	
 	// 显示注册界面的方法
-	void showRegister() {
+	public void showRegister() {
 		registerInformation.setVisible(true);
 	    veriflcationCodeJPanel.setVisible(true);
 	    helpRegister.setVisible(true);
@@ -373,23 +391,29 @@ public class Login_modules extends JFrame implements ActionListener{
 	}
 	
 	// 隐藏注册界面的方法
-	void concealRegister() {
+	public void concealRegister() {
 		registerInformation.setVisible(false);
 	    veriflcationCodeJPanel.setVisible(false);
 	    helpRegister.setVisible(false);
 	    registerJPanel.setVisible(false);
 	}
 	
-	// 显示密码提示标签的方法
-	public void showpassWordlogin() {
-		passWordlogin.setVisible(true);
-	}
+//	// 显示密码提示标签的方法
+//	public void showpassWordlogin() {
+//		passWordlogin.setVisible(true);
+//	}
+//	
+//	// 隐藏密码提示标签的方法
+//	public void concealpassWordlogin() {
+//		passWordlogin.setVisible(false);
+//	}
 	
-	// 隐藏密码提示标签的方法
-	public void concealpassWordlogin() {
-		passWordlogin.setVisible(false);
+	// 获取时间的方法
+	public void showDate(){
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  	// 设置日期格式
+		time = df.format(new Date()); 									// new Date()为获取当前系统时间
+//		System.out.println(time);								
 	}
-	
 
 	public static void main(String arg[]) {
 		// TODO Auto-generated method stub
