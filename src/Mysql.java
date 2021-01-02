@@ -1,32 +1,28 @@
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+
 import java.io.Serializable;
 import java.sql.*;
 
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.WindowConstants;
 
 public class Mysql extends Login_modules implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	Connection ct;
 	PreparedStatement ps;
 	ResultSet rs;
 	
 	//user_paswd
-	String user,passwd;
+	String user_name, password;
 	
 	// 连接数据库的方法
 	public void ConnectSQL()
 	{
 		try {
-			Class.forName("com.mysql.jdbc.Driver").newInstance(); 						//注册JDBC的驱动
+			Class.forName("com.mysql.jdbc.Driver").newInstance(); 						// 注册JDBC的驱动
+//			Class.forName("com.mysql.cj.jdbc.Driver");
 			//连接数据库
 			ct=DriverManager.getConnection("jdbc:mysql://localhost/visual_human_resources?user=root&password=980519"); 
 			
@@ -72,19 +68,17 @@ public class Mysql extends Login_modules implements Serializable{
 	// 用户登录方法，核验用户名与密码是否匹配
 	public void SQLverify(String a,String b)
 	{
-		
 		try {
-			ps=ct.prepareStatement("select * from user_info_list where user_name=? and password=? ");
+			ps=ct.prepareStatement("select * from user_info_list where user_name = ? and password = ? ");
 			ps.setString(1, a);
 			ps.setString(2, b);
-			
 			
 			rs = ps.executeQuery();
 			
 			if(rs.next())
 			{
-				user = rs.getString(1);
-				passwd = rs.getString(2);
+				user_name = rs.getString(2);									// 第二列是user_name列
+				password = rs.getString(3);										// 第三列是password列
 				//JOptionPane.showMessageDialog(null, "", "", JOptionPane.WARNING_MESSAGE);
 				System.out.println("登录成功！");
 				//System.out.println(user + "\t" + passwd + "\t");
@@ -92,7 +86,7 @@ public class Mysql extends Login_modules implements Serializable{
 				
 			}else
 			{
-				JOptionPane.showMessageDialog(null, "", "", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "用户名或密码错误，请重新输入！", "error", JOptionPane.ERROR_MESSAGE);
 			}
 			
 		} catch (SQLException e) {
@@ -119,9 +113,8 @@ public class Mysql extends Login_modules implements Serializable{
 				JOptionPane.showMessageDialog(null, "该用户名已存在", "请直接登录或者换个用户名注册", JOptionPane.WARNING_MESSAGE);
 			}else
 			{
-           
-//				CosMsFrame cf=new CosMsFrame();
-//				this.UserRegis(cf.jtf.getText(),cf.jpf.getText());
+				Login_modules cf = new Login_modules();
+				this.UserRegis(cf.username_register.getText(),cf.password_register.getText());
 			}
 			
 		} catch (SQLException e) {

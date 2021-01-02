@@ -20,8 +20,8 @@ public class MyFocusListener  implements FocusListener {
 		String temp = jtf.getText();
         if(temp.equals(info)){
             jtf.setText("");
-            Login_modules lomo = new Login_modules();
-            lomo.concealpassWordlogin();
+//            Login_modules lomo = new Login_modules();
+//            lomo.concealpassWordlogin();
         }
 	}
 

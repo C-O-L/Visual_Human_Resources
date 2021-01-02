@@ -57,7 +57,7 @@ public class Login_modules extends JFrame implements ActionListener{
 		
 		// 设置登录面板的用户名文本框		
 		username_login = new JTextField();
-		username_login.setName("请输入6-12位用户名：");
+		username_login.setName("请输入3-12位用户名：");
 		// 调用焦点监听方法类设置提示文字
 		username_login.addFocusListener(new MyFocusListener(username_login.getName(),username_login));
 		username_login.setOpaque(false);							// 将username_login控件背景设置为透明
@@ -71,7 +71,7 @@ public class Login_modules extends JFrame implements ActionListener{
 //		userNamelogin = new JLabel("请输入6-12位用户名");
 //		userNamelogin.setOpaque(false);								// 将userNamelogin标签背景设置为透明
 //		userNamelogin.setBorder(null);								// 将userNamelogin标签设置为无边框
-//		userNamelogin.setFont(new Font("微软雅黑", Font.PLAIN, 14));	// 设置userNamelogin的字体、普通、大小
+//		userNamelogin.setFont(new Font("微软雅黑", Font.PLAIN, 14));		// 设置userNamelogin的字体、普通、大小
 //		// 设置userNamelogin字体颜色为青蛤壳紫
 //		userNamelogin.setForeground(new java.awt.Color(188, 132, 168));
 		
@@ -87,13 +87,13 @@ public class Login_modules extends JFrame implements ActionListener{
 		password_login.setForeground(new java.awt.Color(54, 52, 51));
 //		password_login.addActionListener((ActionListener) this); 	// 给password_login按钮添加事件监听
 		
-		// 设置登录界面的密码提示文字标签
-		passWordlogin = new JLabel("请输入6-12位密码");
-		passWordlogin.setOpaque(false);
-		passWordlogin.setBorder(null);
-		passWordlogin.setFont(new Font("微软雅黑", Font.PLAIN, 14));
-		// 设置passWordlogin字体颜色为青蛤壳紫
-		passWordlogin.setForeground(new java.awt.Color(188, 132, 168));
+//		// 设置登录界面的密码提示文字标签
+//		passWordlogin = new JLabel("请输入6-12位密码");
+//		passWordlogin.setOpaque(false);
+//		passWordlogin.setBorder(null);
+//		passWordlogin.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+//		// 设置passWordlogin字体颜色为青蛤壳紫
+//		passWordlogin.setForeground(new java.awt.Color(188, 132, 168));
 		
 		// 设置登录面板的登录按钮
 		loginButton = new JButton();
@@ -116,13 +116,13 @@ public class Login_modules extends JFrame implements ActionListener{
 		loginInformation.add(username_login);						// 将用户名文本框添加到loginInformation面板
 		loginInformation.add(password_login);						// 将密码文本框添加到loginInformation面板
 		
-		// 设置登录提示信息面板
-		loginPrompt = new JPanel();
-		loginPrompt.setOpaque(false); 								// 设置loginPrompt透明
-		loginPrompt.setLayout(new GridLayout(1, 1, 0, 0)); 		// 设置loginPrompt为绝对布局，两行一列，纵间距为25
-		loginPrompt.setBounds(825, 385, 150, 24); 					// 设置loginPrompt面板的位置和大小
-//		loginPrompt.add(userNamelogin);								// 将用户名提示标签添加到loginPrompt面板
-		loginPrompt.add(passWordlogin);								// 将密码提示标签添加到loginPrompt面板
+//		// 设置登录提示信息面板
+//		loginPrompt = new JPanel();
+//		loginPrompt.setOpaque(false); 								// 设置loginPrompt透明
+//		loginPrompt.setLayout(new GridLayout(1, 1, 0, 0)); 			// 设置loginPrompt为绝对布局，两行一列，纵间距为25
+//		loginPrompt.setBounds(825, 385, 150, 24); 					// 设置loginPrompt面板的位置和大小
+////		loginPrompt.add(userNamelogin);								// 将用户名提示标签添加到loginPrompt面板
+////		loginPrompt.add(passWordlogin);								// 将密码提示标签添加到loginPrompt面板
 		
 		// 设置登录注册按钮面板
 		loginRegister = new JPanel();
@@ -200,7 +200,7 @@ public class Login_modules extends JFrame implements ActionListener{
 		veriflcationCodeJPanel.setOpaque(false);					// 设置veriflcationCodeJPanel透明
 		// 设置veriflcationCodeJPanel为绝对布局，一行一列
 		veriflcationCodeJPanel.setLayout(new GridLayout(1, 1, 0, 0));
-		veriflcationCodeJPanel.setBounds(754, 446, 90, 29);		// 设置veriflcationCodeJPanel的位置和大小
+		veriflcationCodeJPanel.setBounds(754, 446, 90, 29);			// 设置veriflcationCodeJPanel的位置和大小
 		veriflcationCodeJPanel.add(veriflcationCode_register);		// 将验证码文本框添加到veriflcationCodeJPanel
 		
 		// 设置注册界面的帮助注册按钮面板
@@ -234,7 +234,7 @@ public class Login_modules extends JFrame implements ActionListener{
 	    Container Bottom_container = getContentPane();				// 初始化Bottom_container容器
 	    
 	    Bottom_container.add(loginInformation);						// 将loginInformation添加到Bottom_container容器
-	    Bottom_container.add(loginPrompt);
+//	    Bottom_container.add(loginPrompt);
 	    Bottom_container.add(loginRegister);						// 将loginRegister添加到Bottom_container容器
 	    Bottom_container.add(loginJPanel);							// 将loginJPanel添加到Bottom_container容器 
 	    
@@ -275,7 +275,7 @@ public class Login_modules extends JFrame implements ActionListener{
 //		// TODO Auto-generated method stub
 //		String s = username_login.getText();
 //		if(s.length() >= 3) {
-//			loginPrompt.setVisible(false);						// 隐藏passWordlogin标签
+//			loginPrompt.setVisible(false);							// 隐藏passWordlogin标签
 //			
 //		}else if(s.length() == 12) {
 //			e.consume();
@@ -328,20 +328,22 @@ public class Login_modules extends JFrame implements ActionListener{
  		else
  		{			
  		// 调用Mysql类的注册方法进行验证
- 		 Mysql co=new Mysql();
+ 		Mysql co = new Mysql();
  		    co.ConnectSQL();
- 		    co.ZhuceVerify(username_login.getText()); 
-            co.UserRegis(username_login.getText(),password_register.getText());
+ 		    co.ZhuceVerify(username_register.getText()); 			// 将username_register中的内容传到Mysql类的ZhuceVerify方法中
+ 		    // 将username_register和password_register中的内容传到Mysql类的UserRegis方法中
+            co.UserRegis(username_register.getText(),password_register.getText());
             
- 		    this.username_register.setText("");						// 获取username_register的内容
- 		    this.password_register.setText("");						// 获取password_register的内容
- 			}
+ 		    this.username_register.setText("");						// 清空username_register的内容
+ 		    this.password_register.setText("");						// 清空password_register的内容
+ 		}
 	}
 
 	// 登录方法
 	public void login() {
-		Mysql s=new Mysql();
+		Mysql s = new Mysql();
 		s.ConnectSQL();
+		// 将username_login和password_login中的内容传到Mysql类中的SQLverify方法中
 		s.SQLverify(username_login.getText(), password_login.getText());
 		
 		this.username_login.setText("");
