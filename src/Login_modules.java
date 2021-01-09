@@ -49,14 +49,15 @@ public class Login_modules extends JFrame implements ActionListener{
 	
 	private JLabel loginJLabel;										// 放置登录面板图片的标签
 	private JLabel registerJLabel;									// 放置注册面板图片的标签
-	private JLabel userNamelogin;									// 登录界面的用户名提示文字标签
-	private JLabel passWordlogin;									// 登录界面的密码提示文字标签
-	private JLabel userNameregister;								// 注册界面的用户名提示文字标签
-	private JLabel passWordregister;								// 注册界面的密码提示文字标签
-	private JLabel passWordregistertwo;								// 注册界面的确认密码提示文字标签
-	private JLabel veriflcationCode;								// 注册界面的验证码提示文字标签
+//	private JLabel userNamelogin;									// 登录界面的用户名提示文字标签
+//	private JLabel passWordlogin;									// 登录界面的密码提示文字标签
+//	private JLabel userNameregister;								// 注册界面的用户名提示文字标签
+//	private JLabel passWordregister;								// 注册界面的密码提示文字标签
+//	private JLabel passWordregistertwo;								// 注册界面的确认密码提示文字标签
+//	private JLabel veriflcationCode;								// 注册界面的验证码提示文字标签
 
 	String time;													// 存放当前时间
+	
 	
 	// 构造方法，实现用户登录注册界面	
 	public Login_modules() {
@@ -297,7 +298,6 @@ public class Login_modules extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == register_loginButton) {					// 如果按下登录界面的注册按钮
 			concealLogin();											// 隐藏登录界面
-//			userNamelogin.setVisible(false);						// 隐藏用户名提示文字标签
 			showRegister();											// 显示注册界面
 		}else if(e.getSource() == loginButton) {					// 如果按下登录界面的登录按钮
 			this.login();											// 调用登录方法
@@ -305,8 +305,6 @@ public class Login_modules extends JFrame implements ActionListener{
 		}else if(e.getSource() == register_registerButton) {		// 如果按下注册界面的注册按钮
 			this.register();										// 调用注册方法
 			this.setVisible(false);									// 关闭当前页面
-//			showLogin();											// 显示登录界面	    	    
-//			concealRegister();										// 隐藏注册界面	
 			
 		}
 	}
@@ -319,8 +317,8 @@ public class Login_modules extends JFrame implements ActionListener{
  		String regex2 = "\\w{6,12}"; 								// 输入6-12位密码（数字或者字母组合）
  		boolean flag2 = password_register.getText().matches(regex2);// 将密码标记为boolean值，方便判断
  		
- 		String regex3 = "\\w{6,12}";								// 输入6-12位密码，确认密码，需要与regex2一致
- 		boolean flag3 = password_registertwo.getText().matches(regex3);
+// 		String regex3 = "\\w{6,12}";								// 输入6-12位密码，确认密码，需要与regex2一致
+// 		boolean flag3 = password_registertwo.getText().matches(regex3);
  		
  		if(flag1 == false)											// 如果用户名格式不正确
  		{
@@ -345,9 +343,14 @@ public class Login_modules extends JFrame implements ActionListener{
  		    co.ConnectSQL();
  		    co.ZhuceVerify(username_register.getText()); 			// 将username_register中的内容传到Mysql类的ZhuceVerify方法中
  		    
- 		    if(co.registeredBoolean == true) {
-	 		    // 将username_register和password_register中的内容传到Mysql类的UserRegis方法中
+ 		    if(co.registeredBoolean == true) {						// 如果判断可以注册
+	 		    // 将username_register和password_register中的内容传到Mysql类的UserRegis方法中进行注册
 	 		    co.UserRegis(username_register.getText(),password_register.getText(),depositTime.getText());
+ 		    }
+ 		    
+ 		    if(co.newsqlBoolean == true) {							// 如果判断可以新建sql表
+ 		    	// 将username_register中的内容传到Mysql类的newAssesssql方法中新建sql表
+ 		    	
  		    }
  		    
  		    this.username_register.setText("");						// 清空username_register的内容
@@ -359,13 +362,33 @@ public class Login_modules extends JFrame implements ActionListener{
 
 	// 登录方法
 	public void login() {
-		Mysql s = new Mysql();
-		s.ConnectSQL();
-		// 将username_login和password_login中的内容传到Mysql类中的SQLverify方法中
-		s.SQLverify(username_login.getText(), password_login.getText());
 		
-		this.username_login.setText("");
-		this.password_login.setText("");
+		String regex1 = "\\w{3,12}"; 								// 输入3-12位用户名（数字或者字母组合）
+ 		boolean flag1 = username_login.getText().matches(regex1);	// 将用户名标记为boolean值，方便判断
+ 		
+ 		String regex2 = "\\w{6,12}"; 								// 输入6-12位密码（数字或者字母组合）
+ 		boolean flag2 = password_login.getText().matches(regex2);	// 将密码标记为boolean值，方便判断
+ 		
+ 		if(flag1 == false)											// 如果用户名格式不正确
+ 		{
+ 			JOptionPane.showMessageDialog(null, "用户名格式不正确" + "\n" + "请重新输入！", "error", JOptionPane.WARNING_MESSAGE);
+ 			username_login.setText("");								// 清空username_login文本框
+ 			password_login.setText("");								// 清空password_login文本框
+ 		}
+ 		else if(flag2 == false) {									// 如果密码格式不正确
+ 			JOptionPane.showMessageDialog(null, "密码格式不正确" + "\n" + "请重新输入！", "error", JOptionPane.WARNING_MESSAGE);
+            password_login.setText("");								// 清空password_login文本框
+ 		}
+ 		else
+ 		{		
+			Mysql s = new Mysql();
+			s.ConnectSQL();
+			// 将username_login和password_login中的内容传到Mysql类中的SQLverify方法中
+			s.SQLverify(username_login.getText(), password_login.getText());
+			
+			this.username_login.setText("");
+			this.password_login.setText("");
+ 		}
 	}
 	
 	// 显示登录界面的方法

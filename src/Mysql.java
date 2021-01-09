@@ -16,7 +16,8 @@ public class Mysql extends Login_modules implements Serializable{
 	PreparedStatement ps;
 	ResultSet rs;
 
-	public boolean registeredBoolean = false; 											// 布尔判断是否可以注册
+	public boolean registeredBoolean = false; 								// 布尔判断是否可以注册
+	public boolean newsqlBoolean = false;									// 布尔判断是否可以新建sql表
 	
 	//user_paswd
 	String user_name, password;
@@ -25,7 +26,7 @@ public class Mysql extends Login_modules implements Serializable{
 	public void ConnectSQL()
 	{
 		try {
-			Class.forName("com.mysql.jdbc.Driver").newInstance(); 						// 注册JDBC的驱动
+			Class.forName("com.mysql.jdbc.Driver").newInstance(); 			// 注册JDBC的驱动
 //			Class.forName("com.mysql.cj.jdbc.Driver");
 			//连接数据库
 			ct=DriverManager.getConnection("jdbc:mysql://localhost/visual_human_resources?user=root&password=980519"); 
@@ -51,10 +52,12 @@ public class Mysql extends Login_modules implements Serializable{
 			int i = ps.executeUpdate();
 			if(i == 1){
 				JOptionPane.showMessageDialog(null, "注册成功！", "succeed", JOptionPane.INFORMATION_MESSAGE);
-				this.setVisible(false);													// 关闭当前页面
+				this.setVisible(false);										// 关闭当前页面
+				newsqlBoolean = true;										// 注册成功后可以新建sql表
+				
 				Login_modules L_m = new Login_modules();
-				L_m.concealRegister();													// 调用Login_modules类中隐藏注册面板的方法，隐藏注册面板
-				L_m.showLogin();														// 调用Login_modules类中显示登录面板的方法，显示登录面板
+				L_m.concealRegister();										// 调用Login_modules类中隐藏注册面板的方法，隐藏注册面板
+				L_m.showLogin();											// 调用Login_modules类中显示登录面板的方法，显示登录面板
 			}else if(i == 2){
 				JOptionPane.showMessageDialog(null, "注册成功！", "succeed", JOptionPane.INFORMATION_MESSAGE);
 				this.setVisible(false);
@@ -93,11 +96,11 @@ public class Mysql extends Login_modules implements Serializable{
 			
 			if(rs.next())
 			{
-				user_name = rs.getString(2);									// 第二列是user_name列
-				password = rs.getString(3);										// 第三列是password列
+//				user_name = rs.getString(2);						// 第二列是user_name列
+//				password = rs.getString(3);							// 第三列是password列
 				//JOptionPane.showMessageDialog(null, "", "", JOptionPane.WARNING_MESSAGE);
 				System.out.println("登录成功！");
-				this.setVisible(false);											// 关闭当前页面
+				this.setVisible(false);		
 				//System.out.println(user + "\t" + passwd + "\t");
 			}else
 			{
@@ -126,10 +129,10 @@ public class Mysql extends Login_modules implements Serializable{
 			if(rs.next())
 			{
 				JOptionPane.showMessageDialog(null, "该用户名已存在", "请直接登录或者换个用户名注册", JOptionPane.WARNING_MESSAGE);
-				this.setVisible(false);											// 关闭当前页面
+				this.setVisible(false);								// 关闭当前页面
 				Login_modules L_m = new Login_modules();
-				L_m.showRegister();												// 调用Login_modules类中显示注册面板的方法，显示注册面板
-				L_m.concealLogin();												// 调用Login_modules类中隐藏登录面板的方法，隐藏登录面板
+				L_m.showRegister();									// 调用Login_modules类中显示注册面板的方法，显示注册面板
+				L_m.concealLogin();									// 调用Login_modules类中隐藏登录面板的方法，隐藏登录面板
 			}
 			else
 			{
@@ -147,5 +150,11 @@ public class Mysql extends Login_modules implements Serializable{
 				e1.printStackTrace();
 			}
 		}
+	}
+	
+	// 新建绩效sql表的方法
+	public void newAssesssql(String a) 
+	{
+		
 	}
 }
