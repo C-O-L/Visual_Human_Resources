@@ -35,7 +35,7 @@ public class Mysql extends Login_modules implements Serializable{
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e.printStackTrace();											// 捕获异常
 		}
 	}
 	
@@ -155,6 +155,41 @@ public class Mysql extends Login_modules implements Serializable{
 	// 新建绩效sql表的方法
 	public void newAssesssql(String a) 
 	{
+		// 为每个用户创建独有的sql表，用来存放员工的信息，
+		// sql表的命名规则遵循“用户名+_performance_appraisal_list”
 		
+		String b = "_performance_appraisal_list";
+		String cString = a+b;
+		try {
+			
+			ps=ct.prepareStatement("CREATE TABLE "+cString+" (\r\n" + 
+					"  `id` INT NOT NULL AUTO_INCREMENT, \r\n" + 
+					"  `staff_name` VARCHAR(45) NOT NULL COMMENT '员工姓名',\r\n" + 
+					"  `normal_days` DECIMAL(10,1) NOT NULL COMMENT '正常天数',\r\n" + 
+					"  `late_days` DECIMAL(10,1) NOT NULL COMMENT '迟到天数',\r\n" + 
+					"  `leave_days` DECIMAL(10,1) NOT NULL COMMENT '请假天数',\r\n" + 
+					"  `absenteeism_days` INT NOT NULL COMMENT '旷工天数',\r\n" + 
+					"  `work_hours` INT NOT NULL COMMENT '工作时长',\r\n" + 
+					"  `work_piece` INT NOT NULL COMMENT '工作计件',\r\n" + 
+					"  `work_content` VARCHAR(45) NOT NULL COMMENT '工作质量',\r\n" + 
+					"  `technology_improve` VARCHAR(45) NOT NULL COMMENT '工艺改善',\r\n" + 
+					"  `quarter_class` VARCHAR(45) NOT NULL COMMENT '季度等级评定',\r\n" + 
+					"  `rewards_time` INT NOT NULL COMMENT '奖励次数',\r\n" + 
+					"  `punishment_time` INT NOT NULL COMMENT '惩罚次数',\r\n" + 
+					"  `quarter` VARCHAR(45) NOT NULL COMMENT '第几季度',\r\n" + 
+					"  `assess_result` VARCHAR(45) NULL COMMENT '考核结果',\r\n" + 
+					"  PRIMARY KEY (`id`))");
+			
+			ps.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			try {
+				ct.close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
 	}
 }

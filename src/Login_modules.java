@@ -350,7 +350,7 @@ public class Login_modules extends JFrame implements ActionListener{
  		    
  		    if(co.newsqlBoolean == true) {							// 如果判断可以新建sql表
  		    	// 将username_register中的内容传到Mysql类的newAssesssql方法中新建sql表
- 		    	
+ 		    	co.newAssesssql(username_register.getText());
  		    }
  		    
  		    this.username_register.setText("");						// 清空username_register的内容
