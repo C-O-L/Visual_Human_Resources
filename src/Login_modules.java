@@ -49,12 +49,6 @@ public class Login_modules extends JFrame implements ActionListener{
 	
 	private JLabel loginJLabel;										// 放置登录面板图片的标签
 	private JLabel registerJLabel;									// 放置注册面板图片的标签
-//	private JLabel userNamelogin;									// 登录界面的用户名提示文字标签
-//	private JLabel passWordlogin;									// 登录界面的密码提示文字标签
-//	private JLabel userNameregister;								// 注册界面的用户名提示文字标签
-//	private JLabel passWordregister;								// 注册界面的密码提示文字标签
-//	private JLabel passWordregistertwo;								// 注册界面的确认密码提示文字标签
-//	private JLabel veriflcationCode;								// 注册界面的验证码提示文字标签
 
 	String time;													// 存放当前时间
 	
@@ -72,15 +66,6 @@ public class Login_modules extends JFrame implements ActionListener{
 		username_login.setFont(new Font("微软雅黑", Font.PLAIN, 14));	// 设置username_login的字体、普通、大小
 		// 设置username_login字体颜色为长石灰
 		username_login.setForeground(new java.awt.Color(54, 52, 51));
-//		username_login.addActionListener((ActionListener) this); 	// 给username_login按钮添加事件监听
-		
-//		// 设置登录界面的用户名提示文字标签
-//		userNamelogin = new JLabel("请输入6-12位用户名");
-//		userNamelogin.setOpaque(false);								// 将userNamelogin标签背景设置为透明
-//		userNamelogin.setBorder(null);								// 将userNamelogin标签设置为无边框
-//		userNamelogin.setFont(new Font("微软雅黑", Font.PLAIN, 14));		// 设置userNamelogin的字体、普通、大小
-//		// 设置userNamelogin字体颜色为青蛤壳紫
-//		userNamelogin.setForeground(new java.awt.Color(188, 132, 168));
 		
 		// 设置登录面板的密码文本框
 		password_login = new JPasswordField();
@@ -92,15 +77,7 @@ public class Login_modules extends JFrame implements ActionListener{
 		password_login.setFont(new Font("微软雅黑", Font.PLAIN, 14));	// 设置password_login的字体、普通、大小
 		// 设置password_login字体颜色为长石灰
 		password_login.setForeground(new java.awt.Color(54, 52, 51));
-//		password_login.addActionListener((ActionListener) this); 	// 给password_login按钮添加事件监听
-		
-//		// 设置登录界面的密码提示文字标签
-//		passWordlogin = new JLabel("请输入6-12位密码");
-//		passWordlogin.setOpaque(false);
-//		passWordlogin.setBorder(null);
-//		passWordlogin.setFont(new Font("微软雅黑", Font.PLAIN, 14));
-//		// 设置passWordlogin字体颜色为青蛤壳紫
-//		passWordlogin.setForeground(new java.awt.Color(188, 132, 168));
+
 		
 		// 设置登录面板的登录按钮
 		loginButton = new JButton();
@@ -123,13 +100,6 @@ public class Login_modules extends JFrame implements ActionListener{
 		loginInformation.add(username_login);						// 将用户名文本框添加到loginInformation面板
 		loginInformation.add(password_login);						// 将密码文本框添加到loginInformation面板
 		
-//		// 设置登录提示信息面板
-//		loginPrompt = new JPanel();
-//		loginPrompt.setOpaque(false); 								// 设置loginPrompt透明
-//		loginPrompt.setLayout(new GridLayout(1, 1, 0, 0)); 			// 设置loginPrompt为绝对布局，两行一列，纵间距为25
-//		loginPrompt.setBounds(825, 385, 150, 24); 					// 设置loginPrompt面板的位置和大小
-////		loginPrompt.add(userNamelogin);								// 将用户名提示标签添加到loginPrompt面板
-////		loginPrompt.add(passWordlogin);								// 将密码提示标签添加到loginPrompt面板
 		
 		// 设置登录注册按钮面板
 		loginRegister = new JPanel();
@@ -257,19 +227,9 @@ public class Login_modules extends JFrame implements ActionListener{
 	    
 	    this.setResizable(false);									// 窗体大小设置为不可变
 	    this.setVisible(true);										// 显示窗体
-	    
-//	    loginInformation.setVisible(false);
-//	    loginRegister.setVisible(false);
-//	    loginJLabel.setVisible(false);
-	    
+	
 	    concealRegister();											// 隐藏注册界面
-	    
-//	    String usernamelogin = username_login.getText().trim();		// 获取文本框的内容,并且去掉首尾的空格
-//	    if(usernamelogin.length() >= 3) {							// 如果usernamelogin的长度大于等于3
-//	    	System.out.println("over");
-//	    	loginPrompt.setVisible(false);							// 隐藏passWordlogin标签
-//	    }
-//	    System.out.println(usernamelogin);
+	  
 	}
 	
 /************************************************************************************************************************/
@@ -282,17 +242,7 @@ public class Login_modules extends JFrame implements ActionListener{
         this.getLayeredPane().add(background, new Integer(Integer.MIN_VALUE));
         background.setBounds(0, 0, img.getIconWidth(), img.getIconHeight());
     }
-	
-//	public void keyTyped(KeyEvent e) {
-//		// TODO Auto-generated method stub
-//		String s = username_login.getText();
-//		if(s.length() >= 3) {
-//			loginPrompt.setVisible(false);							// 隐藏passWordlogin标签
-//			
-//		}else if(s.length() == 12) {
-//			e.consume();
-//		}
-//	}
+
 	
 	// 事件监听方法
 	public void actionPerformed(ActionEvent e) {
@@ -301,10 +251,10 @@ public class Login_modules extends JFrame implements ActionListener{
 			showRegister();											// 显示注册界面
 		}else if(e.getSource() == loginButton) {					// 如果按下登录界面的登录按钮
 			this.login();											// 调用登录方法
-			this.setVisible(false); 								// 关闭当前页面
+//			this.setVisible(false); 								// 关闭当前页面
 		}else if(e.getSource() == register_registerButton) {		// 如果按下注册界面的注册按钮
 			this.register();										// 调用注册方法
-			this.setVisible(false);									// 关闭当前页面
+//			this.setVisible(false);									// 关闭当前页面
 			
 		}
 	}
@@ -349,8 +299,11 @@ public class Login_modules extends JFrame implements ActionListener{
  		    }
  		    
  		    if(co.newsqlBoolean == true) {							// 如果判断可以新建sql表
+ 		    	this.setVisible(false);
+ 		    	
  		    	// 将username_register中的内容传到Mysql类的newAssesssql方法中新建sql表
  		    	co.newAssesssql(username_register.getText());
+ 		    	
  		    }
  		    
  		    this.username_register.setText("");						// 清空username_register的内容
@@ -380,7 +333,7 @@ public class Login_modules extends JFrame implements ActionListener{
             password_login.setText("");								// 清空password_login文本框
  		}
  		else
- 		{		
+ 		{	
 			Mysql s = new Mysql();
 			s.ConnectSQL();
 			// 将username_login和password_login中的内容传到Mysql类中的SQLverify方法中
@@ -388,6 +341,11 @@ public class Login_modules extends JFrame implements ActionListener{
 			
 			this.username_login.setText("");
 			this.password_login.setText("");
+			
+			if(s.thisclose == true) {								// 如果登录成功关闭当前窗口
+				this.setVisible(false);
+			}
+			
  		}
 	}
 	
@@ -420,16 +378,7 @@ public class Login_modules extends JFrame implements ActionListener{
 	    helpRegister.setVisible(false);
 	    registerJPanel.setVisible(false);
 	}
-	
-//	// 显示密码提示标签的方法
-//	public void showpassWordlogin() {
-//		passWordlogin.setVisible(true);
-//	}
-//	
-//	// 隐藏密码提示标签的方法
-//	public void concealpassWordlogin() {
-//		passWordlogin.setVisible(false);
-//	}
+
 	
 	// 获取时间的方法
 	public void showDate(){

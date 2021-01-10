@@ -1,8 +1,6 @@
 
 import java.io.Serializable;
 import java.sql.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import javax.swing.JOptionPane;
 
@@ -18,9 +16,9 @@ public class Mysql extends Login_modules implements Serializable{
 
 	public boolean registeredBoolean = false; 								// 布尔判断是否可以注册
 	public boolean newsqlBoolean = false;									// 布尔判断是否可以新建sql表
+	public boolean thisclose = true;										// 布尔判断是否登录成功，成功则关闭当前窗口
 	
-	//user_paswd
-	String user_name, password;
+	
 	
 	// 连接数据库的方法
 	public void ConnectSQL()
@@ -100,10 +98,17 @@ public class Mysql extends Login_modules implements Serializable{
 //				password = rs.getString(3);							// 第三列是password列
 				//JOptionPane.showMessageDialog(null, "", "", JOptionPane.WARNING_MESSAGE);
 				System.out.println("登录成功！");
-				this.setVisible(false);		
-				//System.out.println(user + "\t" + passwd + "\t");
+				
+				this.dispose();										// 关闭登录注册界面
+				
+				// 将用户名传到Assess_modules类的userName方法中
+				Assess_modules as = new Assess_modules();
+				as.userName(a);
+				
 			}else
 			{
+				this.setVisible(false);
+				thisclose = false;
 				JOptionPane.showMessageDialog(null, "用户名或密码错误，请重新输入！", "error", JOptionPane.ERROR_MESSAGE);
 			}
 			
@@ -128,7 +133,7 @@ public class Mysql extends Login_modules implements Serializable{
 			rs=ps.executeQuery();
 			if(rs.next())
 			{
-				JOptionPane.showMessageDialog(null, "该用户名已存在", "请直接登录或者换个用户名注册", JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(null, "该用户名已存在,请直接登录或者换个用户名注册!", "error", JOptionPane.WARNING_MESSAGE);
 				this.setVisible(false);								// 关闭当前页面
 				Login_modules L_m = new Login_modules();
 				L_m.showRegister();									// 调用Login_modules类中显示注册面板的方法，显示注册面板
@@ -159,26 +164,27 @@ public class Mysql extends Login_modules implements Serializable{
 		// sql表的命名规则遵循“用户名+_performance_appraisal_list”
 		
 		String b = "_performance_appraisal_list";
-		String cString = a+b;
+		String cString = a + b;
 		try {
 			
 			ps=ct.prepareStatement("CREATE TABLE "+cString+" (\r\n" + 
-					"  `id` INT NOT NULL AUTO_INCREMENT, \r\n" + 
+					"  `id` INT NOT NULL AUTO_INCREMENT,\r\n" + 
 					"  `staff_name` VARCHAR(45) NOT NULL COMMENT '员工姓名',\r\n" + 
-					"  `normal_days` DECIMAL(10,1) NOT NULL COMMENT '正常天数',\r\n" + 
-					"  `late_days` DECIMAL(10,1) NOT NULL COMMENT '迟到天数',\r\n" + 
-					"  `leave_days` DECIMAL(10,1) NOT NULL COMMENT '请假天数',\r\n" + 
+					"  `staff_number` VARCHAR(45) NOT NULL COMMENT '员工号',\r\n" + 
+					"  `normal_days` DECIMAL(10,2) NOT NULL COMMENT '正常天数',\r\n" + 
+					"  `late_days` DECIMAL(10,2) NOT NULL COMMENT '迟到天数',\r\n" + 
+					"  `leave_days` DECIMAL(10,2) NOT NULL COMMENT '请假天数',\r\n" + 
 					"  `absenteeism_days` INT NOT NULL COMMENT '旷工天数',\r\n" + 
 					"  `work_hours` INT NOT NULL COMMENT '工作时长',\r\n" + 
 					"  `work_piece` INT NOT NULL COMMENT '工作计件',\r\n" + 
 					"  `work_content` VARCHAR(45) NOT NULL COMMENT '工作质量',\r\n" + 
 					"  `technology_improve` VARCHAR(45) NOT NULL COMMENT '工艺改善',\r\n" + 
-					"  `quarter_class` VARCHAR(45) NOT NULL COMMENT '季度等级评定',\r\n" + 
 					"  `rewards_time` INT NOT NULL COMMENT '奖励次数',\r\n" + 
 					"  `punishment_time` INT NOT NULL COMMENT '惩罚次数',\r\n" + 
-					"  `quarter` VARCHAR(45) NOT NULL COMMENT '第几季度',\r\n" + 
+					"  `many_quarter` VARCHAR(45) NOT NULL COMMENT '第几季度',\r\n" + 
+					"  `quarter_class` VARCHAR(45) NOT NULL COMMENT '季度等级评定',\r\n" + 
 					"  `assess_result` VARCHAR(45) NULL COMMENT '考核结果',\r\n" + 
-					"  PRIMARY KEY (`id`))");
+					"  PRIMARY KEY (`id`));");
 			
 			ps.executeUpdate();
 
@@ -192,4 +198,52 @@ public class Mysql extends Login_modules implements Serializable{
 			}
 		}
 	}
+	
+	// 保存员工信息的方法，接收Assess_modules类中saveMessage方法传过来的值，将user_name + _performance_appraisal_list作为表名，
+	// 将其余值作为sql表各列的值，写入表中，实现动态写表（登录的用户不同，写入的表也不同）。
+	public void saveMessage(String user_name, String staff_name, String staff_number, String normal_days, String late_days
+			, String leave_days, String absenteeism_days, String work_hours, String work_piece
+			, String work_content, String technology_improve, String rewards_time
+			, String punishment_time, String many_quarter, String quarter_class) 
+	{
+		
+		String b = "_performance_appraisal_list";
+		String dString = user_name + b;
+		System.out.println(dString);
+		try {
+			ps=ct.prepareStatement("INSERT INTO "+dString+" (staff_name, staff_number, normal_days, late_days, leave_days, absenteeism_days, work_hours, work_piece, work_content, technology_improve, rewards_time, punishment_time, many_quarter, quarter_class) \r\n" + 
+					"  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			ps.setString(1, staff_name);
+			ps.setString(2, staff_number);
+			ps.setString(3, normal_days);
+			ps.setString(4, late_days);
+			ps.setString(5, leave_days);
+			ps.setString(6, absenteeism_days);
+			ps.setString(7, work_hours);
+			ps.setString(8, work_piece);
+			ps.setString(9, work_content);
+			ps.setString(10, technology_improve);
+			ps.setString(11, rewards_time);
+			ps.setString(12, punishment_time);
+			ps.setString(13, many_quarter);
+			ps.setString(14, quarter_class);
+			
+			int i = ps.executeUpdate();
+			if(i == 1){
+				this.setVisible(false);
+			}else {
+				
+			}
+			
+		}catch (SQLException e) {
+			e.printStackTrace();
+			try {
+				ct.close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+	}
+	
 }

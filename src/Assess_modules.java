@@ -10,6 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -22,6 +23,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 	 */
 	private static final long serialVersionUID = 1L;
 
+	JPanel usernameJPanel;											// 放置个人中心按钮的面板
 	JPanel left_functionJPanel;										// 左侧的功能面板，放置功能按钮
 	JPanel search_boxJPanel;										// 放置搜索输入框的面板
 	JPanel search_buttonJPanel;										// 放置搜索按钮的面板
@@ -65,6 +67,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 	JComboBox processImproveBox;									// 工艺改善下拉框
 	JComboBox quarterClassBox;										// 季度等级下拉框
 	
+	private JButton usernameButton = new JButton();									// 用户名按钮，在界面中显示登录的用户名，点击后查看个人中心
 	private JButton addButton;										// 添加按钮
 	private JButton modifyButton;									// 修改按钮
 	private JButton deleteButton;									// 删除按钮
@@ -73,9 +76,12 @@ public class Assess_modules extends JFrame implements ActionListener{
 	private JButton add_analyseButton;								// 添加界面的分析按钮
 	private JButton add_saveButton;									// 添加界面的保存按钮
 	private JButton add_closeButton;								// 添加界面的关闭按钮
+	
+	public String usernameString;											// 存储用户名
 
 	// 构造方法
 	public Assess_modules() {
+		
 //		左侧功能按钮***********************************************************************************************************************************************************
 		
 		// 设置添加按钮
@@ -144,7 +150,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 		
 		// 设置员工姓名文本框
 		nameField = new JTextField();
-		nameField.setName("请输入员工姓名：");
+		nameField.setName("请输入员工姓名");
 		// 调用焦点监听方法类设置提示文字
 		nameField.addFocusListener(new MyFocusListener(nameField.getName(),nameField));
 		nameField.setOpaque(false); 								// 将员工姓名文本框设置为透明
@@ -160,7 +166,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 		
 		// 设置员工号文本框
 		jobNumberField = new JTextField();
-		jobNumberField.setName("请输入员工号：");
+		jobNumberField.setName("请输入员工号");
 		// 调用焦点监听方法类设置提示文字
 		jobNumberField.addFocusListener(new MyFocusListener(jobNumberField.getName(),jobNumberField));
 		jobNumberField.setOpaque(false); 							// 将员工号文本框设置为透明
@@ -176,7 +182,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 		
 		// 设置正常天数文本框
 		normalDaysField = new JTextField();
-		normalDaysField.setName("请输入正常天数：");
+		normalDaysField.setName("请输入正常天数");
 		// 调用焦点监听方法类设置提示文字
 		normalDaysField.addFocusListener(new MyFocusListener(normalDaysField.getName(),normalDaysField));
 		normalDaysField.setOpaque(false); 							// 将正常天数文本框设置为透明
@@ -192,7 +198,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 		
 		// 设置迟到天数文本框
 		lateDaysField = new JTextField();
-		lateDaysField.setName("请输入迟到天数：");
+		lateDaysField.setName("请输入迟到天数");
 		// 调用焦点监听方法类设置提示文字
 		lateDaysField.addFocusListener(new MyFocusListener(lateDaysField.getName(),lateDaysField));
 		lateDaysField.setOpaque(false); 							// 将迟到天数文本框设置为透明
@@ -208,7 +214,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 		
 		// 设置请假天数文本框
 		leaveDaysField = new JTextField();
-		leaveDaysField.setName("请输入请假天数：");
+		leaveDaysField.setName("请输入请假天数");
 		// 调用焦点监听方法类设置提示文字
 		leaveDaysField.addFocusListener(new MyFocusListener(leaveDaysField.getName(),leaveDaysField));
 		leaveDaysField.setOpaque(false); 							// 将请假天数文本框设置为透明
@@ -224,7 +230,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 		
 		// 设置旷工天数文本框
 		absenteeismDaysField = new JTextField();
-		absenteeismDaysField.setName("请输入旷工天数：");
+		absenteeismDaysField.setName("请输入旷工天数");
 		// 调用焦点监听方法类设置提示文字
 		absenteeismDaysField.addFocusListener(new MyFocusListener(absenteeismDaysField.getName(),absenteeismDaysField));
 		absenteeismDaysField.setOpaque(false); 						// 将旷工天数文本框设置为透明
@@ -240,7 +246,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 		
 		// 设置工作时长文本框
 		workHoursField = new JTextField();
-		workHoursField.setName("请输入工作时长：");
+		workHoursField.setName("请输入工作时长");
 		// 调用焦点监听方法类设置提示文字
 		workHoursField.addFocusListener(new MyFocusListener(workHoursField.getName(),workHoursField));
 		workHoursField.setOpaque(false); 							// 将工作时长文本框设置为透明
@@ -256,7 +262,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 		
 		// 设置工作计件文本框
 		workPieceField = new JTextField();
-		workPieceField.setName("请输入工作计件：");
+		workPieceField.setName("请输入工作计件");
 		// 调用焦点监听方法类设置提示文字
 		workPieceField.addFocusListener(new MyFocusListener(workPieceField.getName(),workPieceField));
 		workPieceField.setOpaque(false); 							// 将工作计件文本框设置为透明
@@ -272,7 +278,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 		
 		// 设置奖励次数文本框
 		awardNumberField = new JTextField();
-		awardNumberField.setName("请输入奖励次数：");
+		awardNumberField.setName("请输入奖励次数");
 		// 调用焦点监听方法类设置提示文字
 		awardNumberField.addFocusListener(new MyFocusListener(awardNumberField.getName(),awardNumberField));
 		awardNumberField.setOpaque(false); 							// 将奖励次数文本框设置为透明
@@ -288,7 +294,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 		
 		// 设置惩罚次数文本框
 		punishmentNumberField = new JTextField();
-		punishmentNumberField.setName("请输入惩罚次数：");
+		punishmentNumberField.setName("请输入惩罚次数");
 		// 调用焦点监听方法类设置提示文字
 		punishmentNumberField.addFocusListener(new MyFocusListener(punishmentNumberField.getName(),punishmentNumberField));
 		punishmentNumberField.setOpaque(false); 					// 将惩罚次数文本框设置为透明
@@ -304,7 +310,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 		
 		// 设置第几季度文本框
 		manyQuartersField = new JTextField();
-		manyQuartersField.setName("请输入第几季度：");
+		manyQuartersField.setName("例：2021-1");
 		// 调用焦点监听方法类设置提示文字
 		manyQuartersField.addFocusListener(new MyFocusListener(manyQuartersField.getName(),manyQuartersField));
 		manyQuartersField.setOpaque(false); 						// 将第几季度文本框设置为透明
@@ -320,12 +326,13 @@ public class Assess_modules extends JFrame implements ActionListener{
 		
 		// 设置工作质量下拉框
 		jobContentBox = new JComboBox();
+		jobContentBox.addItem("请选择工作质量");
 		jobContentBox.addItem("优秀");
 		jobContentBox.addItem("良好");
 		jobContentBox.addItem("合格");
 		jobContentBox.addItem("不合格");
 		jobContentBox.setBackground(Color.WHITE);					// 设置下拉框背景颜色
-		jobContentBox.setFont(new Font("微软雅黑",Font.PLAIN, 14));		// 设置工作质量下拉框的字体属性
+		jobContentBox.setFont(new Font("微软雅黑",Font.PLAIN, 13));		// 设置工作质量下拉框的字体属性
     	jobContentBox.setForeground(new java.awt.Color(71, 75, 76));// 设置下拉框字体颜色
     	jobContentBox.addActionListener((ActionListener) this);		// 添加事件监听
     	
@@ -336,9 +343,15 @@ public class Assess_modules extends JFrame implements ActionListener{
     	
     	// 设置工艺改善下拉框
     	processImproveBox = new JComboBox();
+    	processImproveBox.addItem("请选择工艺改善情况");
+    	processImproveBox.addItem("A+");
+    	processImproveBox.addItem("A");
+    	processImproveBox.addItem("B+");
     	processImproveBox.addItem("B");
+    	processImproveBox.addItem("C+");
+    	processImproveBox.addItem("C");
     	processImproveBox.setBackground(Color.WHITE); 
-    	processImproveBox.setFont(new Font("微软雅黑",Font.PLAIN, 14));	// 设置下拉框的字体属性
+    	processImproveBox.setFont(new Font("微软雅黑",Font.PLAIN, 13));	// 设置下拉框的字体属性
     	processImproveBox.setForeground(new java.awt.Color(71, 75, 76));
     	processImproveBox.addActionListener((ActionListener) this);
     	
@@ -349,6 +362,7 @@ public class Assess_modules extends JFrame implements ActionListener{
     	
     	// 设置季度等级下拉框
     	quarterClassBox = new JComboBox();
+    	quarterClassBox.addItem("请选择季度等级");
     	quarterClassBox.addItem("A+");
     	quarterClassBox.addItem("A");
     	quarterClassBox.addItem("B+");
@@ -356,7 +370,7 @@ public class Assess_modules extends JFrame implements ActionListener{
     	quarterClassBox.addItem("C+");
     	quarterClassBox.addItem("C");
     	quarterClassBox.setBackground(Color.WHITE); 
-    	quarterClassBox.setFont(new Font("微软雅黑",Font.PLAIN, 14));	// 设置下拉框的字体属性
+    	quarterClassBox.setFont(new Font("微软雅黑",Font.PLAIN, 13));	// 设置下拉框的字体属性
     	quarterClassBox.setForeground(new java.awt.Color(71, 75, 76));
     	quarterClassBox.addActionListener((ActionListener) this);
     	
@@ -391,6 +405,13 @@ public class Assess_modules extends JFrame implements ActionListener{
 		
 //		panel******************************************************************************************************
 		
+    	// 设置个人中心面板
+    	usernameJPanel = new JPanel();
+    	usernameJPanel.setOpaque(false); 							// 设置usernameJPanel透明
+    	usernameJPanel.setLayout(new GridLayout(1, 1, 0, 0)); 		// 设置usernameJPanel为绝对布局，四行一列，纵间距为25
+    	usernameJPanel.setBounds(13, 90, 150, 25); 				// 设置usernameJPanel面板的位置和大小
+    	usernameJPanel.add(usernameButton);
+    	
 		// 设置左侧面板
 		left_functionJPanel = new JPanel();
 		left_functionJPanel.setOpaque(false); 						// 设置left_functionJPanel透明
@@ -496,6 +517,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 	    setWindows();												// 调用setWindows方法，设置窗口
 	    Container Bottom_container = getContentPane();				// 初始化Bottom_container容器
 	    
+	    Bottom_container.add(usernameJPanel);
 	    Bottom_container.add(left_functionJPanel);					// 将left_functionJPanel添加到Bottom_container容器
 	    Bottom_container.add(search_boxJPanel);
 	    Bottom_container.add(search_buttonJPanel);
@@ -529,8 +551,79 @@ public class Assess_modules extends JFrame implements ActionListener{
 			showAdd_window();										// 显示添加界面
 		}else if(e.getSource() == add_closeButton) {				// 如果按下添加界面的关闭按钮
 			concealAdd_window();									// 隐藏添加界面
+		}else if(e.getSource() == usernameButton) {				    // 如果按下个人中心按钮
+			System.out.println("欢迎 " + usernameString);								
+		}else if(e.getSource() == add_saveButton) {					// 如果按下添加界面的保存按钮
+			saveMessage();
 		}
 	}
+	
+	
+	// 设置个人中心按钮的方法，动态显示用户名
+	public void userName(String username ) {
+		
+		usernameString = username;
+		System.out.println("获取的用户名为：" + usernameString);
+		
+		usernameButton.setText(usernameString);
+		usernameButton.setContentAreaFilled(false); 				// 将个人中心按钮设置为透明
+		usernameButton.setBorder(null);								// 将个人中心按钮设置为无边框
+		usernameButton.setFont(new Font("微软雅黑", Font.PLAIN, 15));	// 设置个人中心按钮的字体属性
+		// 设置个人中心按钮的字体颜色
+		usernameButton.setForeground(new java.awt.Color(255, 255, 255));	
+		usernameButton.addActionListener((ActionListener) this);	// 给个人中心按钮添加事件监听
+		
+	}
+	
+	// 保存员工信息的方法，所有文本框都不为空
+	public void saveMessage() {
+		if(nameField.getText().equals("") || nameField.getText().equals("请输入员工姓名")) {
+			JOptionPane.showMessageDialog(null, "姓名不能为空，请输入", "warning", JOptionPane.WARNING_MESSAGE);
+		}else if(jobNumberField.getText().equals("") || jobNumberField.getText().equals("请输入员工号")) {
+			JOptionPane.showMessageDialog(null, "工号不能为空，请输入", "warning", JOptionPane.WARNING_MESSAGE);
+		}else if(normalDaysField.getText().equals("") || normalDaysField.getText().equals("请输入正常天数")) {
+			JOptionPane.showMessageDialog(null, "正常天数不能为空，请输入", "warning", JOptionPane.WARNING_MESSAGE);
+		}else if(lateDaysField.getText().equals("") || lateDaysField.getText().equals("请输入迟到天数")) {
+			JOptionPane.showMessageDialog(null, "迟到天数不能为空，请输入", "warning", JOptionPane.WARNING_MESSAGE);
+		}else if(leaveDaysField.getText().equals("") || leaveDaysField.getText().equals("请输入请假天数")) {
+			JOptionPane.showMessageDialog(null, "请假天数不能为空，请输入", "warning", JOptionPane.WARNING_MESSAGE);
+		}else if(absenteeismDaysField.getText().equals("") || absenteeismDaysField.getText().equals("请输入旷工天数")) {
+			JOptionPane.showMessageDialog(null, "旷工天数不能为空，请输入", "warning", JOptionPane.WARNING_MESSAGE);
+		}else if(workHoursField.getText().equals("") || workHoursField.getText().equals("请输入工作时长")) {
+			JOptionPane.showMessageDialog(null, "工作时长不能为空，请输入", "warning", JOptionPane.WARNING_MESSAGE);
+		}else if(workPieceField.getText().equals("") || workPieceField.getText().equals("请输入工作计件")) {
+			JOptionPane.showMessageDialog(null, "工作计件不能为空，请输入", "warning", JOptionPane.WARNING_MESSAGE);
+		}else if(jobContentBox.getSelectedItem().toString().equals("请选择工作质量")) {
+			JOptionPane.showMessageDialog(null, "工作质量不能为空，请选择", "warning", JOptionPane.WARNING_MESSAGE);
+		}else if(processImproveBox.getSelectedItem().toString().equals("请选择工艺改善情况")) {
+			JOptionPane.showMessageDialog(null, "工艺改善不能为空，请选择", "warning", JOptionPane.WARNING_MESSAGE);
+		}else if(awardNumberField.getText().equals("") || awardNumberField.getText().equals("请输入奖励次数")) {
+			JOptionPane.showMessageDialog(null, "奖励次数不能为空，请输入", "warning", JOptionPane.WARNING_MESSAGE);
+		}else if(punishmentNumberField.getText().equals("") || punishmentNumberField.getText().equals("请输入惩罚次数")) {
+			JOptionPane.showMessageDialog(null, "惩罚次数不能为空，请输入", "warning", JOptionPane.WARNING_MESSAGE);
+		}else if(manyQuartersField.getText().equals("") || manyQuartersField.getText().equals("例：2021-1")) {
+			JOptionPane.showMessageDialog(null, "第几季度不能为空，请输入", "warning", JOptionPane.WARNING_MESSAGE);
+		}else if(quarterClassBox.getSelectedItem().toString().equals("请选择季度等级")) {
+			JOptionPane.showMessageDialog(null, "季度等级不能为空，请输入", "warning", JOptionPane.WARNING_MESSAGE);
+		}
+		else {
+			Mysql ms = new Mysql();
+			ms.ConnectSQL();
+			
+			ms.saveMessage(usernameButton.getText(), nameField.getText(), jobNumberField.getText(), normalDaysField.getText(), 
+				lateDaysField.getText(), leaveDaysField.getText(), absenteeismDaysField.getText()
+				, workHoursField.getText(), workPieceField.getText(), jobContentBox.getSelectedItem().toString()
+				, processImproveBox.getSelectedItem().toString(), awardNumberField.getText()
+				, punishmentNumberField.getText(), manyQuartersField.getText()
+				, quarterClassBox.getSelectedItem().toString());
+			
+			
+			
+			System.out.println("正常");
+		}
+		
+	}
+	
 	
 	
 	// 显示添加界面的方法
@@ -542,7 +635,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 		add_otherInformationJPanel.setVisible(true);
 		add_textJPanel.setVisible(true);
 	}
-	
+		
 	// 隐藏添加界面的方法
 	public void concealAdd_window() {
 		addInformation_windowJPanel.setVisible(false);
@@ -553,9 +646,10 @@ public class Assess_modules extends JFrame implements ActionListener{
 		add_textJPanel.setVisible(false);
 	}
 	
-	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		
 		new Assess_modules();
+		
 	}
 }
