@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -12,7 +13,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 
 
 // 进行绩效考核的类
@@ -33,6 +37,9 @@ public class Assess_modules extends JFrame implements ActionListener{
 	JPanel add_buttonJPanel;										// 放置添加窗口中分析和保存两个按钮的面板
 	JPanel add_closeJPanel;											// 放置添加窗口中关闭按钮的面板
 	JPanel add_textJPanel;											// 放置添加窗口文字标签的面板
+	
+	JScrollPane assess_tabelJScrollPane;							// 放置员工信息表的滚动面板
+	JTable assess_messageJTable;									// 员工信息表
 	
 	JLabel add_windowJLabel;										// 放置添加界面图片的标签
 	JLabel nameJLabel;												// 员工姓名标签
@@ -77,7 +84,13 @@ public class Assess_modules extends JFrame implements ActionListener{
 	private JButton add_saveButton;									// 添加界面的保存按钮
 	private JButton add_closeButton;								// 添加界面的关闭按钮
 	
-	public String usernameString;											// 存储用户名
+	public String usernameString;									// 存储用户名
+	
+	
+	String id; String staff_name; String staff_number; String normal_days; String late_days; 
+	String leave_days; String absenteeism_days; String work_hours; String work_piece; 
+	String work_content; String technology_improve; String rewards_time; 
+	String punishment_time; String many_quarter; String quarter_class; String assess_result;
 
 	// 构造方法
 	public Assess_modules() {
@@ -192,13 +205,13 @@ public class Assess_modules extends JFrame implements ActionListener{
 		normalDaysField.setForeground(new java.awt.Color(71, 75, 76));
 		
 		// 设置迟到天数标签
-		lateDaysJLabel = new JLabel("迟到天数");
+		lateDaysJLabel = new JLabel("迟到时长");
 		lateDaysJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
 		lateDaysJLabel.setForeground(new java.awt.Color(255, 255, 255));
 		
 		// 设置迟到天数文本框
 		lateDaysField = new JTextField();
-		lateDaysField.setName("请输入迟到天数");
+		lateDaysField.setName("请输入迟到时长");
 		// 调用焦点监听方法类设置提示文字
 		lateDaysField.addFocusListener(new MyFocusListener(lateDaysField.getName(),lateDaysField));
 		lateDaysField.setOpaque(false); 							// 将迟到天数文本框设置为透明
@@ -409,7 +422,7 @@ public class Assess_modules extends JFrame implements ActionListener{
     	usernameJPanel = new JPanel();
     	usernameJPanel.setOpaque(false); 							// 设置usernameJPanel透明
     	usernameJPanel.setLayout(new GridLayout(1, 1, 0, 0)); 		// 设置usernameJPanel为绝对布局，四行一列，纵间距为25
-    	usernameJPanel.setBounds(13, 90, 150, 25); 				// 设置usernameJPanel面板的位置和大小
+    	usernameJPanel.setBounds(13, 90, 150, 25); 					// 设置usernameJPanel面板的位置和大小
     	usernameJPanel.add(usernameButton);
     	
 		// 设置左侧面板
@@ -505,7 +518,16 @@ public class Assess_modules extends JFrame implements ActionListener{
 		add_textJPanel.add(manyQuartersJLabel);
 		add_textJPanel.add(quarterClassJLabel);
 		
+		// 设置放置表格的滚动面板
+		assess_tabelJScrollPane = new JScrollPane();
 		
+		// JScrollPane 基本上由 JScrollBar、一个 JViewport 以及它们之间的连线组成 ,
+		// 因此设置背景透明时，除了要设置pane的背景，还要将JViewport背景也设置为透明才可。
+		assess_tabelJScrollPane.setOpaque(false);
+		assess_tabelJScrollPane.getViewport().setOpaque(false);
+		
+		assess_tabelJScrollPane.setBounds(182, 75, 1082, 575);
+
 		
 		this.setTitle("绩效考核系统");									// 设置系统标签
 		ImageIcon icon = new ImageIcon("image\\icon.png");			// 设置系统图标
@@ -527,7 +549,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 	    Bottom_container.add(add_buttonJPanel);
 	    Bottom_container.add(add_closeJPanel);
 	    Bottom_container.add(addInformation_windowJPanel);
-	    
+	    Bottom_container.add(assess_tabelJScrollPane);
 	    
 	    this.setResizable(false);									// 窗体大小设置为不可变
 	    this.setVisible(true);										// 显示窗体
@@ -555,6 +577,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 			System.out.println("欢迎 " + usernameString);								
 		}else if(e.getSource() == add_saveButton) {					// 如果按下添加界面的保存按钮
 			saveMessage();
+			messageTabel(usernameString);							// 刷新考核表
 		}
 	}
 	
@@ -574,6 +597,80 @@ public class Assess_modules extends JFrame implements ActionListener{
 		usernameButton.addActionListener((ActionListener) this);	// 给个人中心按钮添加事件监听
 		
 	}
+
+	
+	// 设置员工信息表的方法
+	public void messageTabel(String a) {
+		
+		// 创建表格
+		assess_messageJTable = new JTable();
+		// 获取表格的数据模型
+		DefaultTableModel model = (DefaultTableModel) assess_messageJTable.getModel();
+		// 设置表头
+		model.setColumnIdentifiers(new String[] {"id", "姓名", "工号", "正常天数", "迟到时长", "请假天数"
+				, "旷工天数", "工作时长", "工作计件", "工作质量", "工艺改善", "奖励次数", "惩罚次数", "第几季度"
+				, "季度等级", "考核结果"});								
+			
+		Mysql ms = new Mysql();
+		ms.ConnectSQL();
+		
+		String b = "_performance_appraisal_list";
+		String tabelName = a + b;
+		System.out.println("查找" + tabelName + "的内容");
+		
+		try {
+			ms.ps=ms.ct.prepareStatement("select * from "+tabelName+"");
+			
+			ms.rs = ms.ps.executeQuery();
+			
+			while(ms.rs.next())
+			{
+				id = ms.rs.getString(1);								// 将第一列保存在id中
+				staff_name = ms.rs.getString(2);
+				staff_number = ms.rs.getString(3);
+				normal_days = ms.rs.getString(4);
+				late_days = ms.rs.getString(5);
+				leave_days = ms.rs.getString(6);
+				absenteeism_days = ms.rs.getString(7);
+				work_hours = ms.rs.getString(8);
+				work_piece = ms.rs.getString(9);
+				work_content = ms.rs.getString(10);
+				technology_improve = ms.rs.getString(11);
+				rewards_time = ms.rs.getString(12);
+				punishment_time = ms.rs.getString(13);
+				many_quarter = ms.rs.getString(14);
+				quarter_class = ms.rs.getString(15);
+				assess_result = ms.rs.getString(16);
+				 
+				System.out.println("查找成功！" + staff_name);
+				
+				ms.loginClose();
+				
+				// 增加行
+				model.addRow(new Object[]{id, staff_name, staff_number, normal_days, late_days, leave_days, 
+						absenteeism_days, work_hours, work_piece, work_content, technology_improve, 
+						rewards_time, punishment_time, many_quarter, quarter_class, assess_result});
+					
+			}ms.loginClose();
+		
+		// 更新表格模型
+		assess_messageJTable.setModel(model);
+			
+		// 为JScrollPane面板设置一个可视化图表
+		assess_tabelJScrollPane.setViewportView(assess_messageJTable);
+		
+		
+		
+//		this.setVisible(false);
+		}catch (SQLException e) {
+			e.printStackTrace();
+			try {
+				ms.ct.close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+			}
+		}
+	}
 	
 	// 保存员工信息的方法，所有文本框都不为空
 	public void saveMessage() {
@@ -583,8 +680,8 @@ public class Assess_modules extends JFrame implements ActionListener{
 			JOptionPane.showMessageDialog(null, "工号不能为空，请输入", "warning", JOptionPane.WARNING_MESSAGE);
 		}else if(normalDaysField.getText().equals("") || normalDaysField.getText().equals("请输入正常天数")) {
 			JOptionPane.showMessageDialog(null, "正常天数不能为空，请输入", "warning", JOptionPane.WARNING_MESSAGE);
-		}else if(lateDaysField.getText().equals("") || lateDaysField.getText().equals("请输入迟到天数")) {
-			JOptionPane.showMessageDialog(null, "迟到天数不能为空，请输入", "warning", JOptionPane.WARNING_MESSAGE);
+		}else if(lateDaysField.getText().equals("") || lateDaysField.getText().equals("请输入迟到时长")) {
+			JOptionPane.showMessageDialog(null, "迟到时长不能为空，请输入", "warning", JOptionPane.WARNING_MESSAGE);
 		}else if(leaveDaysField.getText().equals("") || leaveDaysField.getText().equals("请输入请假天数")) {
 			JOptionPane.showMessageDialog(null, "请假天数不能为空，请输入", "warning", JOptionPane.WARNING_MESSAGE);
 		}else if(absenteeismDaysField.getText().equals("") || absenteeismDaysField.getText().equals("请输入旷工天数")) {

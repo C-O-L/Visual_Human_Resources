@@ -19,7 +19,6 @@ public class Mysql extends Login_modules implements Serializable{
 	public boolean thisclose = true;										// 布尔判断是否登录成功，成功则关闭当前窗口
 	
 	
-	
 	// 连接数据库的方法
 	public void ConnectSQL()
 	{
@@ -94,9 +93,6 @@ public class Mysql extends Login_modules implements Serializable{
 			
 			if(rs.next())
 			{
-//				user_name = rs.getString(2);						// 第二列是user_name列
-//				password = rs.getString(3);							// 第三列是password列
-				//JOptionPane.showMessageDialog(null, "", "", JOptionPane.WARNING_MESSAGE);
 				System.out.println("登录成功！");
 				
 				this.dispose();										// 关闭登录注册界面
@@ -104,6 +100,9 @@ public class Mysql extends Login_modules implements Serializable{
 				// 将用户名传到Assess_modules类的userName方法中
 				Assess_modules as = new Assess_modules();
 				as.userName(a);
+				as.messageTabel(a);
+				
+				this.setVisible(false);
 				
 			}else
 			{
@@ -121,6 +120,11 @@ public class Mysql extends Login_modules implements Serializable{
 				e1.printStackTrace();
 			}
 		}
+	}
+	
+	public void loginClose() {
+		this.dispose();
+		this.setVisible(false);
 	}
 	
 	// 用户注册方法，查看用户名是否重复
@@ -142,8 +146,7 @@ public class Mysql extends Login_modules implements Serializable{
 			else
 			{
 				registeredBoolean = true;
-//				Login_modules cf = new Login_modules();
-//				this.UserRegis(cf.username_register.getText(),cf.password_register.getText(),cf.depositTime.getText());
+
 			}
 			
 		} catch (SQLException e) {
@@ -172,7 +175,7 @@ public class Mysql extends Login_modules implements Serializable{
 					"  `staff_name` VARCHAR(45) NOT NULL COMMENT '员工姓名',\r\n" + 
 					"  `staff_number` VARCHAR(45) NOT NULL COMMENT '员工号',\r\n" + 
 					"  `normal_days` DECIMAL(10,2) NOT NULL COMMENT '正常天数',\r\n" + 
-					"  `late_days` DECIMAL(10,2) NOT NULL COMMENT '迟到天数',\r\n" + 
+					"  `late_days` INT NOT NULL COMMENT '迟到时长',\r\n" + 
 					"  `leave_days` DECIMAL(10,2) NOT NULL COMMENT '请假天数',\r\n" + 
 					"  `absenteeism_days` INT NOT NULL COMMENT '旷工天数',\r\n" + 
 					"  `work_hours` INT NOT NULL COMMENT '工作时长',\r\n" + 
@@ -201,9 +204,9 @@ public class Mysql extends Login_modules implements Serializable{
 	
 	// 保存员工信息的方法，接收Assess_modules类中saveMessage方法传过来的值，将user_name + _performance_appraisal_list作为表名，
 	// 将其余值作为sql表各列的值，写入表中，实现动态写表（登录的用户不同，写入的表也不同）。
-	public void saveMessage(String user_name, String staff_name, String staff_number, String normal_days, String late_days
-			, String leave_days, String absenteeism_days, String work_hours, String work_piece
-			, String work_content, String technology_improve, String rewards_time
+	public void saveMessage(String user_name, String staff_name, String staff_number, String normal_days
+			, String late_days, String leave_days, String absenteeism_days, String work_hours
+			, String work_piece, String work_content, String technology_improve, String rewards_time
 			, String punishment_time, String many_quarter, String quarter_class) 
 	{
 		
@@ -245,5 +248,6 @@ public class Mysql extends Login_modules implements Serializable{
 			}
 		}
 	}
+
 	
 }
