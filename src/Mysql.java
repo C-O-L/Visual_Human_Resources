@@ -248,6 +248,81 @@ public class Mysql extends Login_modules implements Serializable{
 			}
 		}
 	}
+	
+	// 修改员工信息的方法，接收Assess_modules类中modigyMessage方法传过来的值，将user_name + _performance_appraisal_list作为表名，
+	public void modifyMessage(String user_name, String staff_name, String staff_number, String normal_days
+			, String late_days, String leave_days, String absenteeism_days, String work_hours
+			, String work_piece, String work_content, String technology_improve, String rewards_time
+			, String punishment_time, String many_quarter, String quarter_class, String id) 
+	{
+			
+		String b = "_performance_appraisal_list";
+		String dString = user_name + b;
+		System.out.println(dString);
+		try {
+			ps=ct.prepareStatement("UPDATE "+dString+" SET\r\n" + 
+					" `staff_name` = ?, `staff_number` = ?, `normal_days` = ?, \r\n" + 
+					" `late_days` = ?, `leave_days` = ?, `absenteeism_days` = ?, \r\n" + 
+					" `work_hours` = ?, `work_piece` = ?, `work_content` = ?, \r\n" + 
+					" `technology_improve` = ?, `rewards_time` = ?, `punishment_time` = ?, \r\n" + 
+					" `many_quarter` = ?, `quarter_class` = ? WHERE (`id` = ?)");
+			ps.setString(1, staff_name);
+			ps.setString(2, staff_number);
+			ps.setString(3, normal_days);
+			ps.setString(4, late_days);
+			ps.setString(5, leave_days);
+			ps.setString(6, absenteeism_days);
+			ps.setString(7, work_hours);
+			ps.setString(8, work_piece);
+			ps.setString(9, work_content);
+			ps.setString(10, technology_improve);
+			ps.setString(11, rewards_time);
+			ps.setString(12, punishment_time);
+			ps.setString(13, many_quarter);
+			ps.setString(14, quarter_class);
+			ps.setString(15, id);
+				
+			int i = ps.executeUpdate();
+			if(i == 1){
+				this.setVisible(false);
+			}else {
+					
+			}
+				
+		}catch (SQLException e) {
+			e.printStackTrace();
+			try {
+				ct.close();
+			} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+	}
 
+	// 修改员工信息的方法，接收Assess_modules类中modigyMessage方法传过来的值，将user_name + _performance_appraisal_list作为表名，
+	public void deleteMessage(String user_name, String id) 
+	{
+				
+		String b = "_performance_appraisal_list";
+		String dString = user_name + b;
+		System.out.println(dString);
+		try {
+			ps=ct.prepareStatement("DELETE FROM "+dString+" WHERE (`id` = ?)");
+			ps.setString(1, id);
+				
+			ps.executeUpdate();
+			this.setVisible(false);
+					
+		}catch (SQLException e) {
+			e.printStackTrace();
+			try {
+				ct.close();
+			} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		}
 	
 }
