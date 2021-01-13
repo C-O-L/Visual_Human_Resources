@@ -177,11 +177,11 @@ public class Mysql extends Login_modules implements Serializable{
 					"  `normal_days` DECIMAL(10,2) NOT NULL COMMENT '正常天数',\r\n" + 
 					"  `late_days` INT NOT NULL COMMENT '迟到时长',\r\n" + 
 					"  `leave_days` DECIMAL(10,2) NOT NULL COMMENT '请假天数',\r\n" + 
-					"  `absenteeism_days` INT NOT NULL COMMENT '旷工天数',\r\n" + 
+					"  `absenteeism_days` DECIMAL(10,2) NOT NULL COMMENT '旷工天数',\r\n" + 
 					"  `work_hours` INT NOT NULL COMMENT '工作时长',\r\n" + 
 					"  `work_piece` INT NOT NULL COMMENT '工作计件',\r\n" + 
-					"  `work_content` VARCHAR(45) NOT NULL COMMENT '工作质量',\r\n" + 
-					"  `technology_improve` VARCHAR(45) NOT NULL COMMENT '工艺改善',\r\n" + 
+					"  `work_content` INT NOT NULL COMMENT '工作质量',\r\n" + 
+					"  `technology_improve` INT NOT NULL COMMENT '工艺改善',\r\n" + 
 					"  `rewards_time` INT NOT NULL COMMENT '奖励次数',\r\n" + 
 					"  `punishment_time` INT NOT NULL COMMENT '惩罚次数',\r\n" + 
 					"  `many_quarter` VARCHAR(45) NOT NULL COMMENT '第几季度',\r\n" + 

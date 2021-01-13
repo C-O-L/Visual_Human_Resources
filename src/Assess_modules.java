@@ -4,6 +4,8 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.sql.SQLException;
 
 import javax.swing.ImageIcon;
@@ -16,10 +18,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 
-// ½øĞĞ¼¨Ğ§¿¼ºËµÄÀà
+// è¿›è¡Œç»©æ•ˆè€ƒæ ¸çš„ç±»
 public class Assess_modules extends JFrame implements ActionListener{
 	
 	/**
@@ -27,64 +31,78 @@ public class Assess_modules extends JFrame implements ActionListener{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	JPanel usernameJPanel;											// ·ÅÖÃ¸öÈËÖĞĞÄ°´Å¥µÄÃæ°å
-	JPanel left_functionJPanel;										// ×ó²àµÄ¹¦ÄÜÃæ°å£¬·ÅÖÃ¹¦ÄÜ°´Å¥
-	JPanel search_boxJPanel;										// ·ÅÖÃËÑË÷ÊäÈë¿òµÄÃæ°å
-	JPanel search_buttonJPanel;										// ·ÅÖÃËÑË÷°´Å¥µÄÃæ°å
-	JPanel addInformation_windowJPanel;								// ·ÅÖÃÌíadd_windowJLabelµÄÃæ°å
-	JPanel add_nameAndnumJPanel;									// ·ÅÖÃĞÕÃû¡¢¹¤ºÅÎÄ±¾¿òµÄÃæ°å
-	JPanel add_otherInformationJPanel;								// ·ÅÖÃ³ıĞÕÃûºÍ¹¤ºÅÖ®ÍâµÄÌí¼ÓĞÅÏ¢µÄÃæ°å
-	JPanel add_buttonJPanel;										// ·ÅÖÃÌí¼Ó´°¿ÚÖĞ·ÖÎöºÍ±£´æÁ½¸ö°´Å¥µÄÃæ°å
-	JPanel add_closeJPanel;											// ·ÅÖÃÌí¼Ó´°¿ÚÖĞ¹Ø±Õ°´Å¥µÄÃæ°å
-	JPanel add_textJPanel;											// ·ÅÖÃÌí¼Ó´°¿ÚÎÄ×Ö±êÇ©µÄÃæ°å
+	JPanel usernameJPanel;											// æ”¾ç½®ä¸ªäººä¸­å¿ƒæŒ‰é’®çš„é¢æ¿
+	JPanel left_functionJPanel;										// å·¦ä¾§çš„åŠŸèƒ½é¢æ¿ï¼Œæ”¾ç½®åŠŸèƒ½æŒ‰é’®
+	JPanel search_boxJPanel;										// æ”¾ç½®æœç´¢è¾“å…¥æ¡†çš„é¢æ¿
+	JPanel search_buttonJPanel;										// æ”¾ç½®æœç´¢æŒ‰é’®çš„é¢æ¿
+	JPanel addInformation_windowJPanel;								// æ”¾ç½®æ·»add_windowJLabelçš„é¢æ¿
+	JPanel add_nameAndnumJPanel;									// æ”¾ç½®å§“åã€å·¥å·æ–‡æœ¬æ¡†çš„é¢æ¿
+	JPanel add_otherInformationJPanel;								// æ”¾ç½®é™¤å§“åå’Œå·¥å·ä¹‹å¤–çš„æ·»åŠ ä¿¡æ¯çš„é¢æ¿
+	JPanel add_buttonJPanel;										// æ”¾ç½®æ·»åŠ çª—å£ä¸­åˆ†æå’Œä¿å­˜ä¸¤ä¸ªæŒ‰é’®çš„é¢æ¿
+	JPanel add_closeJPanel;											// æ”¾ç½®æ·»åŠ çª—å£ä¸­å…³é—­æŒ‰é’®çš„é¢æ¿
+	JPanel add_textJPanel;											// æ”¾ç½®æ·»åŠ çª—å£æ–‡å­—æ ‡ç­¾çš„é¢æ¿
+	JPanel plan_windowJPanel;										// æ”¾ç½®ç›®æ ‡å¡çª—å£çš„é¢æ¿
+	JPanel plan_textJPanel;											// æ”¾ç½®ç›®æ ‡å¡çª—å£æ–‡å­—æ ‡ç­¾çš„é¢æ¿
+	JPanel plan_textFieldJPanel;									// æ”¾ç½®ç›®æ ‡å¡çª—å£æ–‡æœ¬æ¡†çš„é¢æ¿
+	JPanel plan_buttonJPanel;										// æ”¾ç½®ç›®æ ‡å¡çª—å£æŒ‰é’®çš„é¢æ¿
 	
-	JScrollPane assess_tabelJScrollPane;							// ·ÅÖÃÔ±¹¤ĞÅÏ¢±íµÄ¹ö¶¯Ãæ°å
-	JTable assess_messageJTable;									// Ô±¹¤ĞÅÏ¢±í
+	JScrollPane assess_tabelJScrollPane;							// æ”¾ç½®å‘˜å·¥ä¿¡æ¯è¡¨çš„æ»šåŠ¨é¢æ¿
+	JTable assess_messageJTable;									// å‘˜å·¥ä¿¡æ¯è¡¨
 	
-	JLabel add_windowJLabel;										// ·ÅÖÃÌí¼Ó½çÃæÍ¼Æ¬µÄ±êÇ©
-	JLabel nameJLabel;												// Ô±¹¤ĞÕÃû±êÇ©
-	JLabel jobNumberJLabel;											// ¹¤ºÅ±êÇ©
-	JLabel normalDaysJLabel;										// Õı³£ÌìÊı±êÇ©
-	JLabel lateDaysJLabel;											// ³Ùµ½ÌìÊı±êÇ©
-	JLabel leaveDaysJLabel;											// Çë¼ÙÌìÊı±êÇ©
-	JLabel absenteeismDaysJLabel;									// ¿õ¹¤ÌìÊı±êÇ©
-	JLabel workHoursJLabel;											// ¹¤×÷Ê±³¤±êÇ©
-	JLabel workPieceJLabel;											// ¹¤×÷¼Æ¼ş±êÇ©
-	JLabel jobContentJLabel;										// ¹¤×÷ÖÊÁ¿±êÇ©
-	JLabel processImproveJLabel;									// ¹¤ÒÕ¸ÄÉÆ±êÇ©
-	JLabel awardNumberJLabel;										// ½±Àø´ÎÊı±êÇ©
-	JLabel punishmentNumberJLabel;									// ³Í·£´ÎÊı±êÇ©
-	JLabel manyQuartersJLabel;										// µÚ¼¸¼¾¶È±êÇ©
-	JLabel quarterClassJLabel;										// ¼¾¶ÈµÈ¼¶±êÇ©
+	JLabel add_windowJLabel;										// æ”¾ç½®æ·»åŠ ç•Œé¢å›¾ç‰‡çš„æ ‡ç­¾
+	JLabel nameJLabel;												// å‘˜å·¥å§“åæ ‡ç­¾
+	JLabel jobNumberJLabel;											// å·¥å·æ ‡ç­¾
+	JLabel normalDaysJLabel;										// æ­£å¸¸å¤©æ•°æ ‡ç­¾
+	JLabel lateDaysJLabel;											// è¿Ÿåˆ°å¤©æ•°æ ‡ç­¾
+	JLabel leaveDaysJLabel;											// è¯·å‡å¤©æ•°æ ‡ç­¾
+	JLabel absenteeismDaysJLabel;									// æ—·å·¥å¤©æ•°æ ‡ç­¾
+	JLabel workHoursJLabel;											// å·¥ä½œæ—¶é•¿æ ‡ç­¾
+	JLabel workPieceJLabel;											// å·¥ä½œè®¡ä»¶æ ‡ç­¾
+	JLabel jobContentJLabel;										// å·¥ä½œè´¨é‡æ ‡ç­¾
+	JLabel processImproveJLabel;									// å·¥è‰ºæ”¹å–„æ ‡ç­¾
+	JLabel awardNumberJLabel;										// å¥–åŠ±æ¬¡æ•°æ ‡ç­¾
+	JLabel punishmentNumberJLabel;									// æƒ©ç½šæ¬¡æ•°æ ‡ç­¾
+	JLabel manyQuartersJLabel;										// ç¬¬å‡ å­£åº¦æ ‡ç­¾
+	JLabel quarterClassJLabel;										// å­£åº¦ç­‰çº§æ ‡ç­¾
+	JLabel plan_windowJLabel;										// æ”¾ç½®ç›®æ ‡å¡å›¾ç‰‡çš„æ ‡ç­¾
+	JLabel plan_hoursJLabel;										// ç›®æ ‡å¡ç›®æ ‡å·¥æ—¶æ ‡ç­¾
+	JLabel plan_pieceJLabel;										// ç›®æ ‡å¡ç›®æ ‡ä»¶æ•°æ ‡ç­¾
+	JLabel plan_contentJLabel;										// ç›®æ ‡å¡ç›®æ ‡è´¨é‡æ ‡ç­¾
 	
-	JTextField searchField;											// ËÑË÷ÎÄ±¾¿ò
-	JTextField nameField;											// Ô±¹¤ĞÕÃûÎÄ±¾¿ò
-	JTextField jobNumberField;										// ¹¤ºÅÎÄ±¾¿ò
-	JTextField normalDaysField;										// Õı³£ÌìÊıÎÄ±¾¿ò
-	JTextField lateDaysField;										// ³Ùµ½ÌìÊıÎÄ±¾¿ò
-	JTextField leaveDaysField;										// Çë¼ÙÌìÊıÎÄ±¾¿ò
-	JTextField absenteeismDaysField;								// ¿õ¹¤ÌìÊıÎÄ±¾¿ò
-	JTextField workHoursField;										// ¹¤×÷Ê±³¤ÎÄ±¾¿ò
-	JTextField workPieceField;										// ¹¤×÷¼Æ¼şÎÄ±¾¿ò
-	JTextField awardNumberField;									// ½±Àø´ÎÊıÎÄ±¾¿ò
-	JTextField punishmentNumberField;								// ³Í·£´ÎÊıÎÄ±¾¿ò
-	JTextField manyQuartersField;									// µÚ¼¸¼¾¶ÈÎÄ±¾¿ò
+	JTextField searchField;											// æœç´¢æ–‡æœ¬æ¡†
+	JTextField nameField;											// å‘˜å·¥å§“åæ–‡æœ¬æ¡†
+	JTextField jobNumberField;										// å·¥å·æ–‡æœ¬æ¡†
+	JTextField normalDaysField;										// æ­£å¸¸å¤©æ•°æ–‡æœ¬æ¡†
+	JTextField lateDaysField;										// è¿Ÿåˆ°å¤©æ•°æ–‡æœ¬æ¡†
+	JTextField leaveDaysField;										// è¯·å‡å¤©æ•°æ–‡æœ¬æ¡†
+	JTextField absenteeismDaysField;								// æ—·å·¥å¤©æ•°æ–‡æœ¬æ¡†
+	JTextField workHoursField;										// å·¥ä½œæ—¶é•¿æ–‡æœ¬æ¡†
+	JTextField workPieceField;										// å·¥ä½œè®¡ä»¶æ–‡æœ¬æ¡†
+	JTextField awardNumberField;									// å¥–åŠ±æ¬¡æ•°æ–‡æœ¬æ¡†
+	JTextField punishmentNumberField;								// æƒ©ç½šæ¬¡æ•°æ–‡æœ¬æ¡†
+	JTextField manyQuartersField;									// ç¬¬å‡ å­£åº¦æ–‡æœ¬æ¡†
+	JTextField plan_hoursField;										// ç›®æ ‡å¡ç›®æ ‡å·¥æ—¶æ–‡æœ¬æ¡†
+	JTextField plan_pieceField;										// ç›®æ ‡å¡ç›®æ ‡ä»¶æ•°æ–‡æœ¬æ¡†
+	JTextField plan_contentField;									// ç›®æ ‡å¡ç›®æ ‡è´¨é‡æ–‡æœ¬æ¡†
 	
-	JComboBox jobContentBox;										// ¹¤×÷ÖÊÁ¿ÏÂÀ­¿ò
-	JComboBox processImproveBox;									// ¹¤ÒÕ¸ÄÉÆÏÂÀ­¿ò
-	JComboBox quarterClassBox;										// ¼¾¶ÈµÈ¼¶ÏÂÀ­¿ò
+	JComboBox<String> jobContentBox;										// å·¥ä½œè´¨é‡ä¸‹æ‹‰æ¡†
+	JComboBox<String> processImproveBox;									// å·¥è‰ºæ”¹å–„ä¸‹æ‹‰æ¡†
+	JComboBox<String> quarterClassBox;										// å­£åº¦ç­‰çº§ä¸‹æ‹‰æ¡†
 	
-	private JButton usernameButton = new JButton();									// ÓÃ»§Ãû°´Å¥£¬ÔÚ½çÃæÖĞÏÔÊ¾µÇÂ¼µÄÓÃ»§Ãû£¬µã»÷ºó²é¿´¸öÈËÖĞĞÄ
-	private JButton addButton;										// Ìí¼Ó°´Å¥
-	private JButton modifyButton;									// ĞŞ¸Ä°´Å¥
-	private JButton deleteButton;									// É¾³ı°´Å¥
-	private JButton analyseButton;									// ·ÖÎö°´Å¥
-	private JButton searchButton;									// ËÑË÷°´Å¥
-	private JButton add_analyseButton;								// Ìí¼Ó½çÃæµÄ·ÖÎö°´Å¥
-	private JButton add_saveButton;									// Ìí¼Ó½çÃæµÄ±£´æ°´Å¥
-	private JButton add_closeButton;								// Ìí¼Ó½çÃæµÄ¹Ø±Õ°´Å¥
+	private JButton usernameButton = new JButton();									// ç”¨æˆ·åæŒ‰é’®ï¼Œåœ¨ç•Œé¢ä¸­æ˜¾ç¤ºç™»å½•çš„ç”¨æˆ·åï¼Œç‚¹å‡»åæŸ¥çœ‹ä¸ªäººä¸­å¿ƒ
+	private JButton addButton;										// æ·»åŠ æŒ‰é’®
+	private JButton modifyButton;									// ä¿®æ”¹æŒ‰é’®
+	private JButton deleteButton;									// åˆ é™¤æŒ‰é’®
+	private JButton analyseButton;									// åˆ†ææŒ‰é’®
+	private JButton planButton;										// ç›®æ ‡å¡æŒ‰é’®
+	private JButton searchButton;									// æœç´¢æŒ‰é’®
+	private JButton add_analyseButton;								// æ·»åŠ ç•Œé¢çš„åˆ†ææŒ‰é’®
+	private JButton add_saveButton;									// æ·»åŠ ç•Œé¢çš„ä¿å­˜æŒ‰é’®
+	private JButton add_closeButton;								// æ·»åŠ ç•Œé¢çš„å…³é—­æŒ‰é’®
+	private JButton plan_okButton;									// ç›®æ ‡å¡ç•Œé¢çš„ç¡®å®šæŒ‰é’®
 	
-	public String usernameString;									// ´æ´¢ÓÃ»§Ãû
+	public String usernameString;									// å­˜å‚¨ç”¨æˆ·å
+	
 	
 	
 	String id; String staff_name; String staff_number; String normal_days; String late_days; 
@@ -92,290 +110,309 @@ public class Assess_modules extends JFrame implements ActionListener{
 	String work_content; String technology_improve; String rewards_time; 
 	String punishment_time; String many_quarter; String quarter_class; String assess_result;
 
-	// ¹¹Ôì·½·¨
+	// æ„é€ æ–¹æ³•
 	public Assess_modules() {
 		
-//		×ó²à¹¦ÄÜ°´Å¥***********************************************************************************************************************************************************
+//		å·¦ä¾§åŠŸèƒ½æŒ‰é’®***********************************************************************************************************************************************************
 		
-		// ÉèÖÃÌí¼Ó°´Å¥
-		addButton = new JButton("    Ìí ¼Ó    ");
-		addButton.setContentAreaFilled(false); 						// ½«Ìí¼Ó°´Å¥ÉèÖÃÎªÍ¸Ã÷
-		addButton.setBorder(null);									// ½«Ìí¼Ó°´Å¥ÉèÖÃÎªÎŞ±ß¿ò
-		addButton.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 16));		// ÉèÖÃÌí¼Ó°´Å¥µÄ×ÖÌåÊôĞÔ
-		addButton.setForeground(new java.awt.Color(255, 255, 255));	// ÉèÖÃÌí¼Ó°´Å¥µÄ×ÖÌåÑÕÉ«
-		addButton.addActionListener((ActionListener) this);			// ¸øÌí¼Ó°´Å¥Ìí¼ÓÊÂ¼ş¼àÌı
+		// è®¾ç½®æ·»åŠ æŒ‰é’®
+		addButton = new JButton("    æ·» åŠ     ");
+		addButton.setContentAreaFilled(false); 						// å°†æ·»åŠ æŒ‰é’®è®¾ç½®ä¸ºé€æ˜
+		addButton.setBorder(null);									// å°†æ·»åŠ æŒ‰é’®è®¾ç½®ä¸ºæ— è¾¹æ¡†
+		addButton.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 16));		// è®¾ç½®æ·»åŠ æŒ‰é’®çš„å­—ä½“å±æ€§
+		addButton.setForeground(new java.awt.Color(255, 255, 255));	// è®¾ç½®æ·»åŠ æŒ‰é’®çš„å­—ä½“é¢œè‰²
+		addButton.addActionListener((ActionListener) this);			// ç»™æ·»åŠ æŒ‰é’®æ·»åŠ äº‹ä»¶ç›‘å¬
 		
-		// ÉèÖÃĞŞ¸Ä°´Å¥
-		modifyButton = new JButton("    ĞŞ ¸Ä    ");
-		modifyButton.setContentAreaFilled(false); 					// ½«ĞŞ¸Ä°´Å¥ÉèÖÃÎªÍ¸Ã÷
-		modifyButton.setBorder(null);								// ½«ĞŞ¸Ä°´Å¥ÉèÖÃÎªÎŞ±ß¿ò
-		modifyButton.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 16));		// ÉèÖÃĞŞ¸Ä°´Å¥µÄ×ÖÌåÊôĞÔ
-		// ÉèÖÃĞŞ¸Ä°´Å¥µÄ×ÖÌåÑÕÉ«
+		// è®¾ç½®ä¿®æ”¹æŒ‰é’®
+		modifyButton = new JButton("    ä¿® æ”¹    ");
+		modifyButton.setContentAreaFilled(false); 					// å°†ä¿®æ”¹æŒ‰é’®è®¾ç½®ä¸ºé€æ˜
+		modifyButton.setBorder(null);								// å°†ä¿®æ”¹æŒ‰é’®è®¾ç½®ä¸ºæ— è¾¹æ¡†
+		modifyButton.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 16));		// è®¾ç½®ä¿®æ”¹æŒ‰é’®çš„å­—ä½“å±æ€§
+		// è®¾ç½®ä¿®æ”¹æŒ‰é’®çš„å­—ä½“é¢œè‰²
 		modifyButton.setForeground(new java.awt.Color(255, 255, 255));	
-		modifyButton.addActionListener((ActionListener) this);		// ¸øĞŞ¸Ä°´Å¥Ìí¼ÓÊÂ¼ş¼àÌı
+		modifyButton.addActionListener((ActionListener) this);		// ç»™ä¿®æ”¹æŒ‰é’®æ·»åŠ äº‹ä»¶ç›‘å¬
 		
-		// ÉèÖÃÉ¾³ı°´Å¥
-		deleteButton = new JButton("    É¾ ³ı    ");
-		deleteButton.setContentAreaFilled(false); 					// ½«É¾³ı°´Å¥ÉèÖÃÎªÍ¸Ã÷
-		deleteButton.setBorder(null);								// ½«É¾³ı°´Å¥ÉèÖÃÎªÎŞ±ß¿ò
-		deleteButton.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 16));		// ÉèÖÃÉ¾³ı°´Å¥µÄ×ÖÌåÊôĞÔ
-		// ÉèÖÃÉ¾³ı°´Å¥µÄ×ÖÌåÑÕÉ«
+		// è®¾ç½®åˆ é™¤æŒ‰é’®
+		deleteButton = new JButton("    åˆ  é™¤    ");
+		deleteButton.setContentAreaFilled(false); 					// å°†åˆ é™¤æŒ‰é’®è®¾ç½®ä¸ºé€æ˜
+		deleteButton.setBorder(null);								// å°†åˆ é™¤æŒ‰é’®è®¾ç½®ä¸ºæ— è¾¹æ¡†
+		deleteButton.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 16));		// è®¾ç½®åˆ é™¤æŒ‰é’®çš„å­—ä½“å±æ€§
+		// è®¾ç½®åˆ é™¤æŒ‰é’®çš„å­—ä½“é¢œè‰²
 		deleteButton.setForeground(new java.awt.Color(255, 255, 255));	
-		deleteButton.addActionListener((ActionListener) this);		// ¸øÉ¾³ı°´Å¥Ìí¼ÓÊÂ¼ş¼àÌı
+		deleteButton.addActionListener((ActionListener) this);		// ç»™åˆ é™¤æŒ‰é’®æ·»åŠ äº‹ä»¶ç›‘å¬
 		
-		// ÉèÖÃ·ÖÎö°´Å¥
-		analyseButton = new JButton("    ·Ö Îö    ");
-		analyseButton.setContentAreaFilled(false); 					// ½«·ÖÎö°´Å¥ÉèÖÃÎªÍ¸Ã÷
-		analyseButton.setBorder(null);								// ½«·ÖÎö°´Å¥ÉèÖÃÎªÎŞ±ß¿ò
-		analyseButton.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 16));	// ÉèÖÃ·ÖÎö°´Å¥µÄ×ÖÌåÊôĞÔ
-		// ÉèÖÃ·ÖÎö°´Å¥µÄ×ÖÌåÑÕÉ«
+		// è®¾ç½®åˆ†ææŒ‰é’®
+		analyseButton = new JButton("    åˆ† æ    ");
+		analyseButton.setContentAreaFilled(false); 					// å°†åˆ†ææŒ‰é’®è®¾ç½®ä¸ºé€æ˜
+		analyseButton.setBorder(null);								// å°†åˆ†ææŒ‰é’®è®¾ç½®ä¸ºæ— è¾¹æ¡†
+		analyseButton.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 16));	// è®¾ç½®åˆ†ææŒ‰é’®çš„å­—ä½“å±æ€§
+		// è®¾ç½®åˆ†ææŒ‰é’®çš„å­—ä½“é¢œè‰²
 		analyseButton.setForeground(new java.awt.Color(255, 255, 255));	
-		analyseButton.addActionListener((ActionListener) this);		// ¸ø·ÖÎö°´Å¥Ìí¼ÓÊÂ¼ş¼àÌı
+		analyseButton.addActionListener((ActionListener) this);		// ç»™åˆ†ææŒ‰é’®æ·»åŠ äº‹ä»¶ç›‘å¬
 		
-//		ËÑË÷***************************************************************************************************************************************************************************
+		// è®¾ç½®ç›®æ ‡å¡æŒ‰é’®
+		planButton = new JButton("    ç›® æ ‡ å¡    ");
+		planButton.setContentAreaFilled(false); 					// å°†ç›®æ ‡å¡æŒ‰é’®è®¾ç½®ä¸ºé€æ˜
+		planButton.setBorder(null);									// å°†ç›®æ ‡å¡æŒ‰é’®è®¾ç½®ä¸ºæ— è¾¹æ¡†
+		planButton.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 16));		// è®¾ç½®ç›®æ ‡å¡æŒ‰é’®çš„å­—ä½“å±æ€§
+		// è®¾ç½®ç›®æ ‡å¡æŒ‰é’®çš„å­—ä½“é¢œè‰²
+		planButton.setForeground(new java.awt.Color(255, 255, 255));	
+		planButton.addActionListener((ActionListener) this);		// ç»™åˆ†ææŒ‰é’®æ·»åŠ äº‹ä»¶ç›‘å¬
 		
-		// ÉèÖÃËÑË÷ÎÄ±¾¿ò
+//		æœç´¢***************************************************************************************************************************************************************************
+		
+		// è®¾ç½®æœç´¢æ–‡æœ¬æ¡†
 		searchField = new JTextField();
-		searchField.setName("ÇëÊäÈëËÑË÷ÄÚÈİ£º");
-		// µ÷ÓÃ½¹µã¼àÌı·½·¨ÀàÉèÖÃÌáÊ¾ÎÄ×Ö
+		searchField.setName("è¯·è¾“å…¥æœç´¢å†…å®¹ï¼š");
+		// è°ƒç”¨ç„¦ç‚¹ç›‘å¬æ–¹æ³•ç±»è®¾ç½®æç¤ºæ–‡å­—
 		searchField.addFocusListener(new MyFocusListener(searchField.getName(),searchField));
-		searchField.setOpaque(false); 								// ½«ËÑË÷ÊäÈë¿òÉèÖÃÎªÍ¸Ã÷
-		searchField.setBorder(null); 								// ½«ËÑË÷ÊäÈë¿òÉèÖÃÎªÎŞ±ß¿ò
-		searchField.setFont(new Font("Î¢ÈíÑÅºÚ",Font.PLAIN, 15));		// ÉèÖÃËÑË÷ÊäÈë¿òµÄ×ÖÌåÊôĞÔ
-		// ÉèÖÃËÑË÷ÊäÈë¿òµÄ×ÖÌåÑÕÉ«Îª»Æ»è»Ò
+		searchField.setOpaque(false); 								// å°†æœç´¢è¾“å…¥æ¡†è®¾ç½®ä¸ºé€æ˜
+		searchField.setBorder(null); 								// å°†æœç´¢è¾“å…¥æ¡†è®¾ç½®ä¸ºæ— è¾¹æ¡†
+		searchField.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 15));		// è®¾ç½®æœç´¢è¾“å…¥æ¡†çš„å­—ä½“å±æ€§
+		// è®¾ç½®æœç´¢è¾“å…¥æ¡†çš„å­—ä½“é¢œè‰²ä¸ºé»„æ˜ç°
 		searchField.setForeground(new java.awt.Color(71, 75, 76));
 		
-		// ÉèÖÃËÑË÷°´Å¥
-		searchButton = new JButton("   ËÑ Ë÷   ");
-		searchButton.setContentAreaFilled(false); 					// ½«ËÑË÷°´Å¥ÉèÖÃÎªÍ¸Ã÷
-		searchButton.setBorder(null); 								// ½«ËÑË÷°´Å¥ÉèÖÃÎªÎŞ±ß¿ò
-		searchButton.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 17));  	// ÉèÖÃËÑË÷°´Å¥µÄ×ÖÌåÊôĞÔ
-		// ÉèÖÃËÑË÷°´Å¥µÄ×ÖÌåÑÕÉ«Îª°×É«
+		// è®¾ç½®æœç´¢æŒ‰é’®
+		searchButton = new JButton("   æœ ç´¢   ");
+		searchButton.setContentAreaFilled(false); 					// å°†æœç´¢æŒ‰é’®è®¾ç½®ä¸ºé€æ˜
+		searchButton.setBorder(null); 								// å°†æœç´¢æŒ‰é’®è®¾ç½®ä¸ºæ— è¾¹æ¡†
+		searchButton.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 17));  	// è®¾ç½®æœç´¢æŒ‰é’®çš„å­—ä½“å±æ€§
+		// è®¾ç½®æœç´¢æŒ‰é’®çš„å­—ä½“é¢œè‰²ä¸ºç™½è‰²
 		searchButton.setForeground(new java.awt.Color(255, 255, 255));	
-		searchButton.addActionListener((ActionListener) this);		// ¸øËÑË÷°´Å¥Ìí¼ÓÊÂ¼ş¼àÌı
+		searchButton.addActionListener((ActionListener) this);		// ç»™æœç´¢æŒ‰é’®æ·»åŠ äº‹ä»¶ç›‘å¬
 		
-//		Ìí¼Ó½çÃæ***********************************************************************************************************************************************************************
+//		æ·»åŠ ç•Œé¢***********************************************************************************************************************************************************************
 		
-		// ÉèÖÃÔ±¹¤ĞÕÃû±êÇ©
-		nameJLabel = new JLabel("ĞÕÃû");
-		nameJLabel.setFont(new Font("Î¢ÈíÑÅºÚ",Font.PLAIN, 16));
+		// è®¾ç½®å‘˜å·¥å§“åæ ‡ç­¾
+		nameJLabel = new JLabel("å§“å");
+		nameJLabel.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 16));
 		nameJLabel.setForeground(new java.awt.Color(255, 255, 255));	
 		
-		// ÉèÖÃÔ±¹¤ĞÕÃûÎÄ±¾¿ò
+		// è®¾ç½®å‘˜å·¥å§“åæ–‡æœ¬æ¡†
 		nameField = new JTextField();
-		nameField.setName("ÇëÊäÈëÔ±¹¤ĞÕÃû");
-		// µ÷ÓÃ½¹µã¼àÌı·½·¨ÀàÉèÖÃÌáÊ¾ÎÄ×Ö
+		nameField.setName("è¯·è¾“å…¥å‘˜å·¥å§“å");
+		// è°ƒç”¨ç„¦ç‚¹ç›‘å¬æ–¹æ³•ç±»è®¾ç½®æç¤ºæ–‡å­—
 		nameField.addFocusListener(new MyFocusListener(nameField.getName(),nameField));
-		nameField.setOpaque(false); 								// ½«Ô±¹¤ĞÕÃûÎÄ±¾¿òÉèÖÃÎªÍ¸Ã÷
-		nameField.setBorder(null); 									// ½«Ô±¹¤ĞÕÃûÎÄ±¾¿òÉèÖÃÎªÎŞ±ß¿ò
-		nameField.setFont(new Font("Î¢ÈíÑÅºÚ",Font.PLAIN, 14));		// ÉèÖÃÔ±¹¤ĞÕÃûÎÄ±¾¿òµÄ×ÖÌåÊôĞÔ
-		// ÉèÖÃÔ±¹¤ĞÕÃûÎÄ±¾¿òµÄ×ÖÌåÑÕÉ«Îª»Æ»è»Ò
+		nameField.setOpaque(false); 								// å°†å‘˜å·¥å§“åæ–‡æœ¬æ¡†è®¾ç½®ä¸ºé€æ˜
+		nameField.setBorder(null); 									// å°†å‘˜å·¥å§“åæ–‡æœ¬æ¡†è®¾ç½®ä¸ºæ— è¾¹æ¡†
+		nameField.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 14));		// è®¾ç½®å‘˜å·¥å§“åæ–‡æœ¬æ¡†çš„å­—ä½“å±æ€§
+		// è®¾ç½®å‘˜å·¥å§“åæ–‡æœ¬æ¡†çš„å­—ä½“é¢œè‰²ä¸ºé»„æ˜ç°
 		nameField.setForeground(new java.awt.Color(71, 75, 76));
 		
-		// ÉèÖÃÔ±¹¤ºÅ±êÇ©
-		jobNumberJLabel = new JLabel("¹¤ºÅ");
-		jobNumberJLabel.setFont(new Font("Î¢ÈíÑÅºÚ",Font.PLAIN, 16));
+		// è®¾ç½®å‘˜å·¥å·æ ‡ç­¾
+		jobNumberJLabel = new JLabel("å·¥å·");
+		jobNumberJLabel.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 16));
 		jobNumberJLabel.setForeground(new java.awt.Color(255, 255, 255));
 		
-		// ÉèÖÃÔ±¹¤ºÅÎÄ±¾¿ò
+		// è®¾ç½®å‘˜å·¥å·æ–‡æœ¬æ¡†
 		jobNumberField = new JTextField();
-		jobNumberField.setName("ÇëÊäÈëÔ±¹¤ºÅ");
-		// µ÷ÓÃ½¹µã¼àÌı·½·¨ÀàÉèÖÃÌáÊ¾ÎÄ×Ö
+		jobNumberField.setName("è¯·è¾“å…¥å‘˜å·¥å·");
+		// è°ƒç”¨ç„¦ç‚¹ç›‘å¬æ–¹æ³•ç±»è®¾ç½®æç¤ºæ–‡å­—
 		jobNumberField.addFocusListener(new MyFocusListener(jobNumberField.getName(),jobNumberField));
-		jobNumberField.setOpaque(false); 							// ½«Ô±¹¤ºÅÎÄ±¾¿òÉèÖÃÎªÍ¸Ã÷
-		jobNumberField.setBorder(null); 							// ½«Ô±¹¤ºÅÎÄ±¾¿òÉèÖÃÎªÎŞ±ß¿ò
-		jobNumberField.setFont(new Font("Î¢ÈíÑÅºÚ",Font.PLAIN, 14));	// ÉèÖÃÔ±¹¤ºÅÎÄ±¾¿òµÄ×ÖÌåÊôĞÔ
-		// ÉèÖÃÔ±¹¤ºÅÎÄ±¾¿òµÄ×ÖÌåÑÕÉ«Îª»Æ»è»Ò
+		jobNumberField.setOpaque(false); 							// å°†å‘˜å·¥å·æ–‡æœ¬æ¡†è®¾ç½®ä¸ºé€æ˜
+		jobNumberField.setBorder(null); 							// å°†å‘˜å·¥å·æ–‡æœ¬æ¡†è®¾ç½®ä¸ºæ— è¾¹æ¡†
+		jobNumberField.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 14));	// è®¾ç½®å‘˜å·¥å·æ–‡æœ¬æ¡†çš„å­—ä½“å±æ€§
+		// è®¾ç½®å‘˜å·¥å·æ–‡æœ¬æ¡†çš„å­—ä½“é¢œè‰²ä¸ºé»„æ˜ç°
 		jobNumberField.setForeground(new java.awt.Color(71, 75, 76));
 		
-		// ÉèÖÃÕı³£ÌìÊı±êÇ©
-		normalDaysJLabel = new JLabel("Õı³£ÌìÊı");
-		normalDaysJLabel.setFont(new Font("Î¢ÈíÑÅºÚ",Font.PLAIN, 16));
+		// è®¾ç½®æ­£å¸¸å¤©æ•°æ ‡ç­¾
+		normalDaysJLabel = new JLabel("æ­£å¸¸å¤©æ•°");
+		normalDaysJLabel.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 16));
 		normalDaysJLabel.setForeground(new java.awt.Color(255, 255, 255));
 		
-		// ÉèÖÃÕı³£ÌìÊıÎÄ±¾¿ò
+		// è®¾ç½®æ­£å¸¸å¤©æ•°æ–‡æœ¬æ¡†
 		normalDaysField = new JTextField();
-		normalDaysField.setName("ÇëÊäÈëÕı³£ÌìÊı");
-		// µ÷ÓÃ½¹µã¼àÌı·½·¨ÀàÉèÖÃÌáÊ¾ÎÄ×Ö
+		normalDaysField.setName("è¯·è¾“å…¥æ­£å¸¸å¤©æ•°");
+		// è°ƒç”¨ç„¦ç‚¹ç›‘å¬æ–¹æ³•ç±»è®¾ç½®æç¤ºæ–‡å­—
 		normalDaysField.addFocusListener(new MyFocusListener(normalDaysField.getName(),normalDaysField));
-		normalDaysField.setOpaque(false); 							// ½«Õı³£ÌìÊıÎÄ±¾¿òÉèÖÃÎªÍ¸Ã÷
-		normalDaysField.setBorder(null); 							// ½«Õı³£ÌìÊıÎÄ±¾¿òÉèÖÃÎªÎŞ±ß¿ò
-		normalDaysField.setFont(new Font("Î¢ÈíÑÅºÚ",Font.PLAIN, 14));	// ÉèÖÃÕı³£ÌìÊıÎÄ±¾¿òµÄ×ÖÌåÊôĞÔ
-		// ÉèÖÃÕı³£ÌìÊıÎÄ±¾¿òµÄ×ÖÌåÑÕÉ«Îª»Æ»è»Ò
+		normalDaysField.setOpaque(false); 							// å°†æ­£å¸¸å¤©æ•°æ–‡æœ¬æ¡†è®¾ç½®ä¸ºé€æ˜
+		normalDaysField.setBorder(null); 							// å°†æ­£å¸¸å¤©æ•°æ–‡æœ¬æ¡†è®¾ç½®ä¸ºæ— è¾¹æ¡†
+		normalDaysField.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 14));	// è®¾ç½®æ­£å¸¸å¤©æ•°æ–‡æœ¬æ¡†çš„å­—ä½“å±æ€§
+		// è®¾ç½®æ­£å¸¸å¤©æ•°æ–‡æœ¬æ¡†çš„å­—ä½“é¢œè‰²ä¸ºé»„æ˜ç°
 		normalDaysField.setForeground(new java.awt.Color(71, 75, 76));
 		
-		// ÉèÖÃ³Ùµ½ÌìÊı±êÇ©
-		lateDaysJLabel = new JLabel("³Ùµ½Ê±³¤");
-		lateDaysJLabel.setFont(new Font("Î¢ÈíÑÅºÚ",Font.PLAIN, 16));
+		// è®¾ç½®è¿Ÿåˆ°å¤©æ•°æ ‡ç­¾
+		lateDaysJLabel = new JLabel("è¿Ÿåˆ°æ—¶é•¿");
+		lateDaysJLabel.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 16));
 		lateDaysJLabel.setForeground(new java.awt.Color(255, 255, 255));
 		
-		// ÉèÖÃ³Ùµ½ÌìÊıÎÄ±¾¿ò
+		// è®¾ç½®è¿Ÿåˆ°å¤©æ•°æ–‡æœ¬æ¡†
 		lateDaysField = new JTextField();
-		lateDaysField.setName("ÇëÊäÈë³Ùµ½Ê±³¤");
-		// µ÷ÓÃ½¹µã¼àÌı·½·¨ÀàÉèÖÃÌáÊ¾ÎÄ×Ö
+		lateDaysField.setName("è¯·è¾“å…¥è¿Ÿåˆ°æ—¶é•¿");
+		// è°ƒç”¨ç„¦ç‚¹ç›‘å¬æ–¹æ³•ç±»è®¾ç½®æç¤ºæ–‡å­—
 		lateDaysField.addFocusListener(new MyFocusListener(lateDaysField.getName(),lateDaysField));
-		lateDaysField.setOpaque(false); 							// ½«³Ùµ½ÌìÊıÎÄ±¾¿òÉèÖÃÎªÍ¸Ã÷
-		lateDaysField.setBorder(null); 								// ½«³Ùµ½ÌìÊıÎÄ±¾¿òÉèÖÃÎªÎŞ±ß¿ò
-		lateDaysField.setFont(new Font("Î¢ÈíÑÅºÚ",Font.PLAIN, 14));		// ÉèÖÃ³Ùµ½ÌìÊıÎÄ±¾¿òµÄ×ÖÌåÊôĞÔ
-		// ÉèÖÃ³Ùµ½ÌìÊıÎÄ±¾¿òµÄ×ÖÌåÑÕÉ«Îª»Æ»è»Ò
+		lateDaysField.setOpaque(false); 							// å°†è¿Ÿåˆ°å¤©æ•°æ–‡æœ¬æ¡†è®¾ç½®ä¸ºé€æ˜
+		lateDaysField.setBorder(null); 								// å°†è¿Ÿåˆ°å¤©æ•°æ–‡æœ¬æ¡†è®¾ç½®ä¸ºæ— è¾¹æ¡†
+		lateDaysField.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 14));		// è®¾ç½®è¿Ÿåˆ°å¤©æ•°æ–‡æœ¬æ¡†çš„å­—ä½“å±æ€§
+		// è®¾ç½®è¿Ÿåˆ°å¤©æ•°æ–‡æœ¬æ¡†çš„å­—ä½“é¢œè‰²ä¸ºé»„æ˜ç°
 		lateDaysField.setForeground(new java.awt.Color(71, 75, 76));
 		
-		// ÉèÖÃÇë¼ÙÌìÊı±êÇ©
-		leaveDaysJLabel = new JLabel("Çë¼ÙÌìÊı");
-		leaveDaysJLabel.setFont(new Font("Î¢ÈíÑÅºÚ",Font.PLAIN, 16));
+		// è®¾ç½®è¯·å‡å¤©æ•°æ ‡ç­¾
+		leaveDaysJLabel = new JLabel("è¯·å‡å¤©æ•°");
+		leaveDaysJLabel.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 16));
 		leaveDaysJLabel.setForeground(new java.awt.Color(255, 255, 255));
 		
-		// ÉèÖÃÇë¼ÙÌìÊıÎÄ±¾¿ò
+		// è®¾ç½®è¯·å‡å¤©æ•°æ–‡æœ¬æ¡†
 		leaveDaysField = new JTextField();
-		leaveDaysField.setName("ÇëÊäÈëÇë¼ÙÌìÊı");
-		// µ÷ÓÃ½¹µã¼àÌı·½·¨ÀàÉèÖÃÌáÊ¾ÎÄ×Ö
+		leaveDaysField.setName("è¯·è¾“å…¥è¯·å‡å¤©æ•°");
+		// è°ƒç”¨ç„¦ç‚¹ç›‘å¬æ–¹æ³•ç±»è®¾ç½®æç¤ºæ–‡å­—
 		leaveDaysField.addFocusListener(new MyFocusListener(leaveDaysField.getName(),leaveDaysField));
-		leaveDaysField.setOpaque(false); 							// ½«Çë¼ÙÌìÊıÎÄ±¾¿òÉèÖÃÎªÍ¸Ã÷
-		leaveDaysField.setBorder(null); 							// ½«Çë¼ÙÌìÊıÎÄ±¾¿òÉèÖÃÎªÎŞ±ß¿ò
-		leaveDaysField.setFont(new Font("Î¢ÈíÑÅºÚ",Font.PLAIN, 14));	// ÉèÖÃÇë¼ÙÌìÊıÎÄ±¾¿òµÄ×ÖÌåÊôĞÔ
-		// ÉèÖÃÇë¼ÙÌìÊıÎÄ±¾¿òµÄ×ÖÌåÑÕÉ«Îª»Æ»è»Ò
+		leaveDaysField.setOpaque(false); 							// å°†è¯·å‡å¤©æ•°æ–‡æœ¬æ¡†è®¾ç½®ä¸ºé€æ˜
+		leaveDaysField.setBorder(null); 							// å°†è¯·å‡å¤©æ•°æ–‡æœ¬æ¡†è®¾ç½®ä¸ºæ— è¾¹æ¡†
+		leaveDaysField.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 14));	// è®¾ç½®è¯·å‡å¤©æ•°æ–‡æœ¬æ¡†çš„å­—ä½“å±æ€§
+		// è®¾ç½®è¯·å‡å¤©æ•°æ–‡æœ¬æ¡†çš„å­—ä½“é¢œè‰²ä¸ºé»„æ˜ç°
 		leaveDaysField.setForeground(new java.awt.Color(71, 75, 76));
 		
-		// ÉèÖÃ¿õ¹¤ÌìÊı±êÇ©
-		absenteeismDaysJLabel = new JLabel("¿õ¹¤ÌìÊı");
-		absenteeismDaysJLabel.setFont(new Font("Î¢ÈíÑÅºÚ",Font.PLAIN, 16));
+		// è®¾ç½®æ—·å·¥å¤©æ•°æ ‡ç­¾
+		absenteeismDaysJLabel = new JLabel("æ—·å·¥å¤©æ•°");
+		absenteeismDaysJLabel.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 16));
 		absenteeismDaysJLabel.setForeground(new java.awt.Color(255, 255, 255));
 		
-		// ÉèÖÃ¿õ¹¤ÌìÊıÎÄ±¾¿ò
+		// è®¾ç½®æ—·å·¥å¤©æ•°æ–‡æœ¬æ¡†
 		absenteeismDaysField = new JTextField();
-		absenteeismDaysField.setName("ÇëÊäÈë¿õ¹¤ÌìÊı");
-		// µ÷ÓÃ½¹µã¼àÌı·½·¨ÀàÉèÖÃÌáÊ¾ÎÄ×Ö
+		absenteeismDaysField.setName("è¯·è¾“å…¥æ—·å·¥å¤©æ•°");
+		// è°ƒç”¨ç„¦ç‚¹ç›‘å¬æ–¹æ³•ç±»è®¾ç½®æç¤ºæ–‡å­—
 		absenteeismDaysField.addFocusListener(new MyFocusListener(absenteeismDaysField.getName(),absenteeismDaysField));
-		absenteeismDaysField.setOpaque(false); 						// ½«¿õ¹¤ÌìÊıÎÄ±¾¿òÉèÖÃÎªÍ¸Ã÷
-		absenteeismDaysField.setBorder(null); 						// ½«¿õ¹¤ÌìÊıÎÄ±¾¿òÉèÖÃÎªÎŞ±ß¿ò
-		absenteeismDaysField.setFont(new Font("Î¢ÈíÑÅºÚ",Font.PLAIN, 14));	// ÉèÖÃ¿õ¹¤ÌìÊıÎÄ±¾¿òµÄ×ÖÌåÊôĞÔ
-		// ÉèÖÃ¿õ¹¤ÌìÊıÎÄ±¾¿òµÄ×ÖÌåÑÕÉ«Îª»Æ»è»Ò
+		absenteeismDaysField.setOpaque(false); 						// å°†æ—·å·¥å¤©æ•°æ–‡æœ¬æ¡†è®¾ç½®ä¸ºé€æ˜
+		absenteeismDaysField.setBorder(null); 						// å°†æ—·å·¥å¤©æ•°æ–‡æœ¬æ¡†è®¾ç½®ä¸ºæ— è¾¹æ¡†
+		absenteeismDaysField.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 14));	// è®¾ç½®æ—·å·¥å¤©æ•°æ–‡æœ¬æ¡†çš„å­—ä½“å±æ€§
+		// è®¾ç½®æ—·å·¥å¤©æ•°æ–‡æœ¬æ¡†çš„å­—ä½“é¢œè‰²ä¸ºé»„æ˜ç°
 		absenteeismDaysField.setForeground(new java.awt.Color(71, 75, 76));
 		
-		// ÉèÖÃ¹¤×÷Ê±³¤±êÇ©
-		workHoursJLabel = new JLabel("¹¤×÷Ê±³¤");
-		workHoursJLabel.setFont(new Font("Î¢ÈíÑÅºÚ",Font.PLAIN, 16));
+		// è®¾ç½®å·¥ä½œæ—¶é•¿æ ‡ç­¾
+		workHoursJLabel = new JLabel("å·¥ä½œæ—¶é•¿");
+		workHoursJLabel.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 16));
 		workHoursJLabel.setForeground(new java.awt.Color(255, 255, 255));
 		
-		// ÉèÖÃ¹¤×÷Ê±³¤ÎÄ±¾¿ò
+		// è®¾ç½®å·¥ä½œæ—¶é•¿æ–‡æœ¬æ¡†
 		workHoursField = new JTextField();
-		workHoursField.setName("ÇëÊäÈë¹¤×÷Ê±³¤");
-		// µ÷ÓÃ½¹µã¼àÌı·½·¨ÀàÉèÖÃÌáÊ¾ÎÄ×Ö
+		workHoursField.setName("è¯·è¾“å…¥å·¥ä½œæ—¶é•¿");
+		// è°ƒç”¨ç„¦ç‚¹ç›‘å¬æ–¹æ³•ç±»è®¾ç½®æç¤ºæ–‡å­—
 		workHoursField.addFocusListener(new MyFocusListener(workHoursField.getName(),workHoursField));
-		workHoursField.setOpaque(false); 							// ½«¹¤×÷Ê±³¤ÎÄ±¾¿òÉèÖÃÎªÍ¸Ã÷
-		workHoursField.setBorder(null); 							// ½«¹¤×÷Ê±³¤ÎÄ±¾¿òÉèÖÃÎªÎŞ±ß¿ò
-		workHoursField.setFont(new Font("Î¢ÈíÑÅºÚ",Font.PLAIN, 14));	// ÉèÖÃ¹¤×÷Ê±³¤ÎÄ±¾¿òµÄ×ÖÌåÊôĞÔ
-		// ÉèÖÃ¹¤×÷Ê±³¤ÎÄ±¾¿òµÄ×ÖÌåÑÕÉ«Îª»Æ»è»Ò
+		workHoursField.setOpaque(false); 							// å°†å·¥ä½œæ—¶é•¿æ–‡æœ¬æ¡†è®¾ç½®ä¸ºé€æ˜
+		workHoursField.setBorder(null); 							// å°†å·¥ä½œæ—¶é•¿æ–‡æœ¬æ¡†è®¾ç½®ä¸ºæ— è¾¹æ¡†
+		workHoursField.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 14));	// è®¾ç½®å·¥ä½œæ—¶é•¿æ–‡æœ¬æ¡†çš„å­—ä½“å±æ€§
+		// è®¾ç½®å·¥ä½œæ—¶é•¿æ–‡æœ¬æ¡†çš„å­—ä½“é¢œè‰²ä¸ºé»„æ˜ç°
 		workHoursField.setForeground(new java.awt.Color(71, 75, 76));
 		
-		// ÉèÖÃ¹¤×÷¼Æ¼ş±êÇ©
-		workPieceJLabel = new JLabel("¹¤×÷¼Æ¼ş");
-		workPieceJLabel.setFont(new Font("Î¢ÈíÑÅºÚ",Font.PLAIN, 16));
+		// è®¾ç½®å·¥ä½œè®¡ä»¶æ ‡ç­¾
+		workPieceJLabel = new JLabel("å·¥ä½œè®¡ä»¶");
+		workPieceJLabel.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 16));
 		workPieceJLabel.setForeground(new java.awt.Color(255, 255, 255));
 		
-		// ÉèÖÃ¹¤×÷¼Æ¼şÎÄ±¾¿ò
+		// è®¾ç½®å·¥ä½œè®¡ä»¶æ–‡æœ¬æ¡†
 		workPieceField = new JTextField();
-		workPieceField.setName("ÇëÊäÈë¹¤×÷¼Æ¼ş");
-		// µ÷ÓÃ½¹µã¼àÌı·½·¨ÀàÉèÖÃÌáÊ¾ÎÄ×Ö
+		workPieceField.setName("è¯·è¾“å…¥å·¥ä½œè®¡ä»¶");
+		// è°ƒç”¨ç„¦ç‚¹ç›‘å¬æ–¹æ³•ç±»è®¾ç½®æç¤ºæ–‡å­—
 		workPieceField.addFocusListener(new MyFocusListener(workPieceField.getName(),workPieceField));
-		workPieceField.setOpaque(false); 							// ½«¹¤×÷¼Æ¼şÎÄ±¾¿òÉèÖÃÎªÍ¸Ã÷
-		workPieceField.setBorder(null); 							// ½«¹¤×÷¼Æ¼şÎÄ±¾¿òÉèÖÃÎªÎŞ±ß¿ò
-		workPieceField.setFont(new Font("Î¢ÈíÑÅºÚ",Font.PLAIN, 14));	// ÉèÖÃ¹¤×÷¼Æ¼şÎÄ±¾¿òµÄ×ÖÌåÊôĞÔ
-		// ÉèÖÃ¹¤×÷¼Æ¼şÎÄ±¾¿òµÄ×ÖÌåÑÕÉ«Îª»Æ»è»Ò
+		workPieceField.setOpaque(false); 							// å°†å·¥ä½œè®¡ä»¶æ–‡æœ¬æ¡†è®¾ç½®ä¸ºé€æ˜
+		workPieceField.setBorder(null); 							// å°†å·¥ä½œè®¡ä»¶æ–‡æœ¬æ¡†è®¾ç½®ä¸ºæ— è¾¹æ¡†
+		workPieceField.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 14));	// è®¾ç½®å·¥ä½œè®¡ä»¶æ–‡æœ¬æ¡†çš„å­—ä½“å±æ€§
+		// è®¾ç½®å·¥ä½œè®¡ä»¶æ–‡æœ¬æ¡†çš„å­—ä½“é¢œè‰²ä¸ºé»„æ˜ç°
 		workPieceField.setForeground(new java.awt.Color(71, 75, 76));
 		
-		// ÉèÖÃ½±Àø´ÎÊı±êÇ©
-		awardNumberJLabel = new JLabel("½±Àø´ÎÊı");
-		awardNumberJLabel.setFont(new Font("Î¢ÈíÑÅºÚ",Font.PLAIN, 16));
+		// è®¾ç½®å¥–åŠ±æ¬¡æ•°æ ‡ç­¾
+		awardNumberJLabel = new JLabel("å¥–åŠ±æ¬¡æ•°");
+		awardNumberJLabel.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 16));
 		awardNumberJLabel.setForeground(new java.awt.Color(255, 255, 255));
 		
-		// ÉèÖÃ½±Àø´ÎÊıÎÄ±¾¿ò
+		// è®¾ç½®å¥–åŠ±æ¬¡æ•°æ–‡æœ¬æ¡†
 		awardNumberField = new JTextField();
-		awardNumberField.setName("ÇëÊäÈë½±Àø´ÎÊı");
-		// µ÷ÓÃ½¹µã¼àÌı·½·¨ÀàÉèÖÃÌáÊ¾ÎÄ×Ö
+		awardNumberField.setName("è¯·è¾“å…¥å¥–åŠ±æ¬¡æ•°");
+		// è°ƒç”¨ç„¦ç‚¹ç›‘å¬æ–¹æ³•ç±»è®¾ç½®æç¤ºæ–‡å­—
 		awardNumberField.addFocusListener(new MyFocusListener(awardNumberField.getName(),awardNumberField));
-		awardNumberField.setOpaque(false); 							// ½«½±Àø´ÎÊıÎÄ±¾¿òÉèÖÃÎªÍ¸Ã÷
-		awardNumberField.setBorder(null); 							// ½«½±Àø´ÎÊıÎÄ±¾¿òÉèÖÃÎªÎŞ±ß¿ò
-		awardNumberField.setFont(new Font("Î¢ÈíÑÅºÚ",Font.PLAIN, 14));	// ÉèÖÃ½±Àø´ÎÊıÎÄ±¾¿òµÄ×ÖÌåÊôĞÔ
-		// ÉèÖÃ½±Àø´ÎÊıÎÄ±¾¿òµÄ×ÖÌåÑÕÉ«Îª»Æ»è»Ò
+		awardNumberField.setOpaque(false); 							// å°†å¥–åŠ±æ¬¡æ•°æ–‡æœ¬æ¡†è®¾ç½®ä¸ºé€æ˜
+		awardNumberField.setBorder(null); 							// å°†å¥–åŠ±æ¬¡æ•°æ–‡æœ¬æ¡†è®¾ç½®ä¸ºæ— è¾¹æ¡†
+		awardNumberField.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 14));	// è®¾ç½®å¥–åŠ±æ¬¡æ•°æ–‡æœ¬æ¡†çš„å­—ä½“å±æ€§
+		// è®¾ç½®å¥–åŠ±æ¬¡æ•°æ–‡æœ¬æ¡†çš„å­—ä½“é¢œè‰²ä¸ºé»„æ˜ç°
 		awardNumberField.setForeground(new java.awt.Color(71, 75, 76));
 		
-		// ÉèÖÃ³Í·£´ÎÊı±êÇ©
-		punishmentNumberJLabel = new JLabel("³Í·£´ÎÊı");
-		punishmentNumberJLabel.setFont(new Font("Î¢ÈíÑÅºÚ",Font.PLAIN, 16));
+		// è®¾ç½®æƒ©ç½šæ¬¡æ•°æ ‡ç­¾
+		punishmentNumberJLabel = new JLabel("æƒ©ç½šæ¬¡æ•°");
+		punishmentNumberJLabel.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 16));
 		punishmentNumberJLabel.setForeground(new java.awt.Color(255, 255, 255));
 		
-		// ÉèÖÃ³Í·£´ÎÊıÎÄ±¾¿ò
+		// è®¾ç½®æƒ©ç½šæ¬¡æ•°æ–‡æœ¬æ¡†
 		punishmentNumberField = new JTextField();
-		punishmentNumberField.setName("ÇëÊäÈë³Í·£´ÎÊı");
-		// µ÷ÓÃ½¹µã¼àÌı·½·¨ÀàÉèÖÃÌáÊ¾ÎÄ×Ö
+		punishmentNumberField.setName("è¯·è¾“å…¥æƒ©ç½šæ¬¡æ•°");
+		// è°ƒç”¨ç„¦ç‚¹ç›‘å¬æ–¹æ³•ç±»è®¾ç½®æç¤ºæ–‡å­—
 		punishmentNumberField.addFocusListener(new MyFocusListener(punishmentNumberField.getName(),punishmentNumberField));
-		punishmentNumberField.setOpaque(false); 					// ½«³Í·£´ÎÊıÎÄ±¾¿òÉèÖÃÎªÍ¸Ã÷
-		punishmentNumberField.setBorder(null); 						// ½«³Í·£´ÎÊıÎÄ±¾¿òÉèÖÃÎªÎŞ±ß¿ò
-		punishmentNumberField.setFont(new Font("Î¢ÈíÑÅºÚ",Font.PLAIN, 14));	// ÉèÖÃ³Í·£´ÎÊıÎÄ±¾¿òµÄ×ÖÌåÊôĞÔ
-		// ÉèÖÃ³Í·£´ÎÊıÎÄ±¾¿òµÄ×ÖÌåÑÕÉ«Îª»Æ»è»Ò
+		punishmentNumberField.setOpaque(false); 					// å°†æƒ©ç½šæ¬¡æ•°æ–‡æœ¬æ¡†è®¾ç½®ä¸ºé€æ˜
+		punishmentNumberField.setBorder(null); 						// å°†æƒ©ç½šæ¬¡æ•°æ–‡æœ¬æ¡†è®¾ç½®ä¸ºæ— è¾¹æ¡†
+		punishmentNumberField.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 14));	// è®¾ç½®æƒ©ç½šæ¬¡æ•°æ–‡æœ¬æ¡†çš„å­—ä½“å±æ€§
+		// è®¾ç½®æƒ©ç½šæ¬¡æ•°æ–‡æœ¬æ¡†çš„å­—ä½“é¢œè‰²ä¸ºé»„æ˜ç°
 		punishmentNumberField.setForeground(new java.awt.Color(71, 75, 76));
 		
-		// ÉèÖÃµÚ¼¸¼¾¶È±êÇ©
-		manyQuartersJLabel = new JLabel("µÚ¼¸¼¾¶È");
-		manyQuartersJLabel.setFont(new Font("Î¢ÈíÑÅºÚ",Font.PLAIN, 16));
+		// è®¾ç½®ç¬¬å‡ å­£åº¦æ ‡ç­¾
+		manyQuartersJLabel = new JLabel("ç¬¬å‡ å­£åº¦");
+		manyQuartersJLabel.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 16));
 		manyQuartersJLabel.setForeground(new java.awt.Color(255, 255, 255));
 		
-		// ÉèÖÃµÚ¼¸¼¾¶ÈÎÄ±¾¿ò
+		// è®¾ç½®ç¬¬å‡ å­£åº¦æ–‡æœ¬æ¡†
 		manyQuartersField = new JTextField();
-		manyQuartersField.setName("Àı£º2021-1");
-		// µ÷ÓÃ½¹µã¼àÌı·½·¨ÀàÉèÖÃÌáÊ¾ÎÄ×Ö
+		manyQuartersField.setName("ä¾‹ï¼š2021-1");
+		// è°ƒç”¨ç„¦ç‚¹ç›‘å¬æ–¹æ³•ç±»è®¾ç½®æç¤ºæ–‡å­—
 		manyQuartersField.addFocusListener(new MyFocusListener(manyQuartersField.getName(),manyQuartersField));
-		manyQuartersField.setOpaque(false); 						// ½«µÚ¼¸¼¾¶ÈÎÄ±¾¿òÉèÖÃÎªÍ¸Ã÷
-		manyQuartersField.setBorder(null); 							// ½«µÚ¼¸¼¾¶ÈÎÄ±¾¿òÉèÖÃÎªÎŞ±ß¿ò
-		manyQuartersField.setFont(new Font("Î¢ÈíÑÅºÚ",Font.PLAIN, 14));	// ÉèÖÃµÚ¼¸¼¾¶ÈÎÄ±¾¿òµÄ×ÖÌåÊôĞÔ
-		// ÉèÖÃµÚ¼¸¼¾¶ÈÎÄ±¾¿òµÄ×ÖÌåÑÕÉ«Îª»Æ»è»Ò
+		manyQuartersField.setOpaque(false); 						// å°†ç¬¬å‡ å­£åº¦æ–‡æœ¬æ¡†è®¾ç½®ä¸ºé€æ˜
+		manyQuartersField.setBorder(null); 							// å°†ç¬¬å‡ å­£åº¦æ–‡æœ¬æ¡†è®¾ç½®ä¸ºæ— è¾¹æ¡†
+		manyQuartersField.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 14));	// è®¾ç½®ç¬¬å‡ å­£åº¦æ–‡æœ¬æ¡†çš„å­—ä½“å±æ€§
+		// è®¾ç½®ç¬¬å‡ å­£åº¦æ–‡æœ¬æ¡†çš„å­—ä½“é¢œè‰²ä¸ºé»„æ˜ç°
 		manyQuartersField.setForeground(new java.awt.Color(71, 75, 76));
 		
-		// ÉèÖÃ¹¤×÷ÖÊÁ¿±êÇ©
-		jobContentJLabel = new JLabel("¹¤×÷ÖÊÁ¿");
-		jobContentJLabel.setFont(new Font("Î¢ÈíÑÅºÚ",Font.PLAIN, 16));
+		// è®¾ç½®å·¥ä½œè´¨é‡æ ‡ç­¾
+		jobContentJLabel = new JLabel("å·¥ä½œè´¨é‡");
+		jobContentJLabel.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 16));
 		jobContentJLabel.setForeground(new java.awt.Color(255, 255, 255));
 		
-		// ÉèÖÃ¹¤×÷ÖÊÁ¿ÏÂÀ­¿ò
-		jobContentBox = new JComboBox();
-		jobContentBox.addItem("ÇëÑ¡Ôñ¹¤×÷ÖÊÁ¿");
-		jobContentBox.addItem("ÓÅĞã");
-		jobContentBox.addItem("Á¼ºÃ");
-		jobContentBox.addItem("ºÏ¸ñ");
-		jobContentBox.addItem("²»ºÏ¸ñ");
-		jobContentBox.setBackground(Color.WHITE);					// ÉèÖÃÏÂÀ­¿ò±³¾°ÑÕÉ«
-		jobContentBox.setFont(new Font("Î¢ÈíÑÅºÚ",Font.PLAIN, 13));		// ÉèÖÃ¹¤×÷ÖÊÁ¿ÏÂÀ­¿òµÄ×ÖÌåÊôĞÔ
-    	jobContentBox.setForeground(new java.awt.Color(71, 75, 76));// ÉèÖÃÏÂÀ­¿ò×ÖÌåÑÕÉ«
-    	jobContentBox.addActionListener((ActionListener) this);		// Ìí¼ÓÊÂ¼ş¼àÌı
+		// è®¾ç½®å·¥ä½œè´¨é‡ä¸‹æ‹‰æ¡†
+		jobContentBox = new JComboBox<String>();
+		jobContentBox.addItem("è¯·é€‰æ‹©å·¥ä½œè´¨é‡");
+		jobContentBox.addItem("100");
+		jobContentBox.addItem("90");
+		jobContentBox.addItem("80");
+		jobContentBox.addItem("70");
+		jobContentBox.addItem("60");
+		jobContentBox.addItem("50");
+		jobContentBox.addItem("40");
+		jobContentBox.addItem("30");
+		jobContentBox.addItem("20");
+		jobContentBox.addItem("10");
+		jobContentBox.setBackground(Color.WHITE);					// è®¾ç½®ä¸‹æ‹‰æ¡†èƒŒæ™¯é¢œè‰²
+		jobContentBox.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 13));		// è®¾ç½®å·¥ä½œè´¨é‡ä¸‹æ‹‰æ¡†çš„å­—ä½“å±æ€§
+    	jobContentBox.setForeground(new java.awt.Color(71, 75, 76));// è®¾ç½®ä¸‹æ‹‰æ¡†å­—ä½“é¢œè‰²
+    	jobContentBox.addActionListener((ActionListener) this);		// æ·»åŠ äº‹ä»¶ç›‘å¬
     	
-    	// ÉèÖÃ¹¤ÒÕ¸ÄÉÆ±êÇ©
-    	processImproveJLabel = new JLabel("¹¤ÒÕ¸ÄÉÆ");
-    	processImproveJLabel.setFont(new Font("Î¢ÈíÑÅºÚ",Font.PLAIN, 16));
+    	// è®¾ç½®å·¥è‰ºæ”¹å–„æ ‡ç­¾
+    	processImproveJLabel = new JLabel("å·¥è‰ºæ”¹å–„");
+    	processImproveJLabel.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 16));
     	processImproveJLabel.setForeground(new java.awt.Color(255, 255, 255));
     	
-    	// ÉèÖÃ¹¤ÒÕ¸ÄÉÆÏÂÀ­¿ò
-    	processImproveBox = new JComboBox();
-    	processImproveBox.addItem("ÇëÑ¡Ôñ¹¤ÒÕ¸ÄÉÆÇé¿ö");
-    	processImproveBox.addItem("A+");
-    	processImproveBox.addItem("A");
-    	processImproveBox.addItem("B+");
-    	processImproveBox.addItem("B");
-    	processImproveBox.addItem("C+");
-    	processImproveBox.addItem("C");
+    	// è®¾ç½®å·¥è‰ºæ”¹å–„ä¸‹æ‹‰æ¡†
+    	processImproveBox = new JComboBox<String>();
+    	processImproveBox.addItem("è¯·é€‰æ‹©å·¥è‰ºæ”¹å–„æƒ…å†µ");
+    	processImproveBox.addItem("100");
+    	processImproveBox.addItem("90");
+    	processImproveBox.addItem("80");
+    	processImproveBox.addItem("70");
+    	processImproveBox.addItem("60");
+    	processImproveBox.addItem("50");
+    	processImproveBox.addItem("40");
+    	processImproveBox.addItem("30");
+    	processImproveBox.addItem("20");
+    	processImproveBox.addItem("10");
     	processImproveBox.setBackground(Color.WHITE); 
-    	processImproveBox.setFont(new Font("Î¢ÈíÑÅºÚ",Font.PLAIN, 13));	// ÉèÖÃÏÂÀ­¿òµÄ×ÖÌåÊôĞÔ
+    	processImproveBox.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 13));	// è®¾ç½®ä¸‹æ‹‰æ¡†çš„å­—ä½“å±æ€§
     	processImproveBox.setForeground(new java.awt.Color(71, 75, 76));
     	processImproveBox.addActionListener((ActionListener) this);
     	
-    	// ÉèÖÃ¼¾¶ÈµÈ¼¶±êÇ©
-    	quarterClassJLabel = new JLabel("¼¾¶ÈµÈ¼¶");
-    	quarterClassJLabel.setFont(new Font("Î¢ÈíÑÅºÚ",Font.PLAIN, 16));
+    	// è®¾ç½®å­£åº¦ç­‰çº§æ ‡ç­¾
+    	quarterClassJLabel = new JLabel("å­£åº¦ç­‰çº§");
+    	quarterClassJLabel.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 16));
     	quarterClassJLabel.setForeground(new java.awt.Color(255, 255, 255));
     	
-    	// ÉèÖÃ¼¾¶ÈµÈ¼¶ÏÂÀ­¿ò
-    	quarterClassBox = new JComboBox();
-    	quarterClassBox.addItem("ÇëÑ¡Ôñ¼¾¶ÈµÈ¼¶");
+    	// è®¾ç½®å­£åº¦ç­‰çº§ä¸‹æ‹‰æ¡†
+    	quarterClassBox = new JComboBox<String>();
+    	quarterClassBox.addItem("è¯·é€‰æ‹©å­£åº¦ç­‰çº§");
     	quarterClassBox.addItem("A+");
     	quarterClassBox.addItem("A");
     	quarterClassBox.addItem("B+");
@@ -383,73 +420,133 @@ public class Assess_modules extends JFrame implements ActionListener{
     	quarterClassBox.addItem("C+");
     	quarterClassBox.addItem("C");
     	quarterClassBox.setBackground(Color.WHITE); 
-    	quarterClassBox.setFont(new Font("Î¢ÈíÑÅºÚ",Font.PLAIN, 13));	// ÉèÖÃÏÂÀ­¿òµÄ×ÖÌåÊôĞÔ
+    	quarterClassBox.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 13));	// è®¾ç½®ä¸‹æ‹‰æ¡†çš„å­—ä½“å±æ€§
     	quarterClassBox.setForeground(new java.awt.Color(71, 75, 76));
     	quarterClassBox.addActionListener((ActionListener) this);
     	
-    	// ÉèÖÃÌí¼Ó½çÃæµÄ·ÖÎö°´Å¥
-    	add_analyseButton = new JButton("   ·Ö Îö   ");
-    	add_analyseButton.setContentAreaFilled(false); 				// ½«Ìí¼Ó½çÃæµÄ·ÖÎö°´Å¥ÉèÖÃÎªÍ¸Ã÷
-    	add_analyseButton.setBorder(null); 							// ½«Ìí¼Ó½çÃæµÄ·ÖÎö°´Å¥ÉèÖÃÎªÎŞ±ß¿ò
-    	add_analyseButton.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 17));  	// ÉèÖÃÌí¼Ó½çÃæµÄ·ÖÎö°´Å¥µÄ×ÖÌåÊôĞÔ
-    	// ÉèÖÃÌí¼Ó½çÃæµÄ·ÖÎö°´Å¥µÄ×ÖÌåÑÕÉ«Îª°×É«
+    	// è®¾ç½®æ·»åŠ ç•Œé¢çš„åˆ†ææŒ‰é’®
+    	add_analyseButton = new JButton("   åˆ† æ   ");
+    	add_analyseButton.setContentAreaFilled(false); 				// å°†æ·»åŠ ç•Œé¢çš„åˆ†ææŒ‰é’®è®¾ç½®ä¸ºé€æ˜
+    	add_analyseButton.setBorder(null); 							// å°†æ·»åŠ ç•Œé¢çš„åˆ†ææŒ‰é’®è®¾ç½®ä¸ºæ— è¾¹æ¡†
+    	add_analyseButton.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 17));  	// è®¾ç½®æ·»åŠ ç•Œé¢çš„åˆ†ææŒ‰é’®çš„å­—ä½“å±æ€§
+    	// è®¾ç½®æ·»åŠ ç•Œé¢çš„åˆ†ææŒ‰é’®çš„å­—ä½“é¢œè‰²ä¸ºç™½è‰²
     	add_analyseButton.setForeground(new java.awt.Color(255, 255, 255));	
-    	add_analyseButton.addActionListener((ActionListener) this);	// ¸øÌí¼Ó½çÃæµÄ·ÖÎö°´Å¥Ìí¼ÓÊÂ¼ş¼àÌı
+    	add_analyseButton.addActionListener((ActionListener) this);	// ç»™æ·»åŠ ç•Œé¢çš„åˆ†ææŒ‰é’®æ·»åŠ äº‹ä»¶ç›‘å¬
     	
-    	// ÉèÖÃÌí¼Ó½çÃæµÄ±£´æ°´Å¥
-    	add_saveButton = new JButton("   ±£ ´æ   ");
-    	add_saveButton.setContentAreaFilled(false); 				// ½«Ìí¼Ó½çÃæµÄ±£´æ°´Å¥ÉèÖÃÎªÍ¸Ã÷
-    	add_saveButton.setBorder(null); 							// ½«Ìí¼Ó½çÃæµÄ±£´æ°´Å¥ÉèÖÃÎªÎŞ±ß¿ò
-    	add_saveButton.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 17));  	// ÉèÖÃÌí¼Ó½çÃæµÄ±£´æ°´Å¥µÄ×ÖÌåÊôĞÔ
-    	// ÉèÖÃÌí¼Ó½çÃæµÄ±£´æ°´Å¥µÄ×ÖÌåÑÕÉ«Îª°×É«
+    	// è®¾ç½®æ·»åŠ ç•Œé¢çš„ä¿å­˜æŒ‰é’®
+    	add_saveButton = new JButton("   ä¿ å­˜   ");
+    	add_saveButton.setContentAreaFilled(false); 				// å°†æ·»åŠ ç•Œé¢çš„ä¿å­˜æŒ‰é’®è®¾ç½®ä¸ºé€æ˜
+    	add_saveButton.setBorder(null); 							// å°†æ·»åŠ ç•Œé¢çš„ä¿å­˜æŒ‰é’®è®¾ç½®ä¸ºæ— è¾¹æ¡†
+    	add_saveButton.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 17)); 	// è®¾ç½®æ·»åŠ ç•Œé¢çš„ä¿å­˜æŒ‰é’®çš„å­—ä½“å±æ€§
+    	// è®¾ç½®æ·»åŠ ç•Œé¢çš„ä¿å­˜æŒ‰é’®çš„å­—ä½“é¢œè‰²ä¸ºç™½è‰²
     	add_saveButton.setForeground(new java.awt.Color(255, 255, 255));	
-    	add_saveButton.addActionListener((ActionListener) this);	// ¸øÌí¼Ó½çÃæµÄ±£´æ°´Å¥Ìí¼ÓÊÂ¼ş¼àÌı
+    	add_saveButton.addActionListener((ActionListener) this);	// ç»™æ·»åŠ ç•Œé¢çš„ä¿å­˜æŒ‰é’®æ·»åŠ äº‹ä»¶ç›‘å¬
     	
-    	// ÉèÖÃÌí¼Ó½çÃæµÄ¹Ø±Õ°´Å¥
+    	// è®¾ç½®æ·»åŠ ç•Œé¢çš„å…³é—­æŒ‰é’®
     	add_closeButton = new JButton("      ");
-    	add_closeButton.setContentAreaFilled(false); 				// ½«Ìí¼Ó½çÃæµÄ¹Ø±Õ°´Å¥ÉèÖÃÎªÍ¸Ã÷
-    	add_closeButton.setBorder(null); 							// ½«Ìí¼Ó½çÃæµÄ¹Ø±Õ°´Å¥ÉèÖÃÎªÎŞ±ß¿ò
-    	add_closeButton.addActionListener((ActionListener) this);	// ¸øÌí¼Ó½çÃæµÄ¹Ø±Õ°´Å¥Ìí¼ÓÊÂ¼ş¼àÌı
+    	add_closeButton.setContentAreaFilled(false); 				// å°†æ·»åŠ ç•Œé¢çš„å…³é—­æŒ‰é’®è®¾ç½®ä¸ºé€æ˜
+    	add_closeButton.setBorder(null); 							// å°†æ·»åŠ ç•Œé¢çš„å…³é—­æŒ‰é’®è®¾ç½®ä¸ºæ— è¾¹æ¡†
+    	add_closeButton.addActionListener((ActionListener) this);	// ç»™æ·»åŠ ç•Œé¢çš„å…³é—­æŒ‰é’®æ·»åŠ äº‹ä»¶ç›‘å¬
 		
-    	// ÉèÖÃ·ÅÖÃÌí¼Ó½çÃæÍ¼Æ¬µÄ±êÇ©
+    	// è®¾ç½®æ”¾ç½®æ·»åŠ ç•Œé¢å›¾ç‰‡çš„æ ‡ç­¾
     	add_windowJLabel = new JLabel(new ImageIcon("image/addInformation.png"));
     	
 		
+//    	ç›®æ ‡å¡******************************************************************************************************
+    	
+    	// è®¾ç½®æ”¾ç½®ç›®æ ‡å¡å›¾ç‰‡çš„æ ‡ç­¾
+    	plan_windowJLabel = new JLabel(new ImageIcon("image/ç›®æ ‡å¡.png"));
+    	
+    	// è®¾ç½®ç›®æ ‡å¡ç•Œé¢çš„ç›®æ ‡å·¥æ—¶æ ‡ç­¾
+    	plan_hoursJLabel = new JLabel("ç›®æ ‡å·¥æ—¶");
+    	plan_hoursJLabel.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 16));
+    	plan_hoursJLabel.setForeground(new java.awt.Color(255, 255, 255));
+    	
+    	// è®¾ç½®ç›®æ ‡å¡ç•Œé¢çš„ç›®æ ‡å·¥æ—¶æ–‡æœ¬æ¡†
+    	plan_hoursField = new JTextField("490");
+    	plan_hoursField.setName("è¯·è¾“å…¥ç›®æ ‡å·¥æ—¶");
+		// è°ƒç”¨ç„¦ç‚¹ç›‘å¬æ–¹æ³•ç±»è®¾ç½®æç¤ºæ–‡å­—
+    	plan_hoursField.addFocusListener(new MyFocusListener(plan_hoursField.getName(),plan_hoursField));
+    	plan_hoursField.setOpaque(false);	 						// å°†ç›®æ ‡å·¥æ—¶æ–‡æœ¬æ¡†è®¾ç½®ä¸ºé€æ˜
+    	plan_hoursField.setBorder(null); 							// å°†ç›®æ ‡å·¥æ—¶æ–‡æœ¬æ¡†è®¾ç½®ä¸ºæ— è¾¹æ¡†
+    	plan_hoursField.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 14));	// è®¾ç½®ç›®æ ‡å·¥æ—¶æ–‡æœ¬æ¡†çš„å­—ä½“å±æ€§
+		// è®¾ç½®ç›®æ ‡å·¥æ—¶æ–‡æœ¬æ¡†çš„å­—ä½“é¢œè‰²ä¸ºé»„æ˜ç°
+    	plan_hoursField.setForeground(new java.awt.Color(71, 75, 76));
+    	
+    	// è®¾ç½®ç›®æ ‡å¡ç•Œé¢çš„ç›®æ ‡ä»¶æ•°æ ‡ç­¾
+    	plan_pieceJLabel = new JLabel("ç›®æ ‡ä»¶æ•°");
+    	plan_pieceJLabel.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 16));
+    	plan_pieceJLabel.setForeground(new java.awt.Color(255, 255, 255));
+    	
+    	// è®¾ç½®ç›®æ ‡å¡ç•Œé¢çš„ç›®æ ‡ä»¶æ•°æ–‡æœ¬æ¡†
+    	plan_pieceField = new JTextField("1000");
+    	plan_pieceField.setName("è¯·è¾“å…¥ç›®æ ‡ä»¶æ•°");
+		// è°ƒç”¨ç„¦ç‚¹ç›‘å¬æ–¹æ³•ç±»è®¾ç½®æç¤ºæ–‡å­—
+    	plan_pieceField.addFocusListener(new MyFocusListener(plan_pieceField.getName(),plan_pieceField));
+    	plan_pieceField.setOpaque(false);	 						// å°†ç›®æ ‡ä»¶æ•°æ–‡æœ¬æ¡†è®¾ç½®ä¸ºé€æ˜
+    	plan_pieceField.setBorder(null); 							// å°†ç›®æ ‡ä»¶æ•°æ–‡æœ¬æ¡†è®¾ç½®ä¸ºæ— è¾¹æ¡†
+    	plan_pieceField.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 14));	// è®¾ç½®ç›®æ ‡ä»¶æ•°æ–‡æœ¬æ¡†çš„å­—ä½“å±æ€§
+		// è®¾ç½®ç›®æ ‡ä»¶æ•°æ–‡æœ¬æ¡†çš„å­—ä½“é¢œè‰²ä¸ºé»„æ˜ç°
+    	plan_pieceField.setForeground(new java.awt.Color(71, 75, 76));
+    	
+    	// è®¾ç½®ç›®æ ‡å¡ç•Œé¢çš„ç›®æ ‡è´¨é‡æ ‡ç­¾
+    	plan_contentJLabel = new JLabel("ç›®æ ‡è´¨é‡");
+    	plan_contentJLabel.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 16));
+    	plan_contentJLabel.setForeground(new java.awt.Color(255, 255, 255));
+    	
+    	// è®¾ç½®ç›®æ ‡å¡ç•Œé¢çš„ç›®æ ‡è´¨é‡æ–‡æœ¬æ¡†
+    	plan_contentField = new JTextField("90");
+    	plan_contentField.setName("è¯·è¾“å…¥ç›®æ ‡è´¨é‡");
+		// è°ƒç”¨ç„¦ç‚¹ç›‘å¬æ–¹æ³•ç±»è®¾ç½®æç¤ºæ–‡å­—
+    	plan_contentField.addFocusListener(new MyFocusListener(plan_contentField.getName(),plan_contentField));
+    	plan_contentField.setOpaque(false);	 						// å°†ç›®æ ‡è´¨é‡æ–‡æœ¬æ¡†è®¾ç½®ä¸ºé€æ˜
+    	plan_contentField.setBorder(null); 							// å°†ç›®æ ‡è´¨é‡æ–‡æœ¬æ¡†è®¾ç½®ä¸ºæ— è¾¹æ¡†
+    	plan_contentField.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 14));	// è®¾ç½®ç›®æ ‡è´¨é‡æ–‡æœ¬æ¡†çš„å­—ä½“å±æ€§
+		// è®¾ç½®ç›®æ ‡è´¨é‡æ–‡æœ¬æ¡†çš„å­—ä½“é¢œè‰²ä¸ºé»„æ˜ç°
+    	plan_contentField.setForeground(new java.awt.Color(71, 75, 76));
+    	
+    	// è®¾ç½®ç›®æ ‡å¡ç•Œé¢çš„ç¡®è®¤æŒ‰é’®
+    	plan_okButton = new JButton(" ");
+    	plan_okButton.setContentAreaFilled(false); 					// å°†ç¡®è®¤æŒ‰é’®è®¾ç½®ä¸ºé€æ˜
+    	plan_okButton.setBorder(null); 								// å°†ç¡®è®¤æŒ‰é’®è®¾ç½®ä¸ºæ— è¾¹æ¡†
+    	plan_okButton.setFont(new Font("å¾®è½¯é›…é»‘",Font.PLAIN, 80));
+    	plan_okButton.addActionListener((ActionListener) this);		// ç»™ç¡®è®¤æŒ‰é’®æ·»åŠ äº‹ä»¶ç›‘å¬
+    	
 		
 //		panel******************************************************************************************************
 		
-    	// ÉèÖÃ¸öÈËÖĞĞÄÃæ°å
+    	// è®¾ç½®ä¸ªäººä¸­å¿ƒé¢æ¿
     	usernameJPanel = new JPanel();
-    	usernameJPanel.setOpaque(false); 							// ÉèÖÃusernameJPanelÍ¸Ã÷
-    	usernameJPanel.setLayout(new GridLayout(1, 1, 0, 0)); 		// ÉèÖÃusernameJPanelÎª¾ø¶Ô²¼¾Ö£¬ËÄĞĞÒ»ÁĞ£¬×İ¼ä¾àÎª25
-    	usernameJPanel.setBounds(13, 90, 150, 25); 					// ÉèÖÃusernameJPanelÃæ°åµÄÎ»ÖÃºÍ´óĞ¡
+    	usernameJPanel.setOpaque(false); 							// è®¾ç½®usernameJPanelé€æ˜
+    	usernameJPanel.setLayout(new GridLayout(1, 1, 0, 0)); 		// è®¾ç½®usernameJPanelä¸ºç»å¯¹å¸ƒå±€ï¼Œå››è¡Œä¸€åˆ—ï¼Œçºµé—´è·ä¸º25
+    	usernameJPanel.setBounds(13, 90, 150, 25); 					// è®¾ç½®usernameJPanelé¢æ¿çš„ä½ç½®å’Œå¤§å°
     	usernameJPanel.add(usernameButton);
     	
-		// ÉèÖÃ×ó²àÃæ°å
+		// è®¾ç½®å·¦ä¾§é¢æ¿
 		left_functionJPanel = new JPanel();
-		left_functionJPanel.setOpaque(false); 						// ÉèÖÃleft_functionJPanelÍ¸Ã÷
-		left_functionJPanel.setLayout(new GridLayout(4, 1, 0, 35)); // ÉèÖÃleft_functionJPanelÎª¾ø¶Ô²¼¾Ö£¬ËÄĞĞÒ»ÁĞ£¬×İ¼ä¾àÎª25
-		left_functionJPanel.setBounds(21, 140, 140, 231); 			// ÉèÖÃleft_functionJPanelÃæ°åµÄÎ»ÖÃºÍ´óĞ¡
-		left_functionJPanel.add(addButton);							// ½«Ìí¼Ó°´Å¥Ìí¼Óµ½left_functionJPanelÃæ°å
-		left_functionJPanel.add(modifyButton);
+		left_functionJPanel.setOpaque(false); 						// è®¾ç½®left_functionJPanelé€æ˜
+		left_functionJPanel.setLayout(new GridLayout(4, 1, 0, 35)); // è®¾ç½®left_functionJPanelä¸ºç»å¯¹å¸ƒå±€ï¼Œå››è¡Œä¸€åˆ—ï¼Œçºµé—´è·ä¸º25
+		left_functionJPanel.setBounds(21, 140, 140, 230); 			// è®¾ç½®left_functionJPanelé¢æ¿çš„ä½ç½®å’Œå¤§å°
+		left_functionJPanel.add(addButton);							// å°†æ·»åŠ æŒ‰é’®æ·»åŠ åˆ°left_functionJPanelé¢æ¿
 		left_functionJPanel.add(deleteButton);
 		left_functionJPanel.add(analyseButton);
+		left_functionJPanel.add(planButton);
 		
-		// ÉèÖÃËÑË÷¿òÃæ°å
+		// è®¾ç½®æœç´¢æ¡†é¢æ¿
 		search_boxJPanel = new JPanel();
-		search_boxJPanel.setOpaque(false); 							// ½«ËÑË÷¿òÃæ°åÉèÖÃÎªÍ¸Ã÷
-		search_boxJPanel.setLayout(new GridLayout(1, 1, 0, 0)); 	// ÉèÖÃÎª¾ø¶Ô²¼¾Ö£¬Ò»ĞĞÒ»ÁĞ
-		search_boxJPanel.setBounds(715, 23, 290, 40); 				// ÉèÖÃËÑË÷¿òÃæ°åµÄÎ»ÖÃºÍ´óĞ¡
-		search_boxJPanel.add(searchField);							// ½«ËÑË÷ÎÄ±¾¿òÌí¼Óµ½ËÑË÷¿òÃæ°å
+		search_boxJPanel.setOpaque(false); 							// å°†æœç´¢æ¡†é¢æ¿è®¾ç½®ä¸ºé€æ˜
+		search_boxJPanel.setLayout(new GridLayout(1, 1, 0, 0)); 	// è®¾ç½®ä¸ºç»å¯¹å¸ƒå±€ï¼Œä¸€è¡Œä¸€åˆ—
+		search_boxJPanel.setBounds(715, 23, 290, 40); 				// è®¾ç½®æœç´¢æ¡†é¢æ¿çš„ä½ç½®å’Œå¤§å°
+		search_boxJPanel.add(searchField);							// å°†æœç´¢æ–‡æœ¬æ¡†æ·»åŠ åˆ°æœç´¢æ¡†é¢æ¿
 		
-		// ÉèÖÃËÑË÷°´Å¥Ãæ°å
+		// è®¾ç½®æœç´¢æŒ‰é’®é¢æ¿
 		search_buttonJPanel = new JPanel();
-		search_buttonJPanel.setOpaque(false); 						// ½«ËÑË÷°´Å¥Ãæ°åÉèÖÃÎªÍ¸Ã÷
-		search_buttonJPanel.setLayout(new GridLayout(1, 1, 0, 0)); 	// ÉèÖÃÎª¾ø¶Ô²¼¾Ö£¬Ò»ĞĞÒ»ÁĞ
-		search_buttonJPanel.setBounds(1020, 23, 82, 40); 			// ÉèÖÃËÑË÷°´Å¥Ãæ°åµÄÎ»ÖÃºÍ´óĞ¡
-		search_buttonJPanel.add(searchButton);						// ½«ËÑË÷°´Å¥Ìí¼Óµ½ËÑË÷°´Å¥Ãæ°å
+		search_buttonJPanel.setOpaque(false); 						// å°†æœç´¢æŒ‰é’®é¢æ¿è®¾ç½®ä¸ºé€æ˜
+		search_buttonJPanel.setLayout(new GridLayout(1, 1, 0, 0)); 	// è®¾ç½®ä¸ºç»å¯¹å¸ƒå±€ï¼Œä¸€è¡Œä¸€åˆ—
+		search_buttonJPanel.setBounds(1020, 23, 82, 40); 			// è®¾ç½®æœç´¢æŒ‰é’®é¢æ¿çš„ä½ç½®å’Œå¤§å°
+		search_buttonJPanel.add(searchButton);						// å°†æœç´¢æŒ‰é’®æ·»åŠ åˆ°æœç´¢æŒ‰é’®é¢æ¿
 		
-		// ÉèÖÃÌí¼Ó½çÃæÃæ°å
+		// è®¾ç½®æ·»åŠ ç•Œé¢é¢æ¿
 		addInformation_windowJPanel = new JPanel();
 		addInformation_windowJPanel.setOpaque(false);
 		addInformation_windowJPanel.setLayout(new GridLayout(1, 1, 0, 0));
@@ -457,7 +554,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 		addInformation_windowJPanel.add(add_windowJLabel);
 		
 		
-		// ÉèÖÃÌí¼Ó½çÃæµÄĞÕÃû¡¢¹¤ºÅÃæ°å
+		// è®¾ç½®æ·»åŠ ç•Œé¢çš„å§“åã€å·¥å·é¢æ¿
 		add_nameAndnumJPanel = new JPanel();
 		add_nameAndnumJPanel.setOpaque(false);
 		add_nameAndnumJPanel.setLayout(new GridLayout(1, 2, 135, 0));
@@ -465,7 +562,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 		add_nameAndnumJPanel.add(nameField);
 		add_nameAndnumJPanel.add(jobNumberField);
 		
-		// ÉèÖÃÌí¼Ó½çÃæµÄÆäÓàĞÅÏ¢Ãæ°å
+		// è®¾ç½®æ·»åŠ ç•Œé¢çš„å…¶ä½™ä¿¡æ¯é¢æ¿
 		add_otherInformationJPanel = new JPanel();
 		add_otherInformationJPanel.setOpaque(false);
 		add_otherInformationJPanel.setLayout(new GridLayout(6, 2, 175, 20));
@@ -483,7 +580,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 		add_otherInformationJPanel.add(manyQuartersField);
 		add_otherInformationJPanel.add(quarterClassBox);
 		
-		// ÉèÖÃÌí¼Ó½çÃæµÄ°´Å¥Ãæ°å
+		// è®¾ç½®æ·»åŠ ç•Œé¢çš„æŒ‰é’®é¢æ¿
 		add_buttonJPanel = new JPanel();
 		add_buttonJPanel.setOpaque(false);
 		add_buttonJPanel.setLayout(new GridLayout(1, 2, 35, 0)); 
@@ -491,14 +588,14 @@ public class Assess_modules extends JFrame implements ActionListener{
 		add_buttonJPanel.add(add_analyseButton);
 		add_buttonJPanel.add(add_saveButton);
 		
-		// ÉèÖÃÌí¼Ó½çÃæµÄ¹Ø±Õ°´Å¥Ãæ°å
+		// è®¾ç½®æ·»åŠ ç•Œé¢çš„å…³é—­æŒ‰é’®é¢æ¿
 		add_closeJPanel = new JPanel();
 		add_closeJPanel.setOpaque(false);
 		add_closeJPanel.setLayout(new GridLayout(1, 1, 0, 0)); 
 		add_closeJPanel.setBounds(1082, 120, 25, 25);
 		add_closeJPanel.add(add_closeButton);
 		
-		// ÉèÖÃÌí¼Ó½çÃæµÄÎÄ×Ö±êÇ©Ãæ°å
+		// è®¾ç½®æ·»åŠ ç•Œé¢çš„æ–‡å­—æ ‡ç­¾é¢æ¿
 		add_textJPanel = new JPanel();
 		add_textJPanel.setOpaque(false);
 		add_textJPanel.setLayout(new GridLayout(7, 2, 175, 20));
@@ -518,29 +615,65 @@ public class Assess_modules extends JFrame implements ActionListener{
 		add_textJPanel.add(manyQuartersJLabel);
 		add_textJPanel.add(quarterClassJLabel);
 		
-		// ÉèÖÃ·ÅÖÃ±í¸ñµÄ¹ö¶¯Ãæ°å
+		
+		// è®¾ç½®ç›®æ ‡å¡ç•Œé¢æ”¾ç½®èƒŒæ™¯å›¾ç‰‡çš„é¢æ¿
+		plan_windowJPanel = new JPanel();
+		plan_windowJPanel.setOpaque(false);
+		plan_windowJPanel.setBounds(200, 350, 390, 200);
+		plan_windowJPanel.add(plan_windowJLabel);
+		
+		// è®¾ç½®ç›®æ ‡å¡ç•Œé¢æ”¾ç½®æ–‡å­—æ ‡ç­¾çš„é¢æ¿
+		plan_textJPanel = new JPanel();
+		plan_textJPanel.setOpaque(false);
+		plan_textJPanel.setLayout(new GridLayout(3, 1, 0, 30));
+		plan_textJPanel.setBounds(230, 385, 100, 130);
+		plan_textJPanel.add(plan_hoursJLabel);
+		plan_textJPanel.add(plan_pieceJLabel);
+		plan_textJPanel.add(plan_contentJLabel);
+		
+		// è®¾ç½®ç›®æ ‡å¡ç•Œé¢æ”¾ç½®æ–‡æœ¬æ¡†çš„é¢æ¿
+		plan_textFieldJPanel = new JPanel();
+		plan_textFieldJPanel.setOpaque(false);
+		plan_textFieldJPanel.setLayout(new GridLayout(3, 1, 0, 30));
+		plan_textFieldJPanel.setBounds(300, 385, 160, 130);
+		plan_textFieldJPanel.add(plan_hoursField);
+		plan_textFieldJPanel.add(plan_pieceField);
+		plan_textFieldJPanel.add(plan_contentField);
+		
+		// è®¾ç½®ç›®æ ‡å¡ç•Œé¢æ”¾ç½®ç¡®è®¤æŒ‰é’®çš„é¢æ¿
+		plan_buttonJPanel = new JPanel();
+		plan_buttonJPanel.setOpaque(false);
+		plan_buttonJPanel.setBounds(495, 390, 60, 125);
+		plan_buttonJPanel.add(plan_okButton);
+		
+		
+		// è®¾ç½®æ”¾ç½®è¡¨æ ¼çš„æ»šåŠ¨é¢æ¿
 		assess_tabelJScrollPane = new JScrollPane();
 		
-		// JScrollPane »ù±¾ÉÏÓÉ JScrollBar¡¢Ò»¸ö JViewport ÒÔ¼°ËüÃÇÖ®¼äµÄÁ¬Ïß×é³É ,
-		// Òò´ËÉèÖÃ±³¾°Í¸Ã÷Ê±£¬³ıÁËÒªÉèÖÃpaneµÄ±³¾°£¬»¹Òª½«JViewport±³¾°Ò²ÉèÖÃÎªÍ¸Ã÷²Å¿É¡£
+		// JScrollPane åŸºæœ¬ä¸Šç”± JScrollBarã€ä¸€ä¸ª JViewport ä»¥åŠå®ƒä»¬ä¹‹é—´çš„è¿çº¿ç»„æˆ ,
+		// å› æ­¤è®¾ç½®èƒŒæ™¯é€æ˜æ—¶ï¼Œé™¤äº†è¦è®¾ç½®paneçš„èƒŒæ™¯ï¼Œè¿˜è¦å°†JViewportèƒŒæ™¯ä¹Ÿè®¾ç½®ä¸ºé€æ˜æ‰å¯ã€‚
 		assess_tabelJScrollPane.setOpaque(false);
 		assess_tabelJScrollPane.getViewport().setOpaque(false);
 		
 		assess_tabelJScrollPane.setBounds(182, 75, 1082, 575);
 
 		
-		this.setTitle("¼¨Ğ§¿¼ºËÏµÍ³");									// ÉèÖÃÏµÍ³±êÇ©
-		ImageIcon icon = new ImageIcon("image\\icon.png");			// ÉèÖÃÏµÍ³Í¼±ê
-		this.setIconImage(icon.getImage());							// ÉèÖÃJFrame´°¿Ú±êÌâÍ¼±ê
-	    this.setLayout(null);										// Çå¿Õ²¼¾Ö¹ÜÀíÆ÷
-		this.setSize(1300, 707);									// ÉèÖÃ´°¿Ú¿í¸ß
-		this.setLocationRelativeTo(null);							// ´°Ìå¾ÓÖĞÏÔÊ¾
+		this.setTitle("ç»©æ•ˆè€ƒæ ¸ç³»ç»Ÿ");									// è®¾ç½®ç³»ç»Ÿæ ‡ç­¾
+		ImageIcon icon = new ImageIcon("image\\icon.png");			// è®¾ç½®ç³»ç»Ÿå›¾æ ‡
+		this.setIconImage(icon.getImage());							// è®¾ç½®JFrameçª—å£æ ‡é¢˜å›¾æ ‡
+	    this.setLayout(null);										// æ¸…ç©ºå¸ƒå±€ç®¡ç†å™¨
+		this.setSize(1300, 707);									// è®¾ç½®çª—å£å®½é«˜
+		this.setLocationRelativeTo(null);							// çª—ä½“å±…ä¸­æ˜¾ç¤º
 	    
-	    setWindows();												// µ÷ÓÃsetWindows·½·¨£¬ÉèÖÃ´°¿Ú
-	    Container Bottom_container = getContentPane();				// ³õÊ¼»¯Bottom_containerÈİÆ÷
+	    setWindows();												// è°ƒç”¨setWindowsæ–¹æ³•ï¼Œè®¾ç½®çª—å£
+	    Container Bottom_container = getContentPane();				// åˆå§‹åŒ–Bottom_containerå®¹å™¨
 	    
 	    Bottom_container.add(usernameJPanel);
-	    Bottom_container.add(left_functionJPanel);					// ½«left_functionJPanelÌí¼Óµ½Bottom_containerÈİÆ÷
+	    Bottom_container.add(plan_textJPanel);
+	    Bottom_container.add(plan_textFieldJPanel);
+	    Bottom_container.add(plan_buttonJPanel);
+	    Bottom_container.add(plan_windowJPanel);
+	    Bottom_container.add(left_functionJPanel);					// å°†left_functionJPanelæ·»åŠ åˆ°Bottom_containerå®¹å™¨
 	    Bottom_container.add(search_boxJPanel);
 	    Bottom_container.add(search_buttonJPanel);
 	    Bottom_container.add(add_textJPanel);
@@ -551,13 +684,14 @@ public class Assess_modules extends JFrame implements ActionListener{
 	    Bottom_container.add(addInformation_windowJPanel);
 	    Bottom_container.add(assess_tabelJScrollPane);
 	    
-	    this.setResizable(false);									// ´°Ìå´óĞ¡ÉèÖÃÎª²»¿É±ä
-	    this.setVisible(true);										// ÏÔÊ¾´°Ìå
+	    this.setResizable(false);									// çª—ä½“å¤§å°è®¾ç½®ä¸ºä¸å¯å˜
+	    this.setVisible(true);										// æ˜¾ç¤ºçª—ä½“
 	    
 	    concealAdd_window();
+	    concealPlan();
 	}
 	
-	// ÉèÖÃ´°¿ÚµÄ·½·¨
+	// è®¾ç½®çª—å£çš„æ–¹æ³•
 	public void setWindows(){
 	    ((JPanel)this.getContentPane()).setOpaque(false);
 	    ImageIcon img = new ImageIcon("image/assessBackground.png");
@@ -566,57 +700,78 @@ public class Assess_modules extends JFrame implements ActionListener{
 	    background.setBounds(0, 0, img.getIconWidth(), img.getIconHeight());
 	}
 	
-	// ÊÂ¼ş¼àÌı·½·¨
+	// äº‹ä»¶ç›‘å¬æ–¹æ³•
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		if(e.getSource() == addButton) {							// Èç¹û°´ÏÂÌí¼Ó°´Å¥
-			showAdd_window();										// ÏÔÊ¾Ìí¼Ó½çÃæ
-		}else if(e.getSource() == add_closeButton) {				// Èç¹û°´ÏÂÌí¼Ó½çÃæµÄ¹Ø±Õ°´Å¥
-			concealAdd_window();									// Òş²ØÌí¼Ó½çÃæ
-		}else if(e.getSource() == usernameButton) {				    // Èç¹û°´ÏÂ¸öÈËÖĞĞÄ°´Å¥
-			System.out.println("»¶Ó­ " + usernameString);								
-		}else if(e.getSource() == add_saveButton) {					// Èç¹û°´ÏÂÌí¼Ó½çÃæµÄ±£´æ°´Å¥
-			saveMessage();
-			messageTabel(usernameString);							// Ë¢ĞÂ¿¼ºË±í
+		if(e.getSource() == addButton) {							// å¦‚æœæŒ‰ä¸‹æ·»åŠ æŒ‰é’®
+			showAdd_window();										// æ˜¾ç¤ºæ·»åŠ ç•Œé¢
+			assess_messageJTable.setEnabled(false);					// ä¸èƒ½å¯¹è¡¨æ ¼è¿›è¡Œæ“ä½œ
+		}
+		else if(e.getSource() == modifyButton) {					// å¦‚æœæŒ‰ä¸‹ä¿®æ”¹æŒ‰é’®
+			
+		}
+		else if(e.getSource() == deleteButton) {					// å¦‚æœæŒ‰ä¸‹åˆ é™¤æŒ‰é’®
+			
+		}
+		else if(e.getSource() == analyseButton) {					// å¦‚æœæŒ‰ä¸‹åˆ†ææŒ‰é’®
+			
+		}
+		else if(e.getSource() == planButton) {						// å¦‚æœæŒ‰ä¸‹ç›®æ ‡å¡æŒ‰é’®
+			showPlan();												// æ˜¾ç¤ºç›®æ ‡å¡ç•Œé¢
+		}
+		else if(e.getSource() == add_closeButton) {					// å¦‚æœæŒ‰ä¸‹æ·»åŠ ç•Œé¢çš„å…³é—­æŒ‰é’®
+			concealAdd_window();									// éšè—æ·»åŠ ç•Œé¢
+			assess_messageJTable.setEnabled(true);					// å¯ä»¥å¯¹è¡¨æ ¼è¿›è¡Œæ“ä½œ
+		}
+		else if(e.getSource() == usernameButton) {				    // å¦‚æœæŒ‰ä¸‹ä¸ªäººä¸­å¿ƒæŒ‰é’®
+			System.out.println("æ¬¢è¿ " + usernameString);								
+		}
+		else if(e.getSource() == add_saveButton) {					// å¦‚æœæŒ‰ä¸‹æ·»åŠ ç•Œé¢çš„ä¿å­˜æŒ‰é’®
+			saveMessage();											// ä¿å­˜åˆ°æ•°æ®åº“
+			messageTabel(usernameString);							// åˆ·æ–°è€ƒæ ¸è¡¨
+			cleanAdd(); 											// æ¸…ç©ºæ–‡æœ¬æ¡†
+			assess_messageJTable.setEnabled(false);					// ä¸èƒ½å¯¹è¡¨æ ¼è¿›è¡Œæ“ä½œ
+		}
+		else if(e.getSource() == plan_okButton) {					// å¦‚æœæŒ‰ä¸‹ç›®æ ‡å¡ç•Œé¢çš„ç¡®è®¤æŒ‰é’®
+			concealPlan();											// å…³é—­ç›®æ ‡å¡
 		}
 	}
 	
 	
-	// ÉèÖÃ¸öÈËÖĞĞÄ°´Å¥µÄ·½·¨£¬¶¯Ì¬ÏÔÊ¾ÓÃ»§Ãû
+	// è®¾ç½®ä¸ªäººä¸­å¿ƒæŒ‰é’®çš„æ–¹æ³•ï¼ŒåŠ¨æ€æ˜¾ç¤ºç”¨æˆ·å
 	public void userName(String username ) {
 		
 		usernameString = username;
-		System.out.println("»ñÈ¡µÄÓÃ»§ÃûÎª£º" + usernameString);
+		System.out.println("è·å–çš„ç”¨æˆ·åä¸ºï¼š" + usernameString);
 		
 		usernameButton.setText(usernameString);
-		usernameButton.setContentAreaFilled(false); 				// ½«¸öÈËÖĞĞÄ°´Å¥ÉèÖÃÎªÍ¸Ã÷
-		usernameButton.setBorder(null);								// ½«¸öÈËÖĞĞÄ°´Å¥ÉèÖÃÎªÎŞ±ß¿ò
-		usernameButton.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 15));	// ÉèÖÃ¸öÈËÖĞĞÄ°´Å¥µÄ×ÖÌåÊôĞÔ
-		// ÉèÖÃ¸öÈËÖĞĞÄ°´Å¥µÄ×ÖÌåÑÕÉ«
+		usernameButton.setContentAreaFilled(false); 				// å°†ä¸ªäººä¸­å¿ƒæŒ‰é’®è®¾ç½®ä¸ºé€æ˜
+		usernameButton.setBorder(null);								// å°†ä¸ªäººä¸­å¿ƒæŒ‰é’®è®¾ç½®ä¸ºæ— è¾¹æ¡†
+		usernameButton.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 15));	// è®¾ç½®ä¸ªäººä¸­å¿ƒæŒ‰é’®çš„å­—ä½“å±æ€§
+		// è®¾ç½®ä¸ªäººä¸­å¿ƒæŒ‰é’®çš„å­—ä½“é¢œè‰²
 		usernameButton.setForeground(new java.awt.Color(255, 255, 255));	
-		usernameButton.addActionListener((ActionListener) this);	// ¸ø¸öÈËÖĞĞÄ°´Å¥Ìí¼ÓÊÂ¼ş¼àÌı
+		usernameButton.addActionListener((ActionListener) this);	// ç»™ä¸ªäººä¸­å¿ƒæŒ‰é’®æ·»åŠ äº‹ä»¶ç›‘å¬
 		
 	}
 
-	
-	// ÉèÖÃÔ±¹¤ĞÅÏ¢±íµÄ·½·¨
+	// è®¾ç½®å‘˜å·¥ä¿¡æ¯è¡¨çš„æ–¹æ³•
 	public void messageTabel(String a) {
 		
-		// ´´½¨±í¸ñ
+		// åˆ›å»ºè¡¨æ ¼
 		assess_messageJTable = new JTable();
-		// »ñÈ¡±í¸ñµÄÊı¾İÄ£ĞÍ
+		// è·å–è¡¨æ ¼çš„æ•°æ®æ¨¡å‹
 		DefaultTableModel model = (DefaultTableModel) assess_messageJTable.getModel();
-		// ÉèÖÃ±íÍ·
-		model.setColumnIdentifiers(new String[] {"id", "ĞÕÃû", "¹¤ºÅ", "Õı³£ÌìÊı", "³Ùµ½Ê±³¤", "Çë¼ÙÌìÊı"
-				, "¿õ¹¤ÌìÊı", "¹¤×÷Ê±³¤", "¹¤×÷¼Æ¼ş", "¹¤×÷ÖÊÁ¿", "¹¤ÒÕ¸ÄÉÆ", "½±Àø´ÎÊı", "³Í·£´ÎÊı", "µÚ¼¸¼¾¶È"
-				, "¼¾¶ÈµÈ¼¶", "¿¼ºË½á¹û"});								
+		// è®¾ç½®è¡¨å¤´
+		model.setColumnIdentifiers(new String[] {"id", "å§“å", "å·¥å·", "æ­£å¸¸å¤©æ•°", "è¿Ÿåˆ°æ—¶é•¿", "è¯·å‡å¤©æ•°"
+				, "æ—·å·¥å¤©æ•°", "å·¥ä½œæ—¶é•¿", "å·¥ä½œè®¡ä»¶", "å·¥ä½œè´¨é‡", "å·¥è‰ºæ”¹å–„", "å¥–åŠ±æ¬¡æ•°", "æƒ©ç½šæ¬¡æ•°", "ç¬¬å‡ å­£åº¦"
+				, "å­£åº¦ç­‰çº§", "è€ƒæ ¸ç»“æœ"});								
 			
 		Mysql ms = new Mysql();
 		ms.ConnectSQL();
 		
 		String b = "_performance_appraisal_list";
 		String tabelName = a + b;
-		System.out.println("²éÕÒ" + tabelName + "µÄÄÚÈİ");
+		System.out.println("æŸ¥æ‰¾" + tabelName + "çš„å†…å®¹");
 		
 		try {
 			ms.ps=ms.ct.prepareStatement("select * from "+tabelName+"");
@@ -625,7 +780,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 			
 			while(ms.rs.next())
 			{
-				id = ms.rs.getString(1);								// ½«µÚÒ»ÁĞ±£´æÔÚidÖĞ
+				id = ms.rs.getString(1);								// å°†ç¬¬ä¸€åˆ—ä¿å­˜åœ¨idä¸­
 				staff_name = ms.rs.getString(2);
 				staff_number = ms.rs.getString(3);
 				normal_days = ms.rs.getString(4);
@@ -641,27 +796,77 @@ public class Assess_modules extends JFrame implements ActionListener{
 				many_quarter = ms.rs.getString(14);
 				quarter_class = ms.rs.getString(15);
 				assess_result = ms.rs.getString(16);
-				 
-				System.out.println("²éÕÒ³É¹¦£¡" + staff_name);
 				
 				ms.loginClose();
 				
-				// Ôö¼ÓĞĞ
+				// å¢åŠ è¡Œ
 				model.addRow(new Object[]{id, staff_name, staff_number, normal_days, late_days, leave_days, 
 						absenteeism_days, work_hours, work_piece, work_content, technology_improve, 
 						rewards_time, punishment_time, many_quarter, quarter_class, assess_result});
 					
 			}ms.loginClose();
 		
-		// ¸üĞÂ±í¸ñÄ£ĞÍ
+		// æ›´æ–°è¡¨æ ¼æ¨¡å‹
 		assess_messageJTable.setModel(model);
 			
-		// ÎªJScrollPaneÃæ°åÉèÖÃÒ»¸ö¿ÉÊÓ»¯Í¼±í
+		// ä¸ºJScrollPaneé¢æ¿è®¾ç½®ä¸€ä¸ªå¯è§†åŒ–å›¾è¡¨
 		assess_tabelJScrollPane.setViewportView(assess_messageJTable);
 		
+			
 		
+		// é¼ æ ‡å¯¹è¡¨æ ¼çš„æ“ä½œ
+		assess_messageJTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+			public void valueChanged(ListSelectionEvent e) {
+				if (!e.getValueIsAdjusting()) {
+//					// å¯å•é€‰ä¹Ÿå¯æ‹–åŠ¨å¤šé€‰
+//					int[] rows = assess_messageJTable.getSelectedRows();
+//					//Â int[]Â colsÂ =Â table.getSelectedColumns();//é€‰ä¸­çš„åˆ—
+//					for (int i : rows){
+//						System.out.println(assess_messageJTable.getValueAt(i, 2) + "\t" + assess_messageJTable.getValueAt(i, 1));
+//					}
+					
+					// å¯å•é€‰
+					int row = assess_messageJTable.getSelectedRow();//é€‰ä¸­è¡Œ
+					//intÂ col=table.getSelectedColumn();//é€‰ä¸­åˆ—
+					
+					// å°†é€‰ä¸­è¡Œçš„ç¬¬ä¸€åˆ—å­˜åˆ°idä¸­
+					id = (String) assess_messageJTable.getValueAt(row, 0);
+					System.out.println(id);
+					staff_name = (String) assess_messageJTable.getValueAt(row, 1);
+					System.out.println(staff_name);
+					staff_number = (String) assess_messageJTable.getValueAt(row, 2);
+					System.out.println(staff_number);
+					normal_days = (String) assess_messageJTable.getValueAt(row, 3);
+					System.out.println(normal_days);
+					late_days = (String) assess_messageJTable.getValueAt(row, 4);
+					System.out.println(late_days);
+					leave_days = (String) assess_messageJTable.getValueAt(row, 5);
+					System.out.println(leave_days);
+					absenteeism_days = (String) assess_messageJTable.getValueAt(row, 6);
+					System.out.println(absenteeism_days);
+					work_hours = (String) assess_messageJTable.getValueAt(row, 7);
+					System.out.println(work_hours);
+					work_piece = (String) assess_messageJTable.getValueAt(row, 8);
+					System.out.println(work_piece);
+					work_content = (String) assess_messageJTable.getValueAt(row, 9);
+					System.out.println(work_content);
+					technology_improve = (String) assess_messageJTable.getValueAt(row, 10);
+					System.out.println(technology_improve);
+					rewards_time = (String) assess_messageJTable.getValueAt(row, 11);
+					System.out.println(rewards_time);
+					punishment_time = (String) assess_messageJTable.getValueAt(row, 12);
+					System.out.println(punishment_time);
+					many_quarter = (String) assess_messageJTable.getValueAt(row, 13);
+					System.out.println(many_quarter);
+					quarter_class = (String) assess_messageJTable.getValueAt(row, 14);
+					System.out.println(quarter_class);
+					assess_result = (String) assess_messageJTable.getValueAt(row, 15);
+					System.out.println(assess_result);
+//					System.out.println(assess_messageJTable.getValueAt(row, 0) + "\t" + assess_messageJTable.getValueAt(row, 1));
+				}
+			}
+		});
 		
-//		this.setVisible(false);
 		}catch (SQLException e) {
 			e.printStackTrace();
 			try {
@@ -672,36 +877,36 @@ public class Assess_modules extends JFrame implements ActionListener{
 		}
 	}
 	
-	// ±£´æÔ±¹¤ĞÅÏ¢µÄ·½·¨£¬ËùÓĞÎÄ±¾¿ò¶¼²»Îª¿Õ
+	// ä¿å­˜å‘˜å·¥ä¿¡æ¯çš„æ–¹æ³•ï¼Œæ‰€æœ‰æ–‡æœ¬æ¡†éƒ½ä¸ä¸ºç©º
 	public void saveMessage() {
-		if(nameField.getText().equals("") || nameField.getText().equals("ÇëÊäÈëÔ±¹¤ĞÕÃû")) {
-			JOptionPane.showMessageDialog(null, "ĞÕÃû²»ÄÜÎª¿Õ£¬ÇëÊäÈë", "warning", JOptionPane.WARNING_MESSAGE);
-		}else if(jobNumberField.getText().equals("") || jobNumberField.getText().equals("ÇëÊäÈëÔ±¹¤ºÅ")) {
-			JOptionPane.showMessageDialog(null, "¹¤ºÅ²»ÄÜÎª¿Õ£¬ÇëÊäÈë", "warning", JOptionPane.WARNING_MESSAGE);
-		}else if(normalDaysField.getText().equals("") || normalDaysField.getText().equals("ÇëÊäÈëÕı³£ÌìÊı")) {
-			JOptionPane.showMessageDialog(null, "Õı³£ÌìÊı²»ÄÜÎª¿Õ£¬ÇëÊäÈë", "warning", JOptionPane.WARNING_MESSAGE);
-		}else if(lateDaysField.getText().equals("") || lateDaysField.getText().equals("ÇëÊäÈë³Ùµ½Ê±³¤")) {
-			JOptionPane.showMessageDialog(null, "³Ùµ½Ê±³¤²»ÄÜÎª¿Õ£¬ÇëÊäÈë", "warning", JOptionPane.WARNING_MESSAGE);
-		}else if(leaveDaysField.getText().equals("") || leaveDaysField.getText().equals("ÇëÊäÈëÇë¼ÙÌìÊı")) {
-			JOptionPane.showMessageDialog(null, "Çë¼ÙÌìÊı²»ÄÜÎª¿Õ£¬ÇëÊäÈë", "warning", JOptionPane.WARNING_MESSAGE);
-		}else if(absenteeismDaysField.getText().equals("") || absenteeismDaysField.getText().equals("ÇëÊäÈë¿õ¹¤ÌìÊı")) {
-			JOptionPane.showMessageDialog(null, "¿õ¹¤ÌìÊı²»ÄÜÎª¿Õ£¬ÇëÊäÈë", "warning", JOptionPane.WARNING_MESSAGE);
-		}else if(workHoursField.getText().equals("") || workHoursField.getText().equals("ÇëÊäÈë¹¤×÷Ê±³¤")) {
-			JOptionPane.showMessageDialog(null, "¹¤×÷Ê±³¤²»ÄÜÎª¿Õ£¬ÇëÊäÈë", "warning", JOptionPane.WARNING_MESSAGE);
-		}else if(workPieceField.getText().equals("") || workPieceField.getText().equals("ÇëÊäÈë¹¤×÷¼Æ¼ş")) {
-			JOptionPane.showMessageDialog(null, "¹¤×÷¼Æ¼ş²»ÄÜÎª¿Õ£¬ÇëÊäÈë", "warning", JOptionPane.WARNING_MESSAGE);
-		}else if(jobContentBox.getSelectedItem().toString().equals("ÇëÑ¡Ôñ¹¤×÷ÖÊÁ¿")) {
-			JOptionPane.showMessageDialog(null, "¹¤×÷ÖÊÁ¿²»ÄÜÎª¿Õ£¬ÇëÑ¡Ôñ", "warning", JOptionPane.WARNING_MESSAGE);
-		}else if(processImproveBox.getSelectedItem().toString().equals("ÇëÑ¡Ôñ¹¤ÒÕ¸ÄÉÆÇé¿ö")) {
-			JOptionPane.showMessageDialog(null, "¹¤ÒÕ¸ÄÉÆ²»ÄÜÎª¿Õ£¬ÇëÑ¡Ôñ", "warning", JOptionPane.WARNING_MESSAGE);
-		}else if(awardNumberField.getText().equals("") || awardNumberField.getText().equals("ÇëÊäÈë½±Àø´ÎÊı")) {
-			JOptionPane.showMessageDialog(null, "½±Àø´ÎÊı²»ÄÜÎª¿Õ£¬ÇëÊäÈë", "warning", JOptionPane.WARNING_MESSAGE);
-		}else if(punishmentNumberField.getText().equals("") || punishmentNumberField.getText().equals("ÇëÊäÈë³Í·£´ÎÊı")) {
-			JOptionPane.showMessageDialog(null, "³Í·£´ÎÊı²»ÄÜÎª¿Õ£¬ÇëÊäÈë", "warning", JOptionPane.WARNING_MESSAGE);
-		}else if(manyQuartersField.getText().equals("") || manyQuartersField.getText().equals("Àı£º2021-1")) {
-			JOptionPane.showMessageDialog(null, "µÚ¼¸¼¾¶È²»ÄÜÎª¿Õ£¬ÇëÊäÈë", "warning", JOptionPane.WARNING_MESSAGE);
-		}else if(quarterClassBox.getSelectedItem().toString().equals("ÇëÑ¡Ôñ¼¾¶ÈµÈ¼¶")) {
-			JOptionPane.showMessageDialog(null, "¼¾¶ÈµÈ¼¶²»ÄÜÎª¿Õ£¬ÇëÊäÈë", "warning", JOptionPane.WARNING_MESSAGE);
+		if(nameField.getText().equals("") || nameField.getText().equals("è¯·è¾“å…¥å‘˜å·¥å§“å")) {
+			JOptionPane.showMessageDialog(null, "å§“åä¸èƒ½ä¸ºç©ºï¼Œè¯·è¾“å…¥", "warning", JOptionPane.WARNING_MESSAGE);
+		}else if(jobNumberField.getText().equals("") || jobNumberField.getText().equals("è¯·è¾“å…¥å‘˜å·¥å·")) {
+			JOptionPane.showMessageDialog(null, "å·¥å·ä¸èƒ½ä¸ºç©ºï¼Œè¯·è¾“å…¥", "warning", JOptionPane.WARNING_MESSAGE);
+		}else if(normalDaysField.getText().equals("") || normalDaysField.getText().equals("è¯·è¾“å…¥æ­£å¸¸å¤©æ•°")) {
+			JOptionPane.showMessageDialog(null, "æ­£å¸¸å¤©æ•°ä¸èƒ½ä¸ºç©ºï¼Œè¯·è¾“å…¥", "warning", JOptionPane.WARNING_MESSAGE);
+		}else if(lateDaysField.getText().equals("") || lateDaysField.getText().equals("è¯·è¾“å…¥è¿Ÿåˆ°æ—¶é•¿")) {
+			JOptionPane.showMessageDialog(null, "è¿Ÿåˆ°æ—¶é•¿ä¸èƒ½ä¸ºç©ºï¼Œè¯·è¾“å…¥", "warning", JOptionPane.WARNING_MESSAGE);
+		}else if(leaveDaysField.getText().equals("") || leaveDaysField.getText().equals("è¯·è¾“å…¥è¯·å‡å¤©æ•°")) {
+			JOptionPane.showMessageDialog(null, "è¯·å‡å¤©æ•°ä¸èƒ½ä¸ºç©ºï¼Œè¯·è¾“å…¥", "warning", JOptionPane.WARNING_MESSAGE);
+		}else if(absenteeismDaysField.getText().equals("") || absenteeismDaysField.getText().equals("è¯·è¾“å…¥æ—·å·¥å¤©æ•°")) {
+			JOptionPane.showMessageDialog(null, "æ—·å·¥å¤©æ•°ä¸èƒ½ä¸ºç©ºï¼Œè¯·è¾“å…¥", "warning", JOptionPane.WARNING_MESSAGE);
+		}else if(workHoursField.getText().equals("") || workHoursField.getText().equals("è¯·è¾“å…¥å·¥ä½œæ—¶é•¿")) {
+			JOptionPane.showMessageDialog(null, "å·¥ä½œæ—¶é•¿ä¸èƒ½ä¸ºç©ºï¼Œè¯·è¾“å…¥", "warning", JOptionPane.WARNING_MESSAGE);
+		}else if(workPieceField.getText().equals("") || workPieceField.getText().equals("è¯·è¾“å…¥å·¥ä½œè®¡ä»¶")) {
+			JOptionPane.showMessageDialog(null, "å·¥ä½œè®¡ä»¶ä¸èƒ½ä¸ºç©ºï¼Œè¯·è¾“å…¥", "warning", JOptionPane.WARNING_MESSAGE);
+		}else if(jobContentBox.getSelectedItem().toString().equals("è¯·é€‰æ‹©å·¥ä½œè´¨é‡")) {
+			JOptionPane.showMessageDialog(null, "å·¥ä½œè´¨é‡ä¸èƒ½ä¸ºç©ºï¼Œè¯·é€‰æ‹©", "warning", JOptionPane.WARNING_MESSAGE);
+		}else if(processImproveBox.getSelectedItem().toString().equals("è¯·é€‰æ‹©å·¥è‰ºæ”¹å–„æƒ…å†µ")) {
+			JOptionPane.showMessageDialog(null, "å·¥è‰ºæ”¹å–„ä¸èƒ½ä¸ºç©ºï¼Œè¯·é€‰æ‹©", "warning", JOptionPane.WARNING_MESSAGE);
+		}else if(awardNumberField.getText().equals("") || awardNumberField.getText().equals("è¯·è¾“å…¥å¥–åŠ±æ¬¡æ•°")) {
+			JOptionPane.showMessageDialog(null, "å¥–åŠ±æ¬¡æ•°ä¸èƒ½ä¸ºç©ºï¼Œè¯·è¾“å…¥", "warning", JOptionPane.WARNING_MESSAGE);
+		}else if(punishmentNumberField.getText().equals("") || punishmentNumberField.getText().equals("è¯·è¾“å…¥æƒ©ç½šæ¬¡æ•°")) {
+			JOptionPane.showMessageDialog(null, "æƒ©ç½šæ¬¡æ•°ä¸èƒ½ä¸ºç©ºï¼Œè¯·è¾“å…¥", "warning", JOptionPane.WARNING_MESSAGE);
+		}else if(manyQuartersField.getText().equals("") || manyQuartersField.getText().equals("ä¾‹ï¼š2021-1")) {
+			JOptionPane.showMessageDialog(null, "ç¬¬å‡ å­£åº¦ä¸èƒ½ä¸ºç©ºï¼Œè¯·è¾“å…¥", "warning", JOptionPane.WARNING_MESSAGE);
+		}else if(quarterClassBox.getSelectedItem().toString().equals("è¯·é€‰æ‹©å­£åº¦ç­‰çº§")) {
+			JOptionPane.showMessageDialog(null, "å­£åº¦ç­‰çº§ä¸èƒ½ä¸ºç©ºï¼Œè¯·è¾“å…¥", "warning", JOptionPane.WARNING_MESSAGE);
 		}
 		else {
 			Mysql ms = new Mysql();
@@ -716,14 +921,32 @@ public class Assess_modules extends JFrame implements ActionListener{
 			
 			
 			
-			System.out.println("Õı³£");
+			System.out.println("æ­£å¸¸");
 		}
 		
 	}
 	
 	
+	// æ¸…ç©ºæ·»åŠ ç•Œé¢æ–‡æœ¬æ¡†çš„æ–¹æ³•
+	public void cleanAdd() {
+		nameField.setText("");
+		jobNumberField.setText("");
+		normalDaysField.setText("");
+		lateDaysField.setText("");
+		leaveDaysField.setText("");
+		absenteeismDaysField.setText("");
+		workHoursField.setText("");
+		workPieceField.setText("");
+		awardNumberField.setText("");
+		punishmentNumberField.setText("");
+		manyQuartersField.setText("");
+		jobContentBox.setSelectedIndex(0);
+		processImproveBox.setSelectedIndex(0);
+		quarterClassBox.setSelectedIndex(0);
+	}
 	
-	// ÏÔÊ¾Ìí¼Ó½çÃæµÄ·½·¨
+	
+	// æ˜¾ç¤ºæ·»åŠ ç•Œé¢çš„æ–¹æ³•
 	public void showAdd_window() {
 		addInformation_windowJPanel.setVisible(true);
 		add_buttonJPanel.setVisible(true);
@@ -733,7 +956,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 		add_textJPanel.setVisible(true);
 	}
 		
-	// Òş²ØÌí¼Ó½çÃæµÄ·½·¨
+	// éšè—æ·»åŠ ç•Œé¢çš„æ–¹æ³•
 	public void concealAdd_window() {
 		addInformation_windowJPanel.setVisible(false);
 		add_buttonJPanel.setVisible(false);
@@ -741,6 +964,22 @@ public class Assess_modules extends JFrame implements ActionListener{
 		add_nameAndnumJPanel.setVisible(false);
 		add_otherInformationJPanel.setVisible(false);
 		add_textJPanel.setVisible(false);
+	}
+	
+	// æ˜¾ç¤ºç›®æ ‡å¡ç•Œé¢çš„æ–¹æ³•
+	public void showPlan() {
+		plan_buttonJPanel.setVisible(true);
+		plan_textFieldJPanel.setVisible(true);
+		plan_textJPanel.setVisible(true);
+		plan_windowJPanel.setVisible(true);
+	}
+	
+	// éšè—ç›®æ ‡å¡ç•Œé¢çš„æ–¹æ³•
+	public void concealPlan() {
+		plan_buttonJPanel.setVisible(false);
+		plan_textFieldJPanel.setVisible(false);
+		plan_textJPanel.setVisible(false);
+		plan_windowJPanel.setVisible(false);
 	}
 	
 	public static void main(String[] args) {
