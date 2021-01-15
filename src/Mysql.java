@@ -186,7 +186,7 @@ public class Mysql extends Login_modules implements Serializable{
 					"  `punishment_time` INT NOT NULL COMMENT '惩罚次数',\r\n" + 
 					"  `many_quarter` VARCHAR(45) NOT NULL COMMENT '第几季度',\r\n" + 
 					"  `quarter_class` VARCHAR(45) NOT NULL COMMENT '季度等级评定',\r\n" + 
-					"  `assess_result` VARCHAR(45) NULL COMMENT '考核结果',\r\n" + 
+					"  `assess_result` DECIMAL(10,2) NULL COMMENT '考核结果',\r\n" + 
 					"  PRIMARY KEY (`id`));");
 			
 			ps.executeUpdate();

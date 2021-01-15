@@ -1,11 +1,13 @@
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 
 import javax.swing.ImageIcon;
@@ -22,6 +24,7 @@ import javax.swing.RowFilter;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableRowSorter;
 
 
@@ -66,6 +69,9 @@ public class Assess_modules extends JFrame implements ActionListener{
 	
 	JScrollPane assess_tabelJScrollPane;							// 放置员工信息表的滚动面板
 	JTable assess_messageJTable;									// 员工信息表
+	
+	JScrollPane select_tableJScrollPane;							// 放置搜索信息表的滚动面板
+	JTable select_messageJTable;									// 搜索表
 	
 	JLabel add_windowJLabel;										// 放置添加界面图片的标签
 	JLabel nameJLabel;												// 员工姓名标签
@@ -155,7 +161,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 	private JButton analyseButton;									// 分析按钮
 	private JButton planButton;										// 目标卡按钮
 	private JButton searchButton;									// 搜索按钮
-	private JButton add_analyseButton;								// 添加界面的分析按钮
+	private JButton add_cancelButton;								// 添加界面的取消按钮
 	private JButton add_saveButton;									// 添加界面的保存按钮
 	private JButton add_closeButton;								// 添加界面的关闭按钮
 	private JButton plan_okButton;									// 目标卡界面的确定按钮
@@ -175,8 +181,8 @@ public class Assess_modules extends JFrame implements ActionListener{
 	public boolean isrow = false;									// 布尔判断是否选中数据表的某一行
 	public boolean isAdd = false;									// 布尔判断当前是否是添加界面
 	public boolean ismodify = false;								// 布尔判断当前是否是修改界面
-	
-	
+	public boolean isSelect = false;								// 布尔判断是否在搜索内容
+	public boolean isAnalyse = false;								// 布尔判断是否按下了分析按钮
 	
 	
 	String id; String staff_name; String staff_number; String normal_days; String late_days; 
@@ -489,14 +495,14 @@ public class Assess_modules extends JFrame implements ActionListener{
     	quarterClassBox.setForeground(new java.awt.Color(71, 75, 76));
     	quarterClassBox.addActionListener((ActionListener) this);
     	
-    	// 设置添加界面的分析按钮
-    	add_analyseButton = new JButton("   分 析   ");
-    	add_analyseButton.setContentAreaFilled(false); 				// 将添加界面的分析按钮设置为透明
-    	add_analyseButton.setBorder(null); 							// 将添加界面的分析按钮设置为无边框
-    	add_analyseButton.setFont(new Font("微软雅黑", Font.PLAIN, 17));  	// 设置添加界面的分析按钮的字体属性
-    	// 设置添加界面的分析按钮的字体颜色为白色
-    	add_analyseButton.setForeground(new java.awt.Color(255, 255, 255));	
-    	add_analyseButton.addActionListener((ActionListener) this);	// 给添加界面的分析按钮添加事件监听
+    	// 设置添加界面的取消按钮
+    	add_cancelButton = new JButton("   取 消   ");
+    	add_cancelButton.setContentAreaFilled(false); 				// 将添加界面的取消按钮设置为透明
+    	add_cancelButton.setBorder(null); 							// 将添加界面的取消按钮设置为无边框
+    	add_cancelButton.setFont(new Font("微软雅黑", Font.PLAIN, 17));  	// 设置添加界面的取消按钮的字体属性
+    	// 设置添加界面的取消按钮的字体颜色为白色
+    	add_cancelButton.setForeground(new java.awt.Color(255, 255, 255));	
+    	add_cancelButton.addActionListener((ActionListener) this);	// 给添加界面的取消按钮添加事件监听
     	
     	// 设置添加界面的保存按钮
     	add_saveButton = new JButton("   保 存   ");
@@ -971,7 +977,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 		add_buttonJPanel.setOpaque(false);
 		add_buttonJPanel.setLayout(new GridLayout(1, 2, 35, 0)); 
 		add_buttonJPanel.setBounds(895, 555, 195, 35);
-		add_buttonJPanel.add(add_analyseButton);
+		add_buttonJPanel.add(add_cancelButton);
 		add_buttonJPanel.add(add_saveButton);
 		
 		// 设置添加界面的关闭按钮面板
@@ -1154,6 +1160,15 @@ public class Assess_modules extends JFrame implements ActionListener{
 		assess_tabelJScrollPane.getViewport().setOpaque(false);
 		
 		assess_tabelJScrollPane.setBounds(182, 75, 1082, 575);
+		
+		// 设置放置搜索表格的滚动面板
+		select_tableJScrollPane = new JScrollPane();
+				
+		// JScrollPane 基本上由 JScrollBar、一个 JViewport 以及它们之间的连线组成 ,
+		// 因此设置背景透明时，除了要设置pane的背景，还要将JViewport背景也设置为透明才可。
+		select_tableJScrollPane.setOpaque(false);
+		select_tableJScrollPane.getViewport().setOpaque(false);	
+		select_tableJScrollPane.setBounds(182, 75, 1082, 575);
 
 		
 		this.setTitle("绩效考核系统");									// 设置系统标签
@@ -1192,6 +1207,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 	    Bottom_container.add(delete_buttonJPanel);
 	    Bottom_container.add(delete_textJPanel);
 	    Bottom_container.add(delete_windowJPanel);
+	    Bottom_container.add(select_tableJScrollPane);
 	    Bottom_container.add(assess_tabelJScrollPane);
 	    
 	    this.setResizable(false);									// 窗体大小设置为不可变
@@ -1203,6 +1219,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 	    concealAdd_window();
 	    concealPlan();
 	    concealWarning();
+	    concealseMessage();
 	}
 	
 	// 设置窗口的方法
@@ -1221,11 +1238,18 @@ public class Assess_modules extends JFrame implements ActionListener{
 			showAdd_window();										// 显示添加界面
 			assess_messageJTable.setEnabled(false);					// 不能对表格进行操作
 			isAdd = true;
+			if(isSelect == true) {
+				select_messageJTable.setEnabled(false);
+			}
 		}
 		else if(e.getSource() == modifyButton) {					// 如果按下修改按钮
 			modifyMessage();										// 修改数据
 			messageTabel(usernameString);							// 刷新考核表
 			assess_messageJTable.setEnabled(false);					// 不能对表格进行操作
+			if(isSelect == true) {
+				selectTabel(); 										// 刷新搜索表
+				select_messageJTable.setEnabled(false);
+			}
 		}
 		else if(e.getSource() == deleteButton) {					// 如果按下功能栏的删除按钮
 			if(isrow == true) {
@@ -1234,7 +1258,20 @@ public class Assess_modules extends JFrame implements ActionListener{
 			}
 		}
 		else if(e.getSource() == analyseButton) {					// 如果按下功能栏的分析按钮
-			
+			isAnalyse = true;
+			messageTabel(usernameString);							// 刷新考核表
+		}
+		else if(e.getSource() == searchButton) {					// 如果按下搜索按钮
+			if(searchField.getText().equals("") || searchField.getText().equals("请输入搜索内容：")) {
+				concealseMessage();
+				showasMessage();
+				isSelect = false;
+			}else {
+				selectTabel();
+				concealasMessage();
+				showseMessage();
+				isSelect = true;
+			}
 		}
 		else if(e.getSource() == planButton) {						// 如果按下功能栏的目标卡按钮
 			showPlan();												// 显示目标卡界面
@@ -1243,11 +1280,25 @@ public class Assess_modules extends JFrame implements ActionListener{
 			concealAdd_window();									// 隐藏添加界面
 			assess_messageJTable.setEnabled(true);					// 可以对表格进行操作
 			isAdd = false;
+			if(isSelect == true) {
+				select_messageJTable.setEnabled(true);
+			}
+		}
+		else if(e.getSource() == add_cancelButton) {				// 如果按下添加界面的取消按钮
+			concealAdd_window();									// 隐藏添加界面
+			assess_messageJTable.setEnabled(true);					// 可以对表格进行操作
+			isAdd = false;
+			if(isSelect == true) {
+				select_messageJTable.setEnabled(true);
+			}
 		}
 		else if(e.getSource() == modify_closeButton) {				// 如果按下修改界面的关闭按钮
 			concealModify_window();									// 隐藏修改界面
 			assess_messageJTable.setEnabled(true);					// 可以对表格进行操作
 			ismodify = false;
+			if(isSelect == true) {
+				select_messageJTable.setEnabled(true);
+			}
 		}
 		else if(e.getSource() == usernameButton) {				    // 如果按下个人中心按钮
 			System.out.println("欢迎 " + usernameString);								
@@ -1257,6 +1308,9 @@ public class Assess_modules extends JFrame implements ActionListener{
 			messageTabel(usernameString);							// 刷新考核表
 			cleanAdd(); 											// 清空文本框
 			assess_messageJTable.setEnabled(false);					// 不能对表格进行操作
+			// 完成添加操作后显示员工信息表
+			concealseMessage();
+			showasMessage();
 		}
 		else if(e.getSource() == plan_okButton) {					// 如果按下目标卡界面的确认按钮
 			concealPlan();											// 关闭目标卡
@@ -1348,7 +1402,59 @@ public class Assess_modules extends JFrame implements ActionListener{
 				punishment_time = ms.rs.getString(13);
 				many_quarter = ms.rs.getString(14);
 				quarter_class = ms.rs.getString(15);
-				assess_result = ms.rs.getString(16);
+				
+				double quarter_mark = 0.00;
+				double result_mark = 0.00;
+				if(isAnalyse == false) {
+					assess_result = ms.rs.getString(16);
+				}else {
+					if(quarter_class.equals("A+")) {
+						quarter_mark = 95.00;
+					}else if(quarter_class.equals("A")) {
+						quarter_mark = 85.00;
+					}else if(quarter_class.equals("B+")) {
+						quarter_mark = 75.00;
+					}else if(quarter_class.equals("B")) {
+						quarter_mark = 65.00;
+					}else if(quarter_class.equals("C+")) {
+						quarter_mark = 55.00;
+					}else if(quarter_class.equals("C")) {
+						quarter_mark = 30.00;
+					}
+					// Double.parseDouble将string类型转化为double类型
+					result_mark = ((30.00 - Double.parseDouble(late_days) * 0.10) + 
+						(30.00 - Double.parseDouble(leave_days)) + (40.00 - Double.parseDouble(absenteeism_days)
+						* 10.00)) * 0.25 + ((Double.parseDouble(work_hours) / Double.parseDouble(plan_hoursField.getText())
+						* 25.00) + (Double.parseDouble(work_piece) / Double.parseDouble(plan_pieceField.getText()) * 25.00)
+						+ (Double.parseDouble(work_content) / Double.parseDouble(plan_contentField.getText()) * 25.00)
+						+ (Double.parseDouble(technology_improve) * 0.25)) * 0.30 + (quarter_mark * 0.30) +
+						(50.00 + Double.parseDouble(rewards_time) * 10.00 - Double.parseDouble(punishment_time) * 10.00) * 0.15;
+					// 结果保留小数点后两位
+					BigDecimal b1 = new BigDecimal(result_mark);
+					result_mark = b1.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+					assess_result = "" + result_mark;
+					
+					// 将考核结果写入sql表
+					try {
+						ms.ps = ms.ct.prepareStatement("UPDATE "+tabelName+" SET `assess_result` = ? WHERE (`id` = ?);");
+						ms.ps.setString(1, assess_result);
+						ms.ps.setString(2, id);
+						int i = ms.ps.executeUpdate();
+						if(i == 1){
+							System.out.println("考核成功！");
+						}else {
+							
+						}
+					}catch (SQLException e) {
+						e.printStackTrace();
+						try {
+							ms.ct.close();
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+						}
+					}
+					
+				}
 				
 				ms.loginClose();
 				
@@ -1361,6 +1467,16 @@ public class Assess_modules extends JFrame implements ActionListener{
 		
 		// 更新表格模型
 		assess_messageJTable.setModel(model);
+		JTableHeader head = assess_messageJTable.getTableHeader(); 	// 创建表格标题对象
+        head.setPreferredSize(new Dimension(head.getWidth(), 24));	// 设置表头大小
+        head.setFont(new Font("微软雅黑", Font.PLAIN, 13));			// 设置表头字体
+        head.setForeground(new java.awt.Color(71, 75, 76));			// 设置表头字体颜色
+		
+		// 设置表格字体
+		assess_messageJTable.setFont(new Font("微软雅黑", Font.PLAIN, 12));
+		assess_messageJTable.setForeground(new java.awt.Color(71, 75, 76));
+		// 设置表格行宽
+		assess_messageJTable.setRowHeight(18);
 			
 		// 为JScrollPane面板设置一个可视化图表
 		assess_tabelJScrollPane.setViewportView(assess_messageJTable);
@@ -1439,6 +1555,164 @@ public class Assess_modules extends JFrame implements ActionListener{
 			}
 		}
 	}
+	
+	
+	// 设置搜索信息表的方法
+	public void selectTabel() {
+			
+		// 创建表格
+		select_messageJTable = new JTable();
+		// 获取表格的数据模型
+		DefaultTableModel model = (DefaultTableModel) select_messageJTable.getModel();
+		// 设置表头
+		model.setColumnIdentifiers(new String[] {"id", "姓名", "工号", "正常天数", "迟到时长", "请假天数"
+				, "旷工天数", "工作时长", "工作计件", "工作质量", "工艺改善", "奖励次数", "惩罚次数", "第几季度"
+				, "季度等级", "考核结果"});								
+			
+		// 自动创建RowSorter,方便数据过滤
+		select_messageJTable.setAutoCreateRowSorter(true);
+			
+		Mysql ms = new Mysql();
+		ms.ConnectSQL();
+			
+		String b = "_performance_appraisal_list";
+		String tabelName = usernameString + b;
+		System.out.println("搜索" + tabelName + "的内容");
+		
+		try {
+			ms.ps = ms.ct.prepareStatement("select * from "+tabelName+"");
+				
+			ms.rs = ms.ps.executeQuery();
+				
+			while(ms.rs.next())
+				{
+					id = ms.rs.getString(1);								// 将第一列保存在id中
+					staff_name = ms.rs.getString(2);
+					staff_number = ms.rs.getString(3);
+					normal_days = ms.rs.getString(4);
+					late_days = ms.rs.getString(5);
+					leave_days = ms.rs.getString(6);
+					absenteeism_days = ms.rs.getString(7);
+					work_hours = ms.rs.getString(8);
+					work_piece = ms.rs.getString(9);
+					work_content = ms.rs.getString(10);
+					technology_improve = ms.rs.getString(11);
+					rewards_time = ms.rs.getString(12);
+					punishment_time = ms.rs.getString(13);
+					many_quarter = ms.rs.getString(14);
+					quarter_class = ms.rs.getString(15);
+					assess_result = ms.rs.getString(16);
+					
+					ms.loginClose();
+					
+					// 增加行
+					model.addRow(new Object[]{id, staff_name, staff_number, normal_days, late_days, leave_days, 
+							absenteeism_days, work_hours, work_piece, work_content, technology_improve, 
+							rewards_time, punishment_time, many_quarter, quarter_class, assess_result});
+						
+				}ms.loginClose();
+				
+			TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<DefaultTableModel>(model);
+			select_messageJTable.setRowSorter(sorter);
+			//实现过滤，search为正则表达式，该方法支持参数为null和空字符串，因此不用对输入进行校验
+			String search = searchField.getText();
+			sorter.setRowFilter(RowFilter.regexFilter(search));	
+			
+			System.out.println(search);
+			
+			// 更新表格模型
+			select_messageJTable.setModel(model);
+			JTableHeader head = select_messageJTable.getTableHeader(); 	// 创建表格标题对象
+	        head.setPreferredSize(new Dimension(head.getWidth(), 24));	// 设置表头大小
+	        head.setFont(new Font("微软雅黑", Font.PLAIN, 13));			// 设置表头字体
+	        head.setForeground(new java.awt.Color(71, 75, 76));			// 设置表头字体颜色
+			
+			// 设置表格字体
+	        select_messageJTable.setFont(new Font("微软雅黑", Font.PLAIN, 12));
+	        select_messageJTable.setForeground(new java.awt.Color(71, 75, 76));
+			// 设置表格行宽
+	        select_messageJTable.setRowHeight(18);
+	        // 设置表格背景色为云峰白
+	        select_messageJTable.setBackground(new java.awt.Color(216, 227, 231));
+				
+			// 为JScrollPane面板设置一个可视化图表
+			select_tableJScrollPane.setViewportView(select_messageJTable);
+
+			// 鼠标对表格的操作
+			select_messageJTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+				public void valueChanged(ListSelectionEvent e) {
+					if (!e.getValueIsAdjusting()) {
+//						// 可单选也可拖动多选
+//						int[] rows = assess_messageJTable.getSelectedRows();
+//						// int[] cols = table.getSelectedColumns();//选中的列
+//						for (int i : rows){
+//							System.out.println(assess_messageJTable.getValueAt(i, 2) + "\t" + assess_messageJTable.getValueAt(i, 1));
+//						}
+						
+						// 可单选
+						int row = select_messageJTable.getSelectedRow();//选中行
+						//int col=table.getSelectedColumn();//选中列
+						
+						// 将选中行的第一列存到id中
+						id = (String) select_messageJTable.getValueAt(row, 0);
+//						System.out.println(id);
+						staff_name = (String) select_messageJTable.getValueAt(row, 1);
+//						System.out.println(staff_name);
+						staff_number = (String) select_messageJTable.getValueAt(row, 2);
+//						System.out.println(staff_number);
+						normal_days = (String) select_messageJTable.getValueAt(row, 3);
+//						System.out.println(normal_days);
+						late_days = (String) select_messageJTable.getValueAt(row, 4);
+//						System.out.println(late_days);
+						leave_days = (String) select_messageJTable.getValueAt(row, 5);
+//						System.out.println(leave_days);
+						absenteeism_days = (String) select_messageJTable.getValueAt(row, 6);
+//						System.out.println(absenteeism_days);
+						work_hours = (String) select_messageJTable.getValueAt(row, 7);
+//						System.out.println(work_hours);
+						work_piece = (String) select_messageJTable.getValueAt(row, 8);
+//						System.out.println(work_piece);
+						work_content = (String) select_messageJTable.getValueAt(row, 9);
+//						System.out.println(work_content);
+						technology_improve = (String) select_messageJTable.getValueAt(row, 10);
+//						System.out.println(technology_improve);
+						rewards_time = (String) select_messageJTable.getValueAt(row, 11);
+//						System.out.println(rewards_time);
+						punishment_time = (String) select_messageJTable.getValueAt(row, 12);
+//						System.out.println(punishment_time);
+						many_quarter = (String) select_messageJTable.getValueAt(row, 13);
+//						System.out.println(many_quarter);
+						quarter_class = (String) select_messageJTable.getValueAt(row, 14);
+//						System.out.println(quarter_class);
+						assess_result = (String) select_messageJTable.getValueAt(row, 15);
+//						System.out.println(assess_result);
+//						System.out.println(assess_messageJTable.getValueAt(row, 0) + "\t" + assess_messageJTable.getValueAt(row, 1));
+						
+						// 将选中行的布尔值改为true，可以显示删除界面
+						isrow = true;
+						
+						// 显示修改界面
+						showModify_window();
+						ismodify = true;
+						// 获取行内容
+						getRow();
+						// 不能对表格进行操作
+						select_messageJTable.setEnabled(false);					
+						
+					}
+				}
+			});
+			
+		}catch (SQLException e) {
+			e.printStackTrace();
+			try {
+				ms.ct.close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+			}
+		}
+	}
+	
 	
 	// 保存员工信息的方法，所有文本框和下拉框都不能为空
 	public void saveMessage() {
@@ -1538,12 +1812,6 @@ public class Assess_modules extends JFrame implements ActionListener{
 		ms.deleteMessage(usernameButton.getText(), id.toString());
 		System.out.println("删除方法正常");
 	}
-	
-	// 搜索方法
-	public void selectMessage() {
-		
-	}
-	
 	
 	// 修改界面获取表格行内容的方法
 	public void getRow() {
@@ -1665,6 +1933,26 @@ public class Assess_modules extends JFrame implements ActionListener{
 		amWarning_buttonJPanel.setVisible(false);
 		amWarning_textJPanel.setVisible(false);
 		amWarning_windowJPanel.setVisible(false);
+	}
+	
+	// 显示员工信息表的方法
+	public void showasMessage() {
+		assess_tabelJScrollPane.setVisible(true);
+	}
+	
+	// 隐藏员工信息表的方法
+	public void concealasMessage() {
+		assess_tabelJScrollPane.setVisible(false);
+	}
+	
+	// 显示搜索信息表的方法
+	public void showseMessage() {
+		select_tableJScrollPane.setVisible(true);
+	}
+		
+	// 隐藏搜索信息表的方法
+	public void concealseMessage() {
+		select_tableJScrollPane.setVisible(false);
 	}
 	
 	public static void main(String[] args) {
