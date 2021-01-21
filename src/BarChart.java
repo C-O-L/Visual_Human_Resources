@@ -1,104 +1,150 @@
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Paint;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
+import org.jfree.chart.ChartFrame;
+import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.CategoryAxis;
-import org.jfree.chart.axis.DateAxis;
+import org.jfree.chart.StandardChartTheme;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.labels.ItemLabelAnchor;
+import org.jfree.chart.labels.ItemLabelPosition;
+import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.labels.StandardPieSectionLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.plot.PiePlot;
+import org.jfree.chart.plot.DefaultDrawingSupplier;
+import org.jfree.chart.plot.IntervalMarker;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.data.category.CategoryDataset;
-import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.chart.plot.RingPlot;
+import org.jfree.chart.title.LegendTitle;
+import org.jfree.chart.title.TextTitle;
 import org.jfree.data.general.DefaultPieDataset;
-import org.jfree.data.time.Month;
-import org.jfree.data.time.TimeSeries;
-import org.jfree.data.time.TimeSeriesCollection;
-import org.jfree.data.xy.XYDataset;
-
-import java.awt.Font;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-
+import org.jfree.data.general.PieDataset;
+import org.jfree.ui.Layer;
+import org.jfree.ui.LengthAdjustmentType;
+import org.jfree.ui.TextAnchor;
 
 public class BarChart {
-	 ChartPanel frame1; 
-	  public BarChart(){ 
-	XYDataset xydataset = createDataset(); 
-    JFreeChart jfreechart = ChartFactory.createTimeSeriesChart("Legal & General单位信托基金价格", "日期", "价格",xydataset, true, true, true); 
-    XYPlot xyplot = (XYPlot) jfreechart.getPlot(); 
-    DateAxis dateaxis = (DateAxis) xyplot.getDomainAxis(); 
-    dateaxis.setDateFormatOverride(new SimpleDateFormat("MMM-yyyy")); 
-    frame1=new ChartPanel(jfreechart,true); 
-    dateaxis.setLabelFont(new Font("黑体",Font.BOLD,14));     //水平底部标题 
-    dateaxis.setTickLabelFont(new Font("宋体",Font.BOLD,12)); //垂直标题 
-    ValueAxis rangeAxis=xyplot.getRangeAxis();//获取柱状 
-    rangeAxis.setLabelFont(new Font("黑体",Font.BOLD,15)); 
-    jfreechart.getLegend().setItemFont(new Font("黑体", Font.BOLD, 15)); 
-    jfreechart.getTitle().setFont(new Font("宋体",Font.BOLD,20));//设置标题字体 
-  }  
-   private static XYDataset createDataset() { //这个数据集有点多，但都不难理解 
-      TimeSeries timeseries = new TimeSeries("legal & general欧洲指数信任", 
-          org.jfree.data.time.Month.class); 
-      timeseries.add(new Month(2, 2001), 181.80000000000001D); 
-      timeseries.add(new Month(3, 2001), 167.30000000000001D); 
-      timeseries.add(new Month(4, 2001), 153.80000000000001D); 
-      timeseries.add(new Month(5, 2001), 167.59999999999999D); 
-      timeseries.add(new Month(6, 2001), 158.80000000000001D); 
-      timeseries.add(new Month(7, 2001), 148.30000000000001D); 
-      timeseries.add(new Month(8, 2001), 153.90000000000001D); 
-      timeseries.add(new Month(9, 2001), 142.69999999999999D); 
-      timeseries.add(new Month(10, 2001), 123.2D); 
-      timeseries.add(new Month(11, 2001), 131.80000000000001D); 
-      timeseries.add(new Month(12, 2001), 139.59999999999999D); 
-      timeseries.add(new Month(1, 2002), 142.90000000000001D); 
-      timeseries.add(new Month(2, 2002), 138.69999999999999D); 
-      timeseries.add(new Month(3, 2002), 137.30000000000001D); 
-      timeseries.add(new Month(4, 2002), 143.90000000000001D); 
-      timeseries.add(new Month(5, 2002), 139.80000000000001D); 
-      timeseries.add(new Month(6, 2002), 137D); 
-      timeseries.add(new Month(7, 2002), 132.80000000000001D); 
-      TimeSeries timeseries1 = new TimeSeries("legal & general英国指数信任", 
-          org.jfree.data.time.Month.class); 
-      timeseries1.add(new Month(2, 2001), 129.59999999999999D); 
-      timeseries1.add(new Month(3, 2001), 123.2D); 
-      timeseries1.add(new Month(4, 2001), 117.2D); 
-      timeseries1.add(new Month(5, 2001), 124.09999999999999D); 
-      timeseries1.add(new Month(6, 2001), 122.59999999999999D); 
-      timeseries1.add(new Month(7, 2001), 119.2D); 
-      timeseries1.add(new Month(8, 2001), 116.5D); 
-      timeseries1.add(new Month(9, 2001), 112.7D); 
-      timeseries1.add(new Month(10, 2001), 101.5D); 
-      timeseries1.add(new Month(11, 2001), 106.09999999999999D); 
-      timeseries1.add(new Month(12, 2001), 110.3D); 
-      timeseries1.add(new Month(1, 2002), 111.7D); 
-      timeseries1.add(new Month(2, 2002), 111D); 
-      timeseries1.add(new Month(3, 2002), 109.59999999999999D); 
-      timeseries1.add(new Month(4, 2002), 113.2D); 
-      timeseries1.add(new Month(5, 2002), 111.59999999999999D); 
-      timeseries1.add(new Month(6, 2002), 108.8D); 
-      timeseries1.add(new Month(7, 2002), 101.59999999999999D); 
-      TimeSeriesCollection timeseriescollection = new TimeSeriesCollection(); 
-      timeseriescollection.addSeries(timeseries); 
-      timeseriescollection.addSeries(timeseries1); 
-      return timeseriescollection; 
-    } 
-   public ChartPanel getChartPanel(){ 
-      return frame1; 
-    } 
+	
+	String staffName;										// 员工姓名
+	double assessResult;									// 考核结果
+	double deductMarks;										// 扣分
+	
+    public BarChart() {
+    	 
+    }
 
-	
-	public static void main(String[] args) {
-		JFrame j=new JFrame();
-		JDialog jd=new JDialog();
-		jd.setBounds(50, 50, 600, 600);
-		jd.add(new BarChart().getChartPanel());
-		jd.setVisible(true);
+    StandardChartTheme theme = new StandardChartTheme("unicode") {  
+    	//重写apply(...)方法是为了借机消除文字锯齿.VALUE_TEXT_ANTIALIAS_OFF
+	    public void apply(JFreeChart chart) {  
+	    	chart.getRenderingHints().put(RenderingHints.KEY_TEXT_ANTIALIASING,  
+	    	       RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);  
+	    	super.apply(chart);  
+	    }  
+	};
+        
+    @SuppressWarnings("deprecation")
+    public void createChart() {
+    	
+        JFreeChart chart = ChartFactory.createRingChart(null, this.createDataset(), true, false, false);
+        chart.getLegend().setVisible(false);						// 不显示底部提示
+        // 环形图
+        RingPlot ringplot = (RingPlot) chart.getPlot();
+        ringplot.setOutlineVisible(false);							// 坐标区表框是否显示
+        // {0}表示section名	{1}表示显示具体分数		{2}表示显示百分比
+        ringplot.setLabelGenerator(new StandardPieSectionLabelGenerator(" {0} {1}"));
+        ringplot.setBackgroundPaint(new Color(253,253,253));
+        ringplot.setOutlineVisible(false);
+        
+        //设置标签样式
+        ringplot.setLabelFont(new Font("微软雅黑", Font.PLAIN, 14));
+        ringplot.setSimpleLabels(true);								// 显示文字标签
+        ringplot.setLabelLinkPaint(Color.WHITE);
+        ringplot.setLabelOutlinePaint(Color.WHITE);					// 标签边框颜色
+        ringplot.setLabelLinksVisible(false);
+        ringplot.setLabelShadowPaint(null);							// 标签阴影颜色
+        ringplot.setLabelOutlinePaint(new Color(0,true));
+        ringplot.setLabelBackgroundPaint(new Color(0,true));		// 标签背景颜色
+        ringplot.setLabelPaint(Color.WHITE);
+        
+        ringplot.setSectionOutlinePaint(Color.WHITE);
+        ringplot.setSeparatorsVisible(true);
+        ringplot.setSeparatorPaint(Color.WHITE);
+        ringplot.setShadowPaint(new Color(253,253,253));
+        ringplot.setSectionDepth(0.58);
+        ringplot.setStartAngle(90);									// 图片透明度
+        ringplot.setDrawingSupplier(new DefaultDrawingSupplier(
+                new Paint[] { 
+                        new Color(134, 212, 222), 
+                        new Color(174, 145, 195), 
+                        new Color(255, 162, 195),
+                        new Color(249, 163, 86),
+                        new Color(119, 173, 195)
+                        },
+                DefaultDrawingSupplier.DEFAULT_OUTLINE_PAINT_SEQUENCE, 
+                DefaultDrawingSupplier.DEFAULT_STROKE_SEQUENCE,
+                DefaultDrawingSupplier.DEFAULT_OUTLINE_STROKE_SEQUENCE, 
+                DefaultDrawingSupplier.DEFAULT_SHAPE_SEQUENCE));
+
+        FileOutputStream fos_jpg = null;
+        try {
+            fos_jpg = new FileOutputStream("image\\ring.png");
+            ChartUtilities.writeChartAsPNG(fos_jpg,chart, 300, 300, null);
+            System.out.println("成功显示环形图！");
+            
+            //以下由于jfreechart设置背景色后，背景会有留白，直接将目标图片截取
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ChartUtilities.writeChartAsPNG(baos,chart, 300,300, null);
+            
+            BufferedImage bi = ImageIO.read(new ByteArrayInputStream(baos.toByteArray()));
+            BufferedImage sub = bi.getSubimage(5, 0, 290, 290);
+            ImageIO.write(sub, "png", new File("E:\\Desktop\\ring_sub.png"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fos_jpg.close();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    // 获得数据集 （这里的数据是为了测试我随便写的一个自动生成数据的例子）
+    public PieDataset createDataset() {
+    	DefaultPieDataset dataSet = new DefaultPieDataset();
+        dataSet.setValue(staffName, assessResult);  
+        dataSet.setValue("扣分", deductMarks);
+        return dataSet;
+    }
+     
+     
+    // 接收员工姓名与考核结果
+    public void getDataset(String name, String result) {
+		staffName = name;
+		assessResult = Double.parseDouble(result);
+		deductMarks = 100.00 - Double.parseDouble(result);
+		createChart();
 	}
-	
+     
+    
+	public static void main(String[] args) {
+		
+		new BarChart();
+	}
 }

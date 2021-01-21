@@ -6,7 +6,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 // 提示文字通用方法类
-public class MyFocusListener  implements FocusListener {
+public class MyFocusListener implements FocusListener {
 
 	String info;
     JTextField jtf;

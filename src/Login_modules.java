@@ -29,7 +29,7 @@ public class Login_modules extends JFrame implements ActionListener{
 	JPanel loginJPanel;												// 用户登录面板，放置loginJLabel
 	JPanel registerInformation;										// 注册信息面板，用于放置用户名、密码等注册信息
 	JPanel helpRegister;											// 帮助、注册面板，用于放置帮助按钮和注册按钮
-	JPanel veriflcationCodeJPanel;									// 验证面板，放置获取验证码按钮和验证码文本框
+//	JPanel veriflcationCodeJPanel;									// 验证面板，放置获取验证码按钮和验证码文本框
 	JPanel passwordJPanel;											// 密码面板，放置注册界面的密码文本框
 	JPanel registerJPanel;											// 用户注册面板，放置registerJLabel
 	
@@ -123,6 +123,9 @@ public class Login_modules extends JFrame implements ActionListener{
 		
 		// 设置注册面板的用户名文本框		
 		username_register = new JTextField();
+		username_register.setName("请输入3-12位用户名：");
+		// 调用焦点监听方法类设置提示文字
+		username_register.addFocusListener(new MyFocusListener(username_register.getName(),username_register));
 		username_register.setOpaque(false);							// 将username_register控件设置为透明
 		username_register.setBorder(null);							// 将username_register控件设置为无边框
 		// 设置username_register的字体、普通、大小
@@ -142,15 +145,15 @@ public class Login_modules extends JFrame implements ActionListener{
 		// 设置password_registertwo的字体、普通、大小
 		password_registertwo.setFont(new Font("微软雅黑", Font.PLAIN, 14));	
 		
-		// 设置注册面板的验证码文本框
-		veriflcationCode_register = new JTextField();
-		veriflcationCode_register.setOpaque(false); 				// 将veriflcationCode_register控件设置为透明
-		veriflcationCode_register.setBorder(null); 					// 将veriflcationCode_register控件设置为无边框
-		// 设置veriflcationCode_register的字体、斜体加粗、大小
-		veriflcationCode_register.setFont(new Font("微软雅黑", Font.ITALIC|Font.BOLD, 16));
-		veriflcationCode_register.setForeground(Color.red);			// 设置veriflcationCode_register的字体颜色为红色			
+//		// 设置注册面板的验证码文本框
+//		veriflcationCode_register = new JTextField();
+//		veriflcationCode_register.setOpaque(false); 				// 将veriflcationCode_register控件设置为透明
+//		veriflcationCode_register.setBorder(null); 					// 将veriflcationCode_register控件设置为无边框
+//		// 设置veriflcationCode_register的字体、斜体加粗、大小
+//		veriflcationCode_register.setFont(new Font("微软雅黑", Font.ITALIC|Font.BOLD, 16));
+//		veriflcationCode_register.setForeground(Color.red);			// 设置veriflcationCode_register的字体颜色为红色			
 		
-		// 设置注册面板的帮助按钮
+		// 设置注册面板的返回按钮
 		helpButton = new JButton();
 		helpButton.setContentAreaFilled(false); 					// 将helpButton按钮设置为透明
 		helpButton.setBorder(null);									// 将helpButton按钮设置为无边框
@@ -171,26 +174,26 @@ public class Login_modules extends JFrame implements ActionListener{
 		// 设置注册信息面板
 		registerInformation = new JPanel();
 		registerInformation.setOpaque(false); 						// 设置registerInformation透明
-		registerInformation.setLayout(new GridLayout(3, 1, 0, 24)); // 设置registerInformation为绝对布局，三行一列，纵间距为24
-		registerInformation.setBounds(820, 280, 150, 134); 			// 设置registerInformation面板的位置和大小
+		registerInformation.setLayout(new GridLayout(3, 1, 0, 34)); // 设置registerInformation为绝对布局，三行一列，纵间距为24
+		registerInformation.setBounds(820, 288, 150, 160); 			// 设置registerInformation面板的位置和大小
 		registerInformation.add(username_register);					// 将用户名文本框添加到registerInformationn面板
 		registerInformation.add(password_register);					// 将密码文本框添加到registerInformationn面板
 		registerInformation.add(password_registertwo);				// 将确认密码文本框添加到registerInformationn面板
 		
-		// 设置验证码面板
-		veriflcationCodeJPanel = new JPanel();
-		veriflcationCodeJPanel.setOpaque(false);					// 设置veriflcationCodeJPanel透明
-		// 设置veriflcationCodeJPanel为绝对布局，一行一列
-		veriflcationCodeJPanel.setLayout(new GridLayout(1, 1, 0, 0));
-		veriflcationCodeJPanel.setBounds(754, 446, 90, 29);			// 设置veriflcationCodeJPanel的位置和大小
-		veriflcationCodeJPanel.add(veriflcationCode_register);		// 将验证码文本框添加到veriflcationCodeJPanel
+//		// 设置验证码面板
+//		veriflcationCodeJPanel = new JPanel();
+//		veriflcationCodeJPanel.setOpaque(false);					// 设置veriflcationCodeJPanel透明
+//		// 设置veriflcationCodeJPanel为绝对布局，一行一列
+//		veriflcationCodeJPanel.setLayout(new GridLayout(1, 1, 0, 0));
+//		veriflcationCodeJPanel.setBounds(754, 446, 90, 29);			// 设置veriflcationCodeJPanel的位置和大小
+//		veriflcationCodeJPanel.add(veriflcationCode_register);		// 将验证码文本框添加到veriflcationCodeJPanel
 		
-		// 设置注册界面的帮助注册按钮面板
+		// 设置注册界面的返回注册按钮面板
 		helpRegister = new JPanel();
 		helpRegister.setOpaque(false); 								// 将helpRegister设置为透明
 		helpRegister.setLayout(new GridLayout(1, 2, 45, 0)); 		// 设置helpRegister为绝对布局，一行两列，横间距为45
-		helpRegister.setBounds(754, 491, 222, 31);					// 设置helpRegister的位置和大小
-		helpRegister.add(helpButton);								// 将帮助按钮添加到helpRegister
+		helpRegister.setBounds(754, 480, 222, 31);					// 设置helpRegister的位置和大小
+		helpRegister.add(helpButton);								// 将返回按钮添加到helpRegister
 		helpRegister.add(register_registerButton);					// 将注册界面的注册按钮添加到helpRegister
 		
 		// 设置用户注册面板
@@ -200,7 +203,7 @@ public class Login_modules extends JFrame implements ActionListener{
 		registerJPanel.setBounds(665, 200, 400, 400);				// 设置registerJPanel的位置和大小
 				
 		// 初始化registerJLabel，显示registerInterface图片
-		registerJLabel = new JLabel(new ImageIcon("image/registerInterface.png"));
+		registerJLabel = new JLabel(new ImageIcon("image/注册界面.png"));
 		registerJPanel.add(registerJLabel);							// 将registerJLabel添加到registerJPanel容器
 		
 /************************************************************************************************************************/
@@ -221,7 +224,7 @@ public class Login_modules extends JFrame implements ActionListener{
 	    Bottom_container.add(loginJPanel);							// 将loginJPanel添加到Bottom_container容器 
 	    
 	    Bottom_container.add(registerInformation);
-	    Bottom_container.add(veriflcationCodeJPanel);
+//	    Bottom_container.add(veriflcationCodeJPanel);
 	    Bottom_container.add(helpRegister);
 	    Bottom_container.add(registerJPanel);
 	    
@@ -251,11 +254,11 @@ public class Login_modules extends JFrame implements ActionListener{
 			showRegister();											// 显示注册界面
 		}else if(e.getSource() == loginButton) {					// 如果按下登录界面的登录按钮
 			this.login();											// 调用登录方法
-//			this.setVisible(false); 								// 关闭当前页面
 		}else if(e.getSource() == register_registerButton) {		// 如果按下注册界面的注册按钮
 			this.register();										// 调用注册方法
-//			this.setVisible(false);									// 关闭当前页面
-			
+		}else if(e.getSource() == helpButton) {						// 如果按下返回按钮，隐藏注册界面，显示登录界面
+			concealRegister();
+			showLogin();										
 		}
 	}
 	
@@ -366,7 +369,7 @@ public class Login_modules extends JFrame implements ActionListener{
 	// 显示注册界面的方法
 	public void showRegister() {
 		registerInformation.setVisible(true);
-	    veriflcationCodeJPanel.setVisible(true);
+//	    veriflcationCodeJPanel.setVisible(true);
 	    helpRegister.setVisible(true);
 	    registerJPanel.setVisible(true);
 	}
@@ -374,7 +377,7 @@ public class Login_modules extends JFrame implements ActionListener{
 	// 隐藏注册界面的方法
 	public void concealRegister() {
 		registerInformation.setVisible(false);
-	    veriflcationCodeJPanel.setVisible(false);
+//	    veriflcationCodeJPanel.setVisible(false);
 	    helpRegister.setVisible(false);
 	    registerJPanel.setVisible(false);
 	}

@@ -7,9 +7,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -26,6 +37,14 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableRowSorter;
+
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.labels.StandardPieSectionLabelGenerator;
+import org.jfree.chart.plot.PiePlot;
+import org.jfree.data.general.DefaultPieDataset;
 
 
 // 进行绩效考核的类
@@ -67,6 +86,13 @@ public class Assess_modules extends JFrame implements ActionListener{
 	JPanel amWarning_textJPanel;									// 放置添加或修改警告文字的面板
 	JPanel amWarning_buttonJPanel;									// 放置添加或修改警告按钮的面板
 	
+	JPanel visualPieJPanel;											// 放置分析结果环形图标签的面板
+	JPanel visualButtonJPanel;										// 放置分析结果可视化界面中按钮的面板
+	JPanel visualBLJPanel;											// 放置分析结果可视化界面按钮标签的面板
+	
+	JPanel helpJPanel;												// 放置帮助界面标签的面板
+	JPanel helpButtonJPanel;										// 放置帮助界面退出按钮的面板
+	
 	JScrollPane assess_tabelJScrollPane;							// 放置员工信息表的滚动面板
 	JTable assess_messageJTable;									// 员工信息表
 	
@@ -92,7 +118,8 @@ public class Assess_modules extends JFrame implements ActionListener{
 	JLabel delete_textJLabel;										// 放置删除界面文字的标签
 	JLabel amWarning_windowJLabel;									// 放置添加或修改警告界面图片的标签
 	JLabel amWarning_textJLabel;									// 放置添加或修改警告界面文字的标签
-	
+	JLabel visualPieJLabel;											// 放置分析结果环形图的标签
+	JLabel visualBLabel;											// 放置分析结果按钮的标签
 	
 	// 修改界面的标签
 	JLabel modify_windowJLabel;										// 放置修改界面图片的标签
@@ -115,6 +142,8 @@ public class Assess_modules extends JFrame implements ActionListener{
 	JLabel plan_hoursJLabel;										// 目标卡目标工时标签
 	JLabel plan_pieceJLabel;										// 目标卡目标件数标签
 	JLabel plan_contentJLabel;										// 目标卡目标质量标签
+	
+	JLabel helpJLabel;												// 放置帮助界面图片的标签
 	
 	JTextField searchField;											// 搜索文本框
 	JTextField nameField;											// 员工姓名文本框
@@ -160,6 +189,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 	private JButton deleteButton;									// 删除按钮
 	private JButton analyseButton;									// 分析按钮
 	private JButton planButton;										// 目标卡按钮
+	private JButton helpButton;										// 帮助按钮
 	private JButton searchButton;									// 搜索按钮
 	private JButton add_cancelButton;								// 添加界面的取消按钮
 	private JButton add_saveButton;									// 添加界面的保存按钮
@@ -176,6 +206,10 @@ public class Assess_modules extends JFrame implements ActionListener{
 	private JButton amWarning_nextButton;							// 继续按钮
 	private JButton amWarning_cancelButton;							// 取消按钮
 	
+	private JButton help_quitButton;								// 帮助界面的退出按钮
+	private JButton visual_quitButton;								// 分析结果可视化界面的退出按钮
+	private JButton visual_deriveButton;							// 分析结果可视化界面的导出按钮
+	
 	public String usernameString;									// 存储用户名
 	
 	public boolean isrow = false;									// 布尔判断是否选中数据表的某一行
@@ -183,6 +217,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 	public boolean ismodify = false;								// 布尔判断当前是否是修改界面
 	public boolean isSelect = false;								// 布尔判断是否在搜索内容
 	public boolean isAnalyse = false;								// 布尔判断是否按下了分析按钮
+	
 	
 	
 	String id; String staff_name; String staff_number; String normal_days; String late_days; 
@@ -196,27 +231,27 @@ public class Assess_modules extends JFrame implements ActionListener{
 //		左侧功能按钮***********************************************************************************************************************************************************
 		
 		// 设置添加按钮
-		addButton = new JButton("    添 加    ");
+		addButton = new JButton("    添     加    ");
 		addButton.setContentAreaFilled(false); 						// 将添加按钮设置为透明
 		addButton.setBorder(null);									// 将添加按钮设置为无边框
-		addButton.setFont(new Font("微软雅黑", Font.PLAIN, 16));		// 设置添加按钮的字体属性
+		addButton.setFont(new Font("微软雅黑", Font.PLAIN, 18));		// 设置添加按钮的字体属性
 		addButton.setForeground(new java.awt.Color(255, 255, 255));	// 设置添加按钮的字体颜色
 		addButton.addActionListener((ActionListener) this);			// 给添加按钮添加事件监听
 		
 		// 设置删除按钮
-		deleteButton = new JButton("    删 除    ");
+		deleteButton = new JButton("    删     除    ");
 		deleteButton.setContentAreaFilled(false); 					// 将删除按钮设置为透明
 		deleteButton.setBorder(null);								// 将删除按钮设置为无边框
-		deleteButton.setFont(new Font("微软雅黑", Font.PLAIN, 16));		// 设置删除按钮的字体属性
+		deleteButton.setFont(new Font("微软雅黑", Font.PLAIN, 18));		// 设置删除按钮的字体属性
 		// 设置删除按钮的字体颜色
 		deleteButton.setForeground(new java.awt.Color(255, 255, 255));	
 		deleteButton.addActionListener((ActionListener) this);		// 给删除按钮添加事件监听
 		
 		// 设置分析按钮
-		analyseButton = new JButton("    分 析    ");
+		analyseButton = new JButton("    考     核    ");
 		analyseButton.setContentAreaFilled(false); 					// 将分析按钮设置为透明
 		analyseButton.setBorder(null);								// 将分析按钮设置为无边框
-		analyseButton.setFont(new Font("微软雅黑", Font.PLAIN, 16));	// 设置分析按钮的字体属性
+		analyseButton.setFont(new Font("微软雅黑", Font.PLAIN, 18));	// 设置分析按钮的字体属性
 		// 设置分析按钮的字体颜色
 		analyseButton.setForeground(new java.awt.Color(255, 255, 255));	
 		analyseButton.addActionListener((ActionListener) this);		// 给分析按钮添加事件监听
@@ -225,10 +260,18 @@ public class Assess_modules extends JFrame implements ActionListener{
 		planButton = new JButton("    目 标 卡    ");
 		planButton.setContentAreaFilled(false); 					// 将目标卡按钮设置为透明
 		planButton.setBorder(null);									// 将目标卡按钮设置为无边框
-		planButton.setFont(new Font("微软雅黑", Font.PLAIN, 16));		// 设置目标卡按钮的字体属性
+		planButton.setFont(new Font("微软雅黑", Font.PLAIN, 18));		// 设置目标卡按钮的字体属性
 		// 设置目标卡按钮的字体颜色
 		planButton.setForeground(new java.awt.Color(255, 255, 255));	
 		planButton.addActionListener((ActionListener) this);		// 给分析按钮添加事件监听
+		
+		// 设置帮助按钮
+		helpButton = new JButton("    帮     助    ");
+		helpButton.setContentAreaFilled(false);
+		helpButton.setBorder(null);
+		helpButton.setFont(new Font("微软雅黑", Font.PLAIN, 18));
+		helpButton.setForeground(new java.awt.Color(255, 255, 255));
+		helpButton.addActionListener((ActionListener) this);
 		
 //		搜索***************************************************************************************************************************************************************************
 		
@@ -239,15 +282,15 @@ public class Assess_modules extends JFrame implements ActionListener{
 		searchField.addFocusListener(new MyFocusListener(searchField.getName(),searchField));
 		searchField.setOpaque(false); 								// 将搜索输入框设置为透明
 		searchField.setBorder(null); 								// 将搜索输入框设置为无边框
-		searchField.setFont(new Font("微软雅黑",Font.PLAIN, 15));		// 设置搜索输入框的字体属性
+		searchField.setFont(new Font("微软雅黑",Font.PLAIN, 17));		// 设置搜索输入框的字体属性
 		// 设置搜索输入框的字体颜色为黄昏灰
 		searchField.setForeground(new java.awt.Color(71, 75, 76));
 		
 		// 设置搜索按钮
-		searchButton = new JButton("   搜 索   ");
+		searchButton = new JButton("搜    索");
 		searchButton.setContentAreaFilled(false); 					// 将搜索按钮设置为透明
 		searchButton.setBorder(null); 								// 将搜索按钮设置为无边框
-		searchButton.setFont(new Font("微软雅黑", Font.PLAIN, 17));  	// 设置搜索按钮的字体属性
+		searchButton.setFont(new Font("微软雅黑", Font.PLAIN, 19));  	// 设置搜索按钮的字体属性
 		// 设置搜索按钮的字体颜色为白色
 		searchButton.setForeground(new java.awt.Color(255, 255, 255));	
 		searchButton.addActionListener((ActionListener) this);		// 给搜索按钮添加事件监听
@@ -256,7 +299,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 		
 		// 设置员工姓名标签
 		nameJLabel = new JLabel("姓名");
-		nameJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+		nameJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 18));
 		nameJLabel.setForeground(new java.awt.Color(255, 255, 255));	
 		
 		// 设置员工姓名文本框
@@ -266,13 +309,13 @@ public class Assess_modules extends JFrame implements ActionListener{
 		nameField.addFocusListener(new MyFocusListener(nameField.getName(),nameField));
 		nameField.setOpaque(false); 								// 将员工姓名文本框设置为透明
 		nameField.setBorder(null); 									// 将员工姓名文本框设置为无边框
-		nameField.setFont(new Font("微软雅黑",Font.PLAIN, 14));		// 设置员工姓名文本框的字体属性
+		nameField.setFont(new Font("微软雅黑",Font.PLAIN, 16));		// 设置员工姓名文本框的字体属性
 		// 设置员工姓名文本框的字体颜色为黄昏灰
 		nameField.setForeground(new java.awt.Color(71, 75, 76));
 		
 		// 设置员工号标签
 		jobNumberJLabel = new JLabel("工号");
-		jobNumberJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+		jobNumberJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 18));
 		jobNumberJLabel.setForeground(new java.awt.Color(255, 255, 255));
 		
 		// 设置员工号文本框
@@ -282,13 +325,13 @@ public class Assess_modules extends JFrame implements ActionListener{
 		jobNumberField.addFocusListener(new MyFocusListener(jobNumberField.getName(),jobNumberField));
 		jobNumberField.setOpaque(false); 							// 将员工号文本框设置为透明
 		jobNumberField.setBorder(null); 							// 将员工号文本框设置为无边框
-		jobNumberField.setFont(new Font("微软雅黑",Font.PLAIN, 14));	// 设置员工号文本框的字体属性
+		jobNumberField.setFont(new Font("微软雅黑",Font.PLAIN, 16));	// 设置员工号文本框的字体属性
 		// 设置员工号文本框的字体颜色为黄昏灰
 		jobNumberField.setForeground(new java.awt.Color(71, 75, 76));
 		
 		// 设置正常天数标签
 		normalDaysJLabel = new JLabel("正常天数");
-		normalDaysJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+		normalDaysJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 18));
 		normalDaysJLabel.setForeground(new java.awt.Color(255, 255, 255));
 		
 		// 设置正常天数文本框
@@ -298,13 +341,13 @@ public class Assess_modules extends JFrame implements ActionListener{
 		normalDaysField.addFocusListener(new MyFocusListener(normalDaysField.getName(),normalDaysField));
 		normalDaysField.setOpaque(false); 							// 将正常天数文本框设置为透明
 		normalDaysField.setBorder(null); 							// 将正常天数文本框设置为无边框
-		normalDaysField.setFont(new Font("微软雅黑",Font.PLAIN, 14));	// 设置正常天数文本框的字体属性
+		normalDaysField.setFont(new Font("微软雅黑",Font.PLAIN, 16));	// 设置正常天数文本框的字体属性
 		// 设置正常天数文本框的字体颜色为黄昏灰
 		normalDaysField.setForeground(new java.awt.Color(71, 75, 76));
 		
 		// 设置迟到天数标签
 		lateDaysJLabel = new JLabel("迟到时长");
-		lateDaysJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+		lateDaysJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 18));
 		lateDaysJLabel.setForeground(new java.awt.Color(255, 255, 255));
 		
 		// 设置迟到天数文本框
@@ -314,13 +357,13 @@ public class Assess_modules extends JFrame implements ActionListener{
 		lateDaysField.addFocusListener(new MyFocusListener(lateDaysField.getName(),lateDaysField));
 		lateDaysField.setOpaque(false); 							// 将迟到天数文本框设置为透明
 		lateDaysField.setBorder(null); 								// 将迟到天数文本框设置为无边框
-		lateDaysField.setFont(new Font("微软雅黑",Font.PLAIN, 14));		// 设置迟到天数文本框的字体属性
+		lateDaysField.setFont(new Font("微软雅黑",Font.PLAIN, 16));		// 设置迟到天数文本框的字体属性
 		// 设置迟到天数文本框的字体颜色为黄昏灰
 		lateDaysField.setForeground(new java.awt.Color(71, 75, 76));
 		
 		// 设置请假天数标签
 		leaveDaysJLabel = new JLabel("请假天数");
-		leaveDaysJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+		leaveDaysJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 18));
 		leaveDaysJLabel.setForeground(new java.awt.Color(255, 255, 255));
 		
 		// 设置请假天数文本框
@@ -330,13 +373,13 @@ public class Assess_modules extends JFrame implements ActionListener{
 		leaveDaysField.addFocusListener(new MyFocusListener(leaveDaysField.getName(),leaveDaysField));
 		leaveDaysField.setOpaque(false); 							// 将请假天数文本框设置为透明
 		leaveDaysField.setBorder(null); 							// 将请假天数文本框设置为无边框
-		leaveDaysField.setFont(new Font("微软雅黑",Font.PLAIN, 14));	// 设置请假天数文本框的字体属性
+		leaveDaysField.setFont(new Font("微软雅黑",Font.PLAIN, 16));	// 设置请假天数文本框的字体属性
 		// 设置请假天数文本框的字体颜色为黄昏灰
 		leaveDaysField.setForeground(new java.awt.Color(71, 75, 76));
 		
 		// 设置旷工天数标签
 		absenteeismDaysJLabel = new JLabel("旷工天数");
-		absenteeismDaysJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+		absenteeismDaysJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 18));
 		absenteeismDaysJLabel.setForeground(new java.awt.Color(255, 255, 255));
 		
 		// 设置旷工天数文本框
@@ -346,13 +389,13 @@ public class Assess_modules extends JFrame implements ActionListener{
 		absenteeismDaysField.addFocusListener(new MyFocusListener(absenteeismDaysField.getName(),absenteeismDaysField));
 		absenteeismDaysField.setOpaque(false); 						// 将旷工天数文本框设置为透明
 		absenteeismDaysField.setBorder(null); 						// 将旷工天数文本框设置为无边框
-		absenteeismDaysField.setFont(new Font("微软雅黑",Font.PLAIN, 14));	// 设置旷工天数文本框的字体属性
+		absenteeismDaysField.setFont(new Font("微软雅黑",Font.PLAIN, 16));	// 设置旷工天数文本框的字体属性
 		// 设置旷工天数文本框的字体颜色为黄昏灰
 		absenteeismDaysField.setForeground(new java.awt.Color(71, 75, 76));
 		
 		// 设置工作时长标签
 		workHoursJLabel = new JLabel("工作时长");
-		workHoursJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+		workHoursJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 18));
 		workHoursJLabel.setForeground(new java.awt.Color(255, 255, 255));
 		
 		// 设置工作时长文本框
@@ -362,13 +405,13 @@ public class Assess_modules extends JFrame implements ActionListener{
 		workHoursField.addFocusListener(new MyFocusListener(workHoursField.getName(),workHoursField));
 		workHoursField.setOpaque(false); 							// 将工作时长文本框设置为透明
 		workHoursField.setBorder(null); 							// 将工作时长文本框设置为无边框
-		workHoursField.setFont(new Font("微软雅黑",Font.PLAIN, 14));	// 设置工作时长文本框的字体属性
+		workHoursField.setFont(new Font("微软雅黑",Font.PLAIN, 16));	// 设置工作时长文本框的字体属性
 		// 设置工作时长文本框的字体颜色为黄昏灰
 		workHoursField.setForeground(new java.awt.Color(71, 75, 76));
 		
 		// 设置工作计件标签
 		workPieceJLabel = new JLabel("工作计件");
-		workPieceJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+		workPieceJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 18));
 		workPieceJLabel.setForeground(new java.awt.Color(255, 255, 255));
 		
 		// 设置工作计件文本框
@@ -378,13 +421,13 @@ public class Assess_modules extends JFrame implements ActionListener{
 		workPieceField.addFocusListener(new MyFocusListener(workPieceField.getName(),workPieceField));
 		workPieceField.setOpaque(false); 							// 将工作计件文本框设置为透明
 		workPieceField.setBorder(null); 							// 将工作计件文本框设置为无边框
-		workPieceField.setFont(new Font("微软雅黑",Font.PLAIN, 14));	// 设置工作计件文本框的字体属性
+		workPieceField.setFont(new Font("微软雅黑",Font.PLAIN, 16));	// 设置工作计件文本框的字体属性
 		// 设置工作计件文本框的字体颜色为黄昏灰
 		workPieceField.setForeground(new java.awt.Color(71, 75, 76));
 		
 		// 设置奖励次数标签
 		awardNumberJLabel = new JLabel("奖励次数");
-		awardNumberJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+		awardNumberJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 18));
 		awardNumberJLabel.setForeground(new java.awt.Color(255, 255, 255));
 		
 		// 设置奖励次数文本框
@@ -394,13 +437,13 @@ public class Assess_modules extends JFrame implements ActionListener{
 		awardNumberField.addFocusListener(new MyFocusListener(awardNumberField.getName(),awardNumberField));
 		awardNumberField.setOpaque(false); 							// 将奖励次数文本框设置为透明
 		awardNumberField.setBorder(null); 							// 将奖励次数文本框设置为无边框
-		awardNumberField.setFont(new Font("微软雅黑",Font.PLAIN, 14));	// 设置奖励次数文本框的字体属性
+		awardNumberField.setFont(new Font("微软雅黑",Font.PLAIN, 16));	// 设置奖励次数文本框的字体属性
 		// 设置奖励次数文本框的字体颜色为黄昏灰
 		awardNumberField.setForeground(new java.awt.Color(71, 75, 76));
 		
 		// 设置惩罚次数标签
 		punishmentNumberJLabel = new JLabel("惩罚次数");
-		punishmentNumberJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+		punishmentNumberJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 18));
 		punishmentNumberJLabel.setForeground(new java.awt.Color(255, 255, 255));
 		
 		// 设置惩罚次数文本框
@@ -410,13 +453,13 @@ public class Assess_modules extends JFrame implements ActionListener{
 		punishmentNumberField.addFocusListener(new MyFocusListener(punishmentNumberField.getName(),punishmentNumberField));
 		punishmentNumberField.setOpaque(false); 					// 将惩罚次数文本框设置为透明
 		punishmentNumberField.setBorder(null); 						// 将惩罚次数文本框设置为无边框
-		punishmentNumberField.setFont(new Font("微软雅黑",Font.PLAIN, 14));	// 设置惩罚次数文本框的字体属性
+		punishmentNumberField.setFont(new Font("微软雅黑",Font.PLAIN, 16));	// 设置惩罚次数文本框的字体属性
 		// 设置惩罚次数文本框的字体颜色为黄昏灰
 		punishmentNumberField.setForeground(new java.awt.Color(71, 75, 76));
 		
 		// 设置第几季度标签
 		manyQuartersJLabel = new JLabel("第几季度");
-		manyQuartersJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+		manyQuartersJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 18));
 		manyQuartersJLabel.setForeground(new java.awt.Color(255, 255, 255));
 		
 		// 设置第几季度文本框
@@ -426,13 +469,13 @@ public class Assess_modules extends JFrame implements ActionListener{
 		manyQuartersField.addFocusListener(new MyFocusListener(manyQuartersField.getName(),manyQuartersField));
 		manyQuartersField.setOpaque(false); 						// 将第几季度文本框设置为透明
 		manyQuartersField.setBorder(null); 							// 将第几季度文本框设置为无边框
-		manyQuartersField.setFont(new Font("微软雅黑",Font.PLAIN, 14));	// 设置第几季度文本框的字体属性
+		manyQuartersField.setFont(new Font("微软雅黑",Font.PLAIN, 16));	// 设置第几季度文本框的字体属性
 		// 设置第几季度文本框的字体颜色为黄昏灰
 		manyQuartersField.setForeground(new java.awt.Color(71, 75, 76));
 		
 		// 设置工作质量标签
 		jobContentJLabel = new JLabel("工作质量");
-		jobContentJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+		jobContentJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 18));
 		jobContentJLabel.setForeground(new java.awt.Color(255, 255, 255));
 		
 		// 设置工作质量下拉框
@@ -449,13 +492,13 @@ public class Assess_modules extends JFrame implements ActionListener{
 		jobContentBox.addItem("20");
 		jobContentBox.addItem("10");
 		jobContentBox.setBackground(Color.WHITE);					// 设置下拉框背景颜色
-		jobContentBox.setFont(new Font("微软雅黑",Font.PLAIN, 13));		// 设置工作质量下拉框的字体属性
+		jobContentBox.setFont(new Font("微软雅黑",Font.PLAIN, 15));		// 设置工作质量下拉框的字体属性
     	jobContentBox.setForeground(new java.awt.Color(71, 75, 76));// 设置下拉框字体颜色
     	jobContentBox.addActionListener((ActionListener) this);		// 添加事件监听
     	
     	// 设置工艺改善标签
     	processImproveJLabel = new JLabel("工艺改善");
-    	processImproveJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+    	processImproveJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 18));
     	processImproveJLabel.setForeground(new java.awt.Color(255, 255, 255));
     	
     	// 设置工艺改善下拉框
@@ -472,13 +515,13 @@ public class Assess_modules extends JFrame implements ActionListener{
     	processImproveBox.addItem("20");
     	processImproveBox.addItem("10");
     	processImproveBox.setBackground(Color.WHITE); 
-    	processImproveBox.setFont(new Font("微软雅黑",Font.PLAIN, 13));	// 设置下拉框的字体属性
+    	processImproveBox.setFont(new Font("微软雅黑",Font.PLAIN, 15));	// 设置下拉框的字体属性
     	processImproveBox.setForeground(new java.awt.Color(71, 75, 76));
     	processImproveBox.addActionListener((ActionListener) this);
     	
     	// 设置季度等级标签
     	quarterClassJLabel = new JLabel("季度等级");
-    	quarterClassJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+    	quarterClassJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 18));
     	quarterClassJLabel.setForeground(new java.awt.Color(255, 255, 255));
     	
     	// 设置季度等级下拉框
@@ -491,12 +534,12 @@ public class Assess_modules extends JFrame implements ActionListener{
     	quarterClassBox.addItem("C+");
     	quarterClassBox.addItem("C");
     	quarterClassBox.setBackground(Color.WHITE); 
-    	quarterClassBox.setFont(new Font("微软雅黑",Font.PLAIN, 13));	// 设置下拉框的字体属性
+    	quarterClassBox.setFont(new Font("微软雅黑",Font.PLAIN, 15));	// 设置下拉框的字体属性
     	quarterClassBox.setForeground(new java.awt.Color(71, 75, 76));
     	quarterClassBox.addActionListener((ActionListener) this);
     	
     	// 设置添加界面的取消按钮
-    	add_cancelButton = new JButton("   取 消   ");
+    	add_cancelButton = new JButton("取  消");
     	add_cancelButton.setContentAreaFilled(false); 				// 将添加界面的取消按钮设置为透明
     	add_cancelButton.setBorder(null); 							// 将添加界面的取消按钮设置为无边框
     	add_cancelButton.setFont(new Font("微软雅黑", Font.PLAIN, 17));  	// 设置添加界面的取消按钮的字体属性
@@ -505,7 +548,7 @@ public class Assess_modules extends JFrame implements ActionListener{
     	add_cancelButton.addActionListener((ActionListener) this);	// 给添加界面的取消按钮添加事件监听
     	
     	// 设置添加界面的保存按钮
-    	add_saveButton = new JButton("   保 存   ");
+    	add_saveButton = new JButton("保  存");
     	add_saveButton.setContentAreaFilled(false); 				// 将添加界面的保存按钮设置为透明
     	add_saveButton.setBorder(null); 							// 将添加界面的保存按钮设置为无边框
     	add_saveButton.setFont(new Font("微软雅黑", Font.PLAIN, 17)); 	// 设置添加界面的保存按钮的字体属性
@@ -520,13 +563,13 @@ public class Assess_modules extends JFrame implements ActionListener{
     	add_closeButton.addActionListener((ActionListener) this);	// 给添加界面的关闭按钮添加事件监听
 		
     	// 设置放置添加界面图片的标签
-    	add_windowJLabel = new JLabel(new ImageIcon("image/addInformation.png"));
+    	add_windowJLabel = new JLabel(new ImageIcon("image/添加界面.png"));
     	
 //    修改界面*************************************************************************************************	
     	
     	// 设置员工姓名标签
     	modify_nameJLabel = new JLabel("姓名");
-    	modify_nameJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+    	modify_nameJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 18));
     	modify_nameJLabel.setForeground(new java.awt.Color(255, 255, 255));	
     			
     	// 设置员工姓名文本框
@@ -536,13 +579,13 @@ public class Assess_modules extends JFrame implements ActionListener{
     	modify_nameField.addFocusListener(new MyFocusListener(modify_nameField.getName(),modify_nameField));
     	modify_nameField.setOpaque(false); 							// 将员工姓名文本框设置为透明
     	modify_nameField.setBorder(null); 							// 将员工姓名文本框设置为无边框
-    	modify_nameField.setFont(new Font("微软雅黑",Font.PLAIN, 14));	// 设置员工姓名文本框的字体属性
+    	modify_nameField.setFont(new Font("微软雅黑",Font.PLAIN, 16));	// 设置员工姓名文本框的字体属性
     	// 设置员工姓名文本框的字体颜色为黄昏灰
     	modify_nameField.setForeground(new java.awt.Color(71, 75, 76));
     			
     	// 设置员工号标签
     	modify_jobNumberJLabel = new JLabel("工号");
-    	modify_jobNumberJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+    	modify_jobNumberJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 18));
     	modify_jobNumberJLabel.setForeground(new java.awt.Color(255, 255, 255));
     			
     	// 设置员工号文本框
@@ -552,13 +595,13 @@ public class Assess_modules extends JFrame implements ActionListener{
     	modify_jobNumberField.addFocusListener(new MyFocusListener(modify_jobNumberField.getName(),modify_jobNumberField));
     	modify_jobNumberField.setOpaque(false); 					// 将员工号文本框设置为透明
     	modify_jobNumberField.setBorder(null); 						// 将员工号文本框设置为无边框
-    	modify_jobNumberField.setFont(new Font("微软雅黑",Font.PLAIN, 14));	// 设置员工号文本框的字体属性
+    	modify_jobNumberField.setFont(new Font("微软雅黑",Font.PLAIN, 16));	// 设置员工号文本框的字体属性
     	// 设置员工号文本框的字体颜色为黄昏灰
     	modify_jobNumberField.setForeground(new java.awt.Color(71, 75, 76));
     			
     	// 设置正常天数标签
     	modify_normalDaysJLabel = new JLabel("正常天数");
-    	modify_normalDaysJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+    	modify_normalDaysJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 18));
     	modify_normalDaysJLabel.setForeground(new java.awt.Color(255, 255, 255));
     			
     	// 设置正常天数文本框
@@ -568,13 +611,13 @@ public class Assess_modules extends JFrame implements ActionListener{
     	modify_normalDaysField.addFocusListener(new MyFocusListener(modify_normalDaysField.getName(),modify_normalDaysField));
     	modify_normalDaysField.setOpaque(false); 					// 将正常天数文本框设置为透明
     	modify_normalDaysField.setBorder(null); 					// 将正常天数文本框设置为无边框
-    	modify_normalDaysField.setFont(new Font("微软雅黑",Font.PLAIN, 14));// 设置正常天数文本框的字体属性
+    	modify_normalDaysField.setFont(new Font("微软雅黑",Font.PLAIN, 16));// 设置正常天数文本框的字体属性
     	// 设置正常天数文本框的字体颜色为黄昏灰
     	modify_normalDaysField.setForeground(new java.awt.Color(71, 75, 76));
     			
     	// 设置迟到天数标签
     	modify_lateDaysJLabel = new JLabel("迟到时长");
-    	modify_lateDaysJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+    	modify_lateDaysJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 18));
     	modify_lateDaysJLabel.setForeground(new java.awt.Color(255, 255, 255));
     			
     	// 设置迟到天数文本框
@@ -584,13 +627,13 @@ public class Assess_modules extends JFrame implements ActionListener{
     	modify_lateDaysField.addFocusListener(new MyFocusListener(modify_lateDaysField.getName(),modify_lateDaysField));
     	modify_lateDaysField.setOpaque(false); 						// 将迟到天数文本框设置为透明
     	modify_lateDaysField.setBorder(null); 						// 将迟到天数文本框设置为无边框
-    	modify_lateDaysField.setFont(new Font("微软雅黑",Font.PLAIN, 14));	// 设置迟到天数文本框的字体属性
+    	modify_lateDaysField.setFont(new Font("微软雅黑",Font.PLAIN, 16));	// 设置迟到天数文本框的字体属性
     	// 设置迟到天数文本框的字体颜色为黄昏灰
     	modify_lateDaysField.setForeground(new java.awt.Color(71, 75, 76));
     			
     	// 设置请假天数标签
     	modify_leaveDaysJLabel = new JLabel("请假天数");
-    	modify_leaveDaysJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+    	modify_leaveDaysJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 18));
     	modify_leaveDaysJLabel.setForeground(new java.awt.Color(255, 255, 255));
     			
     	// 设置请假天数文本框
@@ -600,13 +643,13 @@ public class Assess_modules extends JFrame implements ActionListener{
     	modify_leaveDaysField.addFocusListener(new MyFocusListener(modify_leaveDaysField.getName(),modify_leaveDaysField));
     	modify_leaveDaysField.setOpaque(false); 					// 将请假天数文本框设置为透明
     	modify_leaveDaysField.setBorder(null); 						// 将请假天数文本框设置为无边框
-    	modify_leaveDaysField.setFont(new Font("微软雅黑",Font.PLAIN, 14));	// 设置请假天数文本框的字体属性
+    	modify_leaveDaysField.setFont(new Font("微软雅黑",Font.PLAIN, 16));	// 设置请假天数文本框的字体属性
     	// 设置请假天数文本框的字体颜色为黄昏灰
     	modify_leaveDaysField.setForeground(new java.awt.Color(71, 75, 76));
     			
     	// 设置旷工天数标签
     	modify_absenteeismDaysJLabel = new JLabel("旷工天数");
-    	modify_absenteeismDaysJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+    	modify_absenteeismDaysJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 18));
     	modify_absenteeismDaysJLabel.setForeground(new java.awt.Color(255, 255, 255));
     			
     	// 设置旷工天数文本框
@@ -616,13 +659,13 @@ public class Assess_modules extends JFrame implements ActionListener{
     	modify_absenteeismDaysField.addFocusListener(new MyFocusListener(modify_absenteeismDaysField.getName(),modify_absenteeismDaysField));
     	modify_absenteeismDaysField.setOpaque(false); 				// 将旷工天数文本框设置为透明
     	modify_absenteeismDaysField.setBorder(null); 				// 将旷工天数文本框设置为无边框
-    	modify_absenteeismDaysField.setFont(new Font("微软雅黑",Font.PLAIN, 14));	// 设置旷工天数文本框的字体属性
+    	modify_absenteeismDaysField.setFont(new Font("微软雅黑",Font.PLAIN, 16));	// 设置旷工天数文本框的字体属性
     	// 设置旷工天数文本框的字体颜色为黄昏灰
     	modify_absenteeismDaysField.setForeground(new java.awt.Color(71, 75, 76));
     			
     	// 设置工作时长标签
     	modify_workHoursJLabel = new JLabel("工作时长");
-    	modify_workHoursJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+    	modify_workHoursJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 18));
     	modify_workHoursJLabel.setForeground(new java.awt.Color(255, 255, 255));
     			
     	// 设置工作时长文本框
@@ -632,13 +675,13 @@ public class Assess_modules extends JFrame implements ActionListener{
     	modify_workHoursField.addFocusListener(new MyFocusListener(modify_workHoursField.getName(),modify_workHoursField));
     	modify_workHoursField.setOpaque(false); 					// 将工作时长文本框设置为透明
     	modify_workHoursField.setBorder(null); 						// 将工作时长文本框设置为无边框
-    	modify_workHoursField.setFont(new Font("微软雅黑",Font.PLAIN, 14));	// 设置工作时长文本框的字体属性
+    	modify_workHoursField.setFont(new Font("微软雅黑",Font.PLAIN, 16));	// 设置工作时长文本框的字体属性
     	// 设置工作时长文本框的字体颜色为黄昏灰
     	modify_workHoursField.setForeground(new java.awt.Color(71, 75, 76));
     			
     	// 设置工作计件标签
     	modify_workPieceJLabel = new JLabel("工作计件");
-    	modify_workPieceJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+    	modify_workPieceJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 18));
     	modify_workPieceJLabel.setForeground(new java.awt.Color(255, 255, 255));
     			
     	// 设置工作计件文本框
@@ -648,13 +691,13 @@ public class Assess_modules extends JFrame implements ActionListener{
     	modify_workPieceField.addFocusListener(new MyFocusListener(modify_workPieceField.getName(),modify_workPieceField));
     	modify_workPieceField.setOpaque(false); 							// 将工作计件文本框设置为透明
     	modify_workPieceField.setBorder(null); 							// 将工作计件文本框设置为无边框
-    	modify_workPieceField.setFont(new Font("微软雅黑",Font.PLAIN, 14));	// 设置工作计件文本框的字体属性
+    	modify_workPieceField.setFont(new Font("微软雅黑",Font.PLAIN, 16));	// 设置工作计件文本框的字体属性
     	// 设置工作计件文本框的字体颜色为黄昏灰
     	modify_workPieceField.setForeground(new java.awt.Color(71, 75, 76));
     			
     	// 设置奖励次数标签
     	modify_awardNumberJLabel = new JLabel("奖励次数");
-    	modify_awardNumberJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+    	modify_awardNumberJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 18));
     	modify_awardNumberJLabel.setForeground(new java.awt.Color(255, 255, 255));
     			
     	// 设置奖励次数文本框
@@ -664,13 +707,13 @@ public class Assess_modules extends JFrame implements ActionListener{
     	modify_awardNumberField.addFocusListener(new MyFocusListener(modify_awardNumberField.getName(),modify_awardNumberField));
     	modify_awardNumberField.setOpaque(false); 							// 将奖励次数文本框设置为透明
     	modify_awardNumberField.setBorder(null); 							// 将奖励次数文本框设置为无边框
-    	modify_awardNumberField.setFont(new Font("微软雅黑",Font.PLAIN, 14));	// 设置奖励次数文本框的字体属性
+    	modify_awardNumberField.setFont(new Font("微软雅黑",Font.PLAIN, 16));	// 设置奖励次数文本框的字体属性
     	// 设置奖励次数文本框的字体颜色为黄昏灰
     	modify_awardNumberField.setForeground(new java.awt.Color(71, 75, 76));
     			
     	// 设置惩罚次数标签
     	modify_punishmentNumberJLabel = new JLabel("惩罚次数");
-    	modify_punishmentNumberJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+    	modify_punishmentNumberJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 18));
     	modify_punishmentNumberJLabel.setForeground(new java.awt.Color(255, 255, 255));
     			
     	// 设置惩罚次数文本框
@@ -680,13 +723,13 @@ public class Assess_modules extends JFrame implements ActionListener{
     	modify_punishmentNumberField.addFocusListener(new MyFocusListener(modify_punishmentNumberField.getName(),modify_punishmentNumberField));
     	modify_punishmentNumberField.setOpaque(false); 					// 将惩罚次数文本框设置为透明
     	modify_punishmentNumberField.setBorder(null); 						// 将惩罚次数文本框设置为无边框
-    	modify_punishmentNumberField.setFont(new Font("微软雅黑",Font.PLAIN, 14));	// 设置惩罚次数文本框的字体属性
+    	modify_punishmentNumberField.setFont(new Font("微软雅黑",Font.PLAIN, 16));	// 设置惩罚次数文本框的字体属性
     	// 设置惩罚次数文本框的字体颜色为黄昏灰
     	modify_punishmentNumberField.setForeground(new java.awt.Color(71, 75, 76));
     			
     	// 设置第几季度标签
     	modify_manyQuartersJLabel = new JLabel("第几季度");
-    	modify_manyQuartersJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+    	modify_manyQuartersJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 18));
     	modify_manyQuartersJLabel.setForeground(new java.awt.Color(255, 255, 255));
     			
     	// 设置第几季度文本框
@@ -696,13 +739,13 @@ public class Assess_modules extends JFrame implements ActionListener{
     	modify_manyQuartersField.addFocusListener(new MyFocusListener(modify_manyQuartersField.getName(),modify_manyQuartersField));
     	modify_manyQuartersField.setOpaque(false); 						// 将第几季度文本框设置为透明
     	modify_manyQuartersField.setBorder(null); 							// 将第几季度文本框设置为无边框
-    	modify_manyQuartersField.setFont(new Font("微软雅黑",Font.PLAIN, 14));	// 设置第几季度文本框的字体属性
+    	modify_manyQuartersField.setFont(new Font("微软雅黑",Font.PLAIN, 16));	// 设置第几季度文本框的字体属性
     	// 设置第几季度文本框的字体颜色为黄昏灰
     	modify_manyQuartersField.setForeground(new java.awt.Color(71, 75, 76));
     			
     	// 设置工作质量标签
     	modify_jobContentJLabel = new JLabel("工作质量");
-    	modify_jobContentJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+    	modify_jobContentJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 18));
     	modify_jobContentJLabel.setForeground(new java.awt.Color(255, 255, 255));
     			
     	// 设置工作质量下拉框
@@ -719,13 +762,13 @@ public class Assess_modules extends JFrame implements ActionListener{
     	modify_jobContentBox.addItem("20");
     	modify_jobContentBox.addItem("10");
     	modify_jobContentBox.setBackground(Color.WHITE);					// 设置下拉框背景颜色
-    	modify_jobContentBox.setFont(new Font("微软雅黑",Font.PLAIN, 13));		// 设置工作质量下拉框的字体属性
+    	modify_jobContentBox.setFont(new Font("微软雅黑",Font.PLAIN, 15));		// 设置工作质量下拉框的字体属性
     	modify_jobContentBox.setForeground(new java.awt.Color(71, 75, 76));// 设置下拉框字体颜色
     	modify_jobContentBox.addActionListener((ActionListener) this);		// 添加事件监听
     	    	
     	// 设置工艺改善标签
     	modify_processImproveJLabel = new JLabel("工艺改善");
-    	modify_processImproveJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+    	modify_processImproveJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 18));
     	modify_processImproveJLabel.setForeground(new java.awt.Color(255, 255, 255));
     	    	
     	// 设置工艺改善下拉框
@@ -742,13 +785,13 @@ public class Assess_modules extends JFrame implements ActionListener{
     	modify_processImproveBox.addItem("20");
     	modify_processImproveBox.addItem("10");
     	modify_processImproveBox.setBackground(Color.WHITE); 
-    	modify_processImproveBox.setFont(new Font("微软雅黑",Font.PLAIN, 13));	// 设置下拉框的字体属性
+    	modify_processImproveBox.setFont(new Font("微软雅黑",Font.PLAIN, 15));	// 设置下拉框的字体属性
     	modify_processImproveBox.setForeground(new java.awt.Color(71, 75, 76));
     	modify_processImproveBox.addActionListener((ActionListener) this);
     	    	
     	// 设置季度等级标签
     	modify_quarterClassJLabel = new JLabel("季度等级");
-    	modify_quarterClassJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+    	modify_quarterClassJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 18));
     	modify_quarterClassJLabel.setForeground(new java.awt.Color(255, 255, 255));
     	    	
     	// 设置季度等级下拉框
@@ -761,12 +804,12 @@ public class Assess_modules extends JFrame implements ActionListener{
     	modify_quarterClassBox.addItem("C+");
     	modify_quarterClassBox.addItem("C");
     	modify_quarterClassBox.setBackground(Color.WHITE); 
-    	modify_quarterClassBox.setFont(new Font("微软雅黑",Font.PLAIN, 13));	// 设置下拉框的字体属性
+    	modify_quarterClassBox.setFont(new Font("微软雅黑",Font.PLAIN, 15));	// 设置下拉框的字体属性
     	modify_quarterClassBox.setForeground(new java.awt.Color(71, 75, 76));
     	modify_quarterClassBox.addActionListener((ActionListener) this);
     	    	
     	// 设置修改界面的分析按钮
-    	modify_analyseButton = new JButton("   分 析   ");
+    	modify_analyseButton = new JButton("分  析");
     	modify_analyseButton.setContentAreaFilled(false); 				// 将修改界面的分析按钮设置为透明
     	modify_analyseButton.setBorder(null); 							// 将修改界面的分析按钮设置为无边框
     	modify_analyseButton.setFont(new Font("微软雅黑", Font.PLAIN, 17));  	// 设置修改界面的分析按钮的字体属性
@@ -782,11 +825,11 @@ public class Assess_modules extends JFrame implements ActionListener{
     	modify_closeButton.addActionListener((ActionListener) this);	// 给修改界面的关闭按钮添加事件监听
     			
     	// 设置放置修改界面图片的标签
-    	modify_windowJLabel = new JLabel(new ImageIcon("image/addInformation.png"));
+    	modify_windowJLabel = new JLabel(new ImageIcon("image/添加界面.png"));
     	
     	
     	// 设置修改按钮
-    	modifyButton = new JButton("    修 改    ");
+    	modifyButton = new JButton("修  改");
     	modifyButton.setContentAreaFilled(false); 					// 将修改按钮设置为透明
     	modifyButton.setBorder(null);								// 将修改按钮设置为无边框
     	modifyButton.setFont(new Font("微软雅黑", Font.PLAIN, 17));		// 设置修改按钮的字体属性
@@ -812,7 +855,7 @@ public class Assess_modules extends JFrame implements ActionListener{
     	plan_hoursField.addFocusListener(new MyFocusListener(plan_hoursField.getName(),plan_hoursField));
     	plan_hoursField.setOpaque(false);	 						// 将目标工时文本框设置为透明
     	plan_hoursField.setBorder(null); 							// 将目标工时文本框设置为无边框
-    	plan_hoursField.setFont(new Font("微软雅黑",Font.PLAIN, 14));	// 设置目标工时文本框的字体属性
+    	plan_hoursField.setFont(new Font("微软雅黑",Font.PLAIN, 15));	// 设置目标工时文本框的字体属性
 		// 设置目标工时文本框的字体颜色为黄昏灰
     	plan_hoursField.setForeground(new java.awt.Color(71, 75, 76));
     	
@@ -828,7 +871,7 @@ public class Assess_modules extends JFrame implements ActionListener{
     	plan_pieceField.addFocusListener(new MyFocusListener(plan_pieceField.getName(),plan_pieceField));
     	plan_pieceField.setOpaque(false);	 						// 将目标件数文本框设置为透明
     	plan_pieceField.setBorder(null); 							// 将目标件数文本框设置为无边框
-    	plan_pieceField.setFont(new Font("微软雅黑",Font.PLAIN, 14));	// 设置目标件数文本框的字体属性
+    	plan_pieceField.setFont(new Font("微软雅黑",Font.PLAIN, 15));	// 设置目标件数文本框的字体属性
 		// 设置目标件数文本框的字体颜色为黄昏灰
     	plan_pieceField.setForeground(new java.awt.Color(71, 75, 76));
     	
@@ -844,7 +887,7 @@ public class Assess_modules extends JFrame implements ActionListener{
     	plan_contentField.addFocusListener(new MyFocusListener(plan_contentField.getName(),plan_contentField));
     	plan_contentField.setOpaque(false);	 						// 将目标质量文本框设置为透明
     	plan_contentField.setBorder(null); 							// 将目标质量文本框设置为无边框
-    	plan_contentField.setFont(new Font("微软雅黑",Font.PLAIN, 14));	// 设置目标质量文本框的字体属性
+    	plan_contentField.setFont(new Font("微软雅黑",Font.PLAIN, 15));	// 设置目标质量文本框的字体属性
 		// 设置目标质量文本框的字体颜色为黄昏灰
     	plan_contentField.setForeground(new java.awt.Color(71, 75, 76));
     	
@@ -904,6 +947,37 @@ public class Assess_modules extends JFrame implements ActionListener{
     	
     	// 设置放置警告界面图片的标签
     	amWarning_windowJLabel = new JLabel(new ImageIcon("image/警告.png"));
+    	
+//    	帮助界面*****************************************************************************************************************************************************************************
+    	// 退出按钮
+    	help_quitButton = new JButton("  ");
+    	help_quitButton.setContentAreaFilled(false); 					
+    	help_quitButton.setBorder(null); 								
+    	help_quitButton.setFont(new Font("微软雅黑",Font.PLAIN, 14));
+    	help_quitButton.addActionListener((ActionListener) this);	
+    	
+    	// 帮助界面的标签
+    	helpJLabel = new JLabel(new ImageIcon("image/帮助界面.png"));
+    	
+//    	分析结果可视化界面********************************************************************************************************************************************************************
+    	// 导出按钮
+    	visual_deriveButton = new JButton("导  出");
+    	visual_deriveButton.setContentAreaFilled(false); 					
+    	visual_deriveButton.setBorder(null);								
+    	visual_deriveButton.setFont(new Font("微软雅黑", Font.PLAIN, 17));		
+    	visual_deriveButton.setForeground(new java.awt.Color(255, 255, 255));	
+    	visual_deriveButton.addActionListener((ActionListener) this);		
+    	
+    	// 退出按钮
+    	visual_quitButton = new JButton("退  出");
+    	visual_quitButton.setContentAreaFilled(false); 					
+    	visual_quitButton.setBorder(null);								
+    	visual_quitButton.setFont(new Font("微软雅黑", Font.PLAIN, 17));		
+    	visual_quitButton.setForeground(new java.awt.Color(255, 255, 255));	
+    	visual_quitButton.addActionListener((ActionListener) this);		
+    	
+    	// 按钮标签
+    	visualBLabel = new JLabel(new ImageIcon("image/可视化按钮.png"));
 		
 //		panel******************************************************************************************************
 		
@@ -911,54 +985,55 @@ public class Assess_modules extends JFrame implements ActionListener{
     	usernameJPanel = new JPanel();
     	usernameJPanel.setOpaque(false); 							// 设置usernameJPanel透明
     	usernameJPanel.setLayout(new GridLayout(1, 1, 0, 0)); 		// 设置usernameJPanel为绝对布局，四行一列，纵间距为25
-    	usernameJPanel.setBounds(13, 90, 150, 25); 					// 设置usernameJPanel面板的位置和大小
+    	usernameJPanel.setBounds(28, 105, 150, 30); 				// 设置usernameJPanel面板的位置和大小
     	usernameJPanel.add(usernameButton);
     	
 		// 设置左侧面板
 		left_functionJPanel = new JPanel();
 		left_functionJPanel.setOpaque(false); 						// 设置left_functionJPanel透明
-		left_functionJPanel.setLayout(new GridLayout(4, 1, 0, 35)); // 设置left_functionJPanel为绝对布局，四行一列，纵间距为25
-		left_functionJPanel.setBounds(21, 140, 140, 230); 			// 设置left_functionJPanel面板的位置和大小
+		left_functionJPanel.setLayout(new GridLayout(5, 1, 0, 40)); // 设置left_functionJPanel为绝对布局，四行一列，纵间距为25
+		left_functionJPanel.setBounds(35, 163, 140, 350); 			// 设置left_functionJPanel面板的位置和大小
 		left_functionJPanel.add(addButton);							// 将添加按钮添加到left_functionJPanel面板
 		left_functionJPanel.add(deleteButton);
 		left_functionJPanel.add(analyseButton);
 		left_functionJPanel.add(planButton);
+		left_functionJPanel.add(helpButton);
 		
 		// 设置搜索框面板
 		search_boxJPanel = new JPanel();
 		search_boxJPanel.setOpaque(false); 							// 将搜索框面板设置为透明
 		search_boxJPanel.setLayout(new GridLayout(1, 1, 0, 0)); 	// 设置为绝对布局，一行一列
-		search_boxJPanel.setBounds(715, 23, 290, 40); 				// 设置搜索框面板的位置和大小
+		search_boxJPanel.setBounds(850, 28, 350, 40); 				// 设置搜索框面板的位置和大小
 		search_boxJPanel.add(searchField);							// 将搜索文本框添加到搜索框面板
 		
 		// 设置搜索按钮面板
 		search_buttonJPanel = new JPanel();
 		search_buttonJPanel.setOpaque(false); 						// 将搜索按钮面板设置为透明
 		search_buttonJPanel.setLayout(new GridLayout(1, 1, 0, 0)); 	// 设置为绝对布局，一行一列
-		search_buttonJPanel.setBounds(1020, 23, 82, 40); 			// 设置搜索按钮面板的位置和大小
+		search_buttonJPanel.setBounds(1220, 26, 90, 40); 			// 设置搜索按钮面板的位置和大小
 		search_buttonJPanel.add(searchButton);						// 将搜索按钮添加到搜索按钮面板
 		
 		// 设置添加界面面板
 		addInformation_windowJPanel = new JPanel();
 		addInformation_windowJPanel.setOpaque(false);
 		addInformation_windowJPanel.setLayout(new GridLayout(1, 1, 0, 0));
-		addInformation_windowJPanel.setBounds(320, 110, 800, 500);
+		addInformation_windowJPanel.setBounds(320, 110, 960, 607);
 		addInformation_windowJPanel.add(add_windowJLabel);
 		
 		
 		// 设置添加界面的姓名、工号面板
 		add_nameAndnumJPanel = new JPanel();
 		add_nameAndnumJPanel.setOpaque(false);
-		add_nameAndnumJPanel.setLayout(new GridLayout(1, 2, 135, 0));
-		add_nameAndnumJPanel.setBounds(470, 154, 480, 35);
+		add_nameAndnumJPanel.setLayout(new GridLayout(1, 2, 165, 0));
+		add_nameAndnumJPanel.setBounds(500, 167, 570, 35);
 		add_nameAndnumJPanel.add(nameField);
 		add_nameAndnumJPanel.add(jobNumberField);
 		
 		// 设置添加界面的其余信息面板
 		add_otherInformationJPanel = new JPanel();
 		add_otherInformationJPanel.setOpaque(false);
-		add_otherInformationJPanel.setLayout(new GridLayout(6, 2, 175, 20));
-		add_otherInformationJPanel.setBounds(502, 205, 440, 302);
+		add_otherInformationJPanel.setLayout(new GridLayout(6, 2, 212, 25));
+		add_otherInformationJPanel.setBounds(536, 227, 525, 360);
 		add_otherInformationJPanel.add(normalDaysField);
 		add_otherInformationJPanel.add(lateDaysField);
 		add_otherInformationJPanel.add(leaveDaysField);
@@ -975,8 +1050,8 @@ public class Assess_modules extends JFrame implements ActionListener{
 		// 设置添加界面的按钮面板
 		add_buttonJPanel = new JPanel();
 		add_buttonJPanel.setOpaque(false);
-		add_buttonJPanel.setLayout(new GridLayout(1, 2, 35, 0)); 
-		add_buttonJPanel.setBounds(895, 555, 195, 35);
+		add_buttonJPanel.setLayout(new GridLayout(1, 2, 50, 0)); 
+		add_buttonJPanel.setBounds(1015, 643, 215, 36);
 		add_buttonJPanel.add(add_cancelButton);
 		add_buttonJPanel.add(add_saveButton);
 		
@@ -984,14 +1059,14 @@ public class Assess_modules extends JFrame implements ActionListener{
 		add_closeJPanel = new JPanel();
 		add_closeJPanel.setOpaque(false);
 		add_closeJPanel.setLayout(new GridLayout(1, 1, 0, 0)); 
-		add_closeJPanel.setBounds(1082, 120, 25, 25);
+		add_closeJPanel.setBounds(1230, 122, 30, 30);
 		add_closeJPanel.add(add_closeButton);
 		
 		// 设置添加界面的文字标签面板
 		add_textJPanel = new JPanel();
 		add_textJPanel.setOpaque(false);
-		add_textJPanel.setLayout(new GridLayout(7, 2, 175, 20));
-		add_textJPanel.setBounds(430, 155, 440, 355);
+		add_textJPanel.setLayout(new GridLayout(7, 2, 185, 40));
+		add_textJPanel.setBounds(455, 170, 550, 410);
 		add_textJPanel.add(nameJLabel);
 		add_textJPanel.add(jobNumberJLabel);
 		add_textJPanel.add(normalDaysJLabel);
@@ -1007,29 +1082,26 @@ public class Assess_modules extends JFrame implements ActionListener{
 		add_textJPanel.add(manyQuartersJLabel);
 		add_textJPanel.add(quarterClassJLabel);
 		
-		
-		
 		// 设置修改界面面板
 		modifyInformation_windowJPanel = new JPanel();
 		modifyInformation_windowJPanel.setOpaque(false);
 		modifyInformation_windowJPanel.setLayout(new GridLayout(1, 1, 0, 0));
-		modifyInformation_windowJPanel.setBounds(320, 110, 800, 500);
+		modifyInformation_windowJPanel.setBounds(320, 110, 960, 607);
 		modifyInformation_windowJPanel.add(modify_windowJLabel);
-				
-				
+					
 		// 设置修改界面的姓名、工号面板
 		modify_nameAndnumJPanel = new JPanel();
 		modify_nameAndnumJPanel.setOpaque(false);
-		modify_nameAndnumJPanel.setLayout(new GridLayout(1, 2, 135, 0));
-		modify_nameAndnumJPanel.setBounds(470, 154, 480, 35);
+		modify_nameAndnumJPanel.setLayout(new GridLayout(1, 2, 165, 0));
+		modify_nameAndnumJPanel.setBounds(500, 167, 570, 35);
 		modify_nameAndnumJPanel.add(modify_nameField);
 		modify_nameAndnumJPanel.add(modify_jobNumberField);
 				
 		// 设置修改界面的其余信息面板
 		modify_otherInformationJPanel = new JPanel();
 		modify_otherInformationJPanel.setOpaque(false);
-		modify_otherInformationJPanel.setLayout(new GridLayout(6, 2, 175, 20));
-		modify_otherInformationJPanel.setBounds(502, 205, 440, 302);
+		modify_otherInformationJPanel.setLayout(new GridLayout(6, 2, 212, 25));
+		modify_otherInformationJPanel.setBounds(536, 227, 525, 360);
 		modify_otherInformationJPanel.add(modify_normalDaysField);
 		modify_otherInformationJPanel.add(modify_lateDaysField);
 		modify_otherInformationJPanel.add(modify_leaveDaysField);
@@ -1046,8 +1118,8 @@ public class Assess_modules extends JFrame implements ActionListener{
 		// 设置修改界面的按钮面板
 		modify_buttonJPanel = new JPanel();
 		modify_buttonJPanel.setOpaque(false);
-		modify_buttonJPanel.setLayout(new GridLayout(1, 2, 35, 0)); 
-		modify_buttonJPanel.setBounds(895, 555, 195, 35);
+		modify_buttonJPanel.setLayout(new GridLayout(1, 2, 50, 0)); 
+		modify_buttonJPanel.setBounds(1015, 643, 215, 36);
 		modify_buttonJPanel.add(modify_analyseButton);
 		modify_buttonJPanel.add(modifyButton);
 				
@@ -1055,14 +1127,14 @@ public class Assess_modules extends JFrame implements ActionListener{
 		modify_closeJPanel = new JPanel();
 		modify_closeJPanel.setOpaque(false);
 		modify_closeJPanel.setLayout(new GridLayout(1, 1, 0, 0)); 
-		modify_closeJPanel.setBounds(1082, 120, 25, 25);
+		modify_closeJPanel.setBounds(1230, 122, 30, 30);
 		modify_closeJPanel.add(modify_closeButton);
 				
 		// 设置修改界面的文字标签面板
 		modify_textJPanel = new JPanel();
 		modify_textJPanel.setOpaque(false);
-		modify_textJPanel.setLayout(new GridLayout(7, 2, 175, 20));
-		modify_textJPanel.setBounds(430, 155, 440, 355);
+		modify_textJPanel.setLayout(new GridLayout(7, 2, 185, 40));
+		modify_textJPanel.setBounds(455, 170, 550, 410);
 		modify_textJPanel.add(modify_nameJLabel);
 		modify_textJPanel.add(modify_jobNumberJLabel);
 		modify_textJPanel.add(modify_normalDaysJLabel);
@@ -1076,8 +1148,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 		modify_textJPanel.add(modify_awardNumberJLabel);
 		modify_textJPanel.add(modify_punishmentNumberJLabel);
 		modify_textJPanel.add(modify_manyQuartersJLabel);
-		modify_textJPanel.add(modify_quarterClassJLabel);
-		
+		modify_textJPanel.add(modify_quarterClassJLabel);	
 		
 		// 设置目标卡界面放置背景图片的面板
 		plan_windowJPanel = new JPanel();
@@ -1098,7 +1169,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 		plan_textFieldJPanel = new JPanel();
 		plan_textFieldJPanel.setOpaque(false);
 		plan_textFieldJPanel.setLayout(new GridLayout(3, 1, 0, 30));
-		plan_textFieldJPanel.setBounds(300, 385, 160, 130);
+		plan_textFieldJPanel.setBounds(305, 385, 160, 130);
 		plan_textFieldJPanel.add(plan_hoursField);
 		plan_textFieldJPanel.add(plan_pieceField);
 		plan_textFieldJPanel.add(plan_contentField);
@@ -1129,7 +1200,6 @@ public class Assess_modules extends JFrame implements ActionListener{
 		delete_buttonJPanel.add(delete_okButton);
 		delete_buttonJPanel.add(delete_cancelButton);
 		
-		
 		// 设置添加或修改警告界面放置图片标签的面板
 		amWarning_windowJPanel = new JPanel();
 		amWarning_windowJPanel.setOpaque(false);
@@ -1150,7 +1220,6 @@ public class Assess_modules extends JFrame implements ActionListener{
 		amWarning_buttonJPanel.add(amWarning_nextButton);
 		amWarning_buttonJPanel.add(amWarning_cancelButton);
 		
-		
 		// 设置放置表格的滚动面板
 		assess_tabelJScrollPane = new JScrollPane();
 		
@@ -1159,7 +1228,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 		assess_tabelJScrollPane.setOpaque(false);
 		assess_tabelJScrollPane.getViewport().setOpaque(false);
 		
-		assess_tabelJScrollPane.setBounds(182, 75, 1082, 575);
+		assess_tabelJScrollPane.setBounds(210, 80, 1300, 695);
 		
 		// 设置放置搜索表格的滚动面板
 		select_tableJScrollPane = new JScrollPane();
@@ -1168,14 +1237,45 @@ public class Assess_modules extends JFrame implements ActionListener{
 		// 因此设置背景透明时，除了要设置pane的背景，还要将JViewport背景也设置为透明才可。
 		select_tableJScrollPane.setOpaque(false);
 		select_tableJScrollPane.getViewport().setOpaque(false);	
-		select_tableJScrollPane.setBounds(182, 75, 1082, 575);
-
+		select_tableJScrollPane.setBounds(210, 80, 1300, 695);
+		
+		// 设置分析结果可视化——环形图面板
+		visualPieJPanel = new JPanel();
+		visualPieJPanel.setOpaque(false);
+		visualPieJPanel.setBounds(210, 80, 300, 300);
+		
+		// 设置分析结果可视化按钮标签的面板
+		visualBLJPanel = new JPanel();
+		visualBLJPanel.setOpaque(false);
+		visualBLJPanel.setBounds(1220, 725, 285, 46);
+		visualBLJPanel.add(visualBLabel);
+		
+		// 设置分析结果可视化界面按钮面板
+		visualButtonJPanel = new JPanel();
+		visualButtonJPanel.setOpaque(false);
+		visualButtonJPanel.setLayout(new GridLayout(1, 2, 25, 0));
+		visualButtonJPanel.setBounds(1220, 730, 285, 38);
+		visualButtonJPanel.add(visual_deriveButton);
+		visualButtonJPanel.add(visual_quitButton);
+		
+		// 设置放置帮助界面图片标签的面板
+		helpJPanel = new JPanel();
+		helpJPanel.setOpaque(false);
+		helpJPanel.setBounds(220, 80, 1262, 546);
+		helpJPanel.add(helpJLabel);
+		
+		// 设置放置帮助界面退出按钮的面板
+		helpButtonJPanel = new JPanel();
+		helpButtonJPanel.setOpaque(false);
+		helpButtonJPanel.setBounds(1440, 90, 45, 45);
+		helpButtonJPanel.add(help_quitButton);
+		
 		
 		this.setTitle("绩效考核系统");									// 设置系统标签
 		ImageIcon icon = new ImageIcon("image\\icon.png");			// 设置系统图标
 		this.setIconImage(icon.getImage());							// 设置JFrame窗口标题图标
 	    this.setLayout(null);										// 清空布局管理器
-		this.setSize(1300, 707);									// 设置窗口宽高
+		this.setSize(1547, 835);									// 设置窗口宽高
 		this.setLocationRelativeTo(null);							// 窗体居中显示
 	    
 	    setWindows();												// 调用setWindows方法，设置窗口
@@ -1207,6 +1307,11 @@ public class Assess_modules extends JFrame implements ActionListener{
 	    Bottom_container.add(delete_buttonJPanel);
 	    Bottom_container.add(delete_textJPanel);
 	    Bottom_container.add(delete_windowJPanel);
+	    Bottom_container.add(visualPieJPanel);
+	    Bottom_container.add(visualButtonJPanel);
+	    Bottom_container.add(visualBLJPanel);
+	    Bottom_container.add(helpButtonJPanel);
+	    Bottom_container.add(helpJPanel);
 	    Bottom_container.add(select_tableJScrollPane);
 	    Bottom_container.add(assess_tabelJScrollPane);
 	    
@@ -1220,12 +1325,14 @@ public class Assess_modules extends JFrame implements ActionListener{
 	    concealPlan();
 	    concealWarning();
 	    concealseMessage();
+	    concealVisual();
+	    concealHelp();
 	}
 	
 	// 设置窗口的方法
 	public void setWindows(){
 	    ((JPanel)this.getContentPane()).setOpaque(false);
-	    ImageIcon img = new ImageIcon("image/assessBackground.png");
+	    ImageIcon img = new ImageIcon("image/绩效考核界面背景.png");
 	    JLabel background = new JLabel(img);
 	    this.getLayeredPane().add(background, new Integer(Integer.MIN_VALUE));
 	    background.setBounds(0, 0, img.getIconWidth(), img.getIconHeight());
@@ -1257,9 +1364,25 @@ public class Assess_modules extends JFrame implements ActionListener{
 				concealModify_window(); 							// 隐藏修改界面
 			}
 		}
-		else if(e.getSource() == analyseButton) {					// 如果按下功能栏的分析按钮
+		else if(e.getSource() == analyseButton) {					// 如果按下功能栏的考核按钮
 			isAnalyse = true;
 			messageTabel(usernameString);							// 刷新考核表
+		}
+		else if(e.getSource() == helpButton) {						// 如果按下功能栏的帮助按钮
+			concealAdd_window();
+			concealasMessage();
+			concealModify_window();
+			concealPlan();
+			concealseMessage();
+			concealVisual();
+			concealDelete();
+			concealWarning();
+			showHelp();
+		}
+		else if(e.getSource() == help_quitButton) {					// 如果帮助界面的退出按钮
+			concealHelp();
+			showasMessage();
+			assess_messageJTable.setEnabled(true);
 		}
 		else if(e.getSource() == searchButton) {					// 如果按下搜索按钮
 			if(searchField.getText().equals("") || searchField.getText().equals("请输入搜索内容：")) {
@@ -1296,9 +1419,30 @@ public class Assess_modules extends JFrame implements ActionListener{
 			concealModify_window();									// 隐藏修改界面
 			assess_messageJTable.setEnabled(true);					// 可以对表格进行操作
 			ismodify = false;
+			if(isSelect == true) {									// 如果当前是搜索表
+				select_messageJTable.setEnabled(true);				// 可以对表格进行操作
+			}
+		}
+		else if(e.getSource() == modify_analyseButton) {			// 如果按下修改界面的分析按钮
+			System.out.println("分析 " + usernameString);	
+			visualAnalys();
+			concealasMessage();
+			concealseMessage();
+			concealModify_window();									// 隐藏修改界面
+			assess_messageJTable.setEnabled(true);					// 可以对表格进行操作
+			ismodify = false;
 			if(isSelect == true) {
 				select_messageJTable.setEnabled(true);
 			}
+			showVisual();
+		}
+		else if(e.getSource() == visual_quitButton) {				// 如果按下结果可视化界面的退出按钮
+			concealVisual();
+			showasMessage();
+			assess_messageJTable.setEnabled(true);
+		}
+		else if(e.getSource() == visual_deriveButton) {				// 如果按下结果可视化界面的导出按钮
+			derive();
 		}
 		else if(e.getSource() == usernameButton) {				    // 如果按下个人中心按钮
 			System.out.println("欢迎 " + usernameString);								
@@ -1308,6 +1452,10 @@ public class Assess_modules extends JFrame implements ActionListener{
 			messageTabel(usernameString);							// 刷新考核表
 			cleanAdd(); 											// 清空文本框
 			assess_messageJTable.setEnabled(false);					// 不能对表格进行操作
+			isAdd = true;
+			if(isSelect == true) {
+				select_messageJTable.setEnabled(false);
+			}
 			// 完成添加操作后显示员工信息表
 			concealseMessage();
 			showasMessage();
@@ -1322,6 +1470,11 @@ public class Assess_modules extends JFrame implements ActionListener{
 		}
 		else if(e.getSource() == delete_cancelButton) {				// 如果按下删除界面的取消按钮
 			concealDelete();										// 关闭删除界面
+			assess_messageJTable.setEnabled(true);					// 可以对表格进行操作
+			isAdd = false;
+			if(isSelect == true) {
+				select_messageJTable.setEnabled(true);
+			}
 		}
 		else if(e.getSource() == amWarning_nextButton) {			// 如果按下警告界面的继续按钮
 			concealWarning();										// 关闭警告界面
@@ -1351,11 +1504,10 @@ public class Assess_modules extends JFrame implements ActionListener{
 		usernameButton.setText(usernameString);
 		usernameButton.setContentAreaFilled(false); 				// 将个人中心按钮设置为透明
 		usernameButton.setBorder(null);								// 将个人中心按钮设置为无边框
-		usernameButton.setFont(new Font("微软雅黑", Font.PLAIN, 15));	// 设置个人中心按钮的字体属性
+		usernameButton.setFont(new Font("微软雅黑", Font.PLAIN, 18));	// 设置个人中心按钮的字体属性
 		// 设置个人中心按钮的字体颜色
 		usernameButton.setForeground(new java.awt.Color(255, 255, 255));	
 		usernameButton.addActionListener((ActionListener) this);	// 给个人中心按钮添加事件监听
-		
 	}
 
 	// 设置员工信息表的方法
@@ -1407,7 +1559,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 				double result_mark = 0.00;
 				if(isAnalyse == false) {
 					assess_result = ms.rs.getString(16);
-				}else {
+				}else {											// 考核方法，将员工基础信息进行算法分析
 					if(quarter_class.equals("A+")) {
 						quarter_mark = 95.00;
 					}else if(quarter_class.equals("A")) {
@@ -1469,14 +1621,14 @@ public class Assess_modules extends JFrame implements ActionListener{
 		assess_messageJTable.setModel(model);
 		JTableHeader head = assess_messageJTable.getTableHeader(); 	// 创建表格标题对象
         head.setPreferredSize(new Dimension(head.getWidth(), 24));	// 设置表头大小
-        head.setFont(new Font("微软雅黑", Font.PLAIN, 13));			// 设置表头字体
+        head.setFont(new Font("微软雅黑", Font.PLAIN, 15));				// 设置表头字体
         head.setForeground(new java.awt.Color(71, 75, 76));			// 设置表头字体颜色
 		
 		// 设置表格字体
-		assess_messageJTable.setFont(new Font("微软雅黑", Font.PLAIN, 12));
+		assess_messageJTable.setFont(new Font("微软雅黑", Font.PLAIN, 14));
 		assess_messageJTable.setForeground(new java.awt.Color(71, 75, 76));
 		// 设置表格行宽
-		assess_messageJTable.setRowHeight(18);
+		assess_messageJTable.setRowHeight(25);
 			
 		// 为JScrollPane面板设置一个可视化图表
 		assess_tabelJScrollPane.setViewportView(assess_messageJTable);
@@ -1498,38 +1650,21 @@ public class Assess_modules extends JFrame implements ActionListener{
 					
 					// 将选中行的第一列存到id中
 					id = (String) assess_messageJTable.getValueAt(row, 0);
-//					System.out.println(id);
 					staff_name = (String) assess_messageJTable.getValueAt(row, 1);
-//					System.out.println(staff_name);
 					staff_number = (String) assess_messageJTable.getValueAt(row, 2);
-//					System.out.println(staff_number);
 					normal_days = (String) assess_messageJTable.getValueAt(row, 3);
-//					System.out.println(normal_days);
 					late_days = (String) assess_messageJTable.getValueAt(row, 4);
-//					System.out.println(late_days);
 					leave_days = (String) assess_messageJTable.getValueAt(row, 5);
-//					System.out.println(leave_days);
 					absenteeism_days = (String) assess_messageJTable.getValueAt(row, 6);
-//					System.out.println(absenteeism_days);
 					work_hours = (String) assess_messageJTable.getValueAt(row, 7);
-//					System.out.println(work_hours);
 					work_piece = (String) assess_messageJTable.getValueAt(row, 8);
-//					System.out.println(work_piece);
 					work_content = (String) assess_messageJTable.getValueAt(row, 9);
-//					System.out.println(work_content);
 					technology_improve = (String) assess_messageJTable.getValueAt(row, 10);
-//					System.out.println(technology_improve);
 					rewards_time = (String) assess_messageJTable.getValueAt(row, 11);
-//					System.out.println(rewards_time);
 					punishment_time = (String) assess_messageJTable.getValueAt(row, 12);
-//					System.out.println(punishment_time);
 					many_quarter = (String) assess_messageJTable.getValueAt(row, 13);
-//					System.out.println(many_quarter);
 					quarter_class = (String) assess_messageJTable.getValueAt(row, 14);
-//					System.out.println(quarter_class);
 					assess_result = (String) assess_messageJTable.getValueAt(row, 15);
-//					System.out.println(assess_result);
-//					System.out.println(assess_messageJTable.getValueAt(row, 0) + "\t" + assess_messageJTable.getValueAt(row, 1));
 					
 					// 将选中行的布尔值改为true，可以显示删除界面
 					isrow = true;
@@ -1624,14 +1759,14 @@ public class Assess_modules extends JFrame implements ActionListener{
 			select_messageJTable.setModel(model);
 			JTableHeader head = select_messageJTable.getTableHeader(); 	// 创建表格标题对象
 	        head.setPreferredSize(new Dimension(head.getWidth(), 24));	// 设置表头大小
-	        head.setFont(new Font("微软雅黑", Font.PLAIN, 13));			// 设置表头字体
+	        head.setFont(new Font("微软雅黑", Font.PLAIN, 15));			// 设置表头字体
 	        head.setForeground(new java.awt.Color(71, 75, 76));			// 设置表头字体颜色
 			
 			// 设置表格字体
-	        select_messageJTable.setFont(new Font("微软雅黑", Font.PLAIN, 12));
+	        select_messageJTable.setFont(new Font("微软雅黑", Font.PLAIN, 14));
 	        select_messageJTable.setForeground(new java.awt.Color(71, 75, 76));
 			// 设置表格行宽
-	        select_messageJTable.setRowHeight(18);
+	        select_messageJTable.setRowHeight(25);
 	        // 设置表格背景色为云峰白
 	        select_messageJTable.setBackground(new java.awt.Color(216, 227, 231));
 				
@@ -1655,38 +1790,21 @@ public class Assess_modules extends JFrame implements ActionListener{
 						
 						// 将选中行的第一列存到id中
 						id = (String) select_messageJTable.getValueAt(row, 0);
-//						System.out.println(id);
 						staff_name = (String) select_messageJTable.getValueAt(row, 1);
-//						System.out.println(staff_name);
 						staff_number = (String) select_messageJTable.getValueAt(row, 2);
-//						System.out.println(staff_number);
 						normal_days = (String) select_messageJTable.getValueAt(row, 3);
-//						System.out.println(normal_days);
 						late_days = (String) select_messageJTable.getValueAt(row, 4);
-//						System.out.println(late_days);
 						leave_days = (String) select_messageJTable.getValueAt(row, 5);
-//						System.out.println(leave_days);
 						absenteeism_days = (String) select_messageJTable.getValueAt(row, 6);
-//						System.out.println(absenteeism_days);
 						work_hours = (String) select_messageJTable.getValueAt(row, 7);
-//						System.out.println(work_hours);
 						work_piece = (String) select_messageJTable.getValueAt(row, 8);
-//						System.out.println(work_piece);
 						work_content = (String) select_messageJTable.getValueAt(row, 9);
-//						System.out.println(work_content);
 						technology_improve = (String) select_messageJTable.getValueAt(row, 10);
-//						System.out.println(technology_improve);
 						rewards_time = (String) select_messageJTable.getValueAt(row, 11);
-//						System.out.println(rewards_time);
 						punishment_time = (String) select_messageJTable.getValueAt(row, 12);
-//						System.out.println(punishment_time);
 						many_quarter = (String) select_messageJTable.getValueAt(row, 13);
-//						System.out.println(many_quarter);
 						quarter_class = (String) select_messageJTable.getValueAt(row, 14);
-//						System.out.println(quarter_class);
 						assess_result = (String) select_messageJTable.getValueAt(row, 15);
-//						System.out.println(assess_result);
-//						System.out.println(assess_messageJTable.getValueAt(row, 0) + "\t" + assess_messageJTable.getValueAt(row, 1));
 						
 						// 将选中行的布尔值改为true，可以显示删除界面
 						isrow = true;
@@ -1813,6 +1931,21 @@ public class Assess_modules extends JFrame implements ActionListener{
 		System.out.println("删除方法正常");
 	}
 	
+	
+	// 分析结果可视化方法
+	public void visualAnalys() {
+		BarChart bc = new BarChart();
+		bc.getDataset(staff_name, assess_result);
+    	visualPieJLabel = new JLabel(new ImageIcon("image/ring.png"));
+		visualPieJPanel.add(visualPieJLabel);
+	}
+	
+	// 导出方法
+	public void derive(){
+		Screenshot ss = new Screenshot();
+	}
+	
+	
 	// 修改界面获取表格行内容的方法
 	public void getRow() {
 		modify_nameField.setText(staff_name);
@@ -1849,7 +1982,6 @@ public class Assess_modules extends JFrame implements ActionListener{
 		processImproveBox.setSelectedIndex(0);
 		quarterClassBox.setSelectedIndex(0);
 	}
-	
 	
 	// 显示添加界面的方法
 	public void showAdd_window() {
@@ -1953,6 +2085,32 @@ public class Assess_modules extends JFrame implements ActionListener{
 	// 隐藏搜索信息表的方法
 	public void concealseMessage() {
 		select_tableJScrollPane.setVisible(false);
+	}
+	
+	// 显示分析结果可视化界面的方法
+	public void showVisual() {
+		visualPieJPanel.setVisible(true);
+		visualBLJPanel.setVisible(true);
+		visualButtonJPanel.setVisible(true);
+	}
+	
+	// 隐藏分析结果可视化界面的方法
+	public void concealVisual() {
+		visualPieJPanel.setVisible(false);
+		visualBLJPanel.setVisible(false);
+		visualButtonJPanel.setVisible(false);
+	}
+	
+	// 显示帮助界面的方法
+	public void showHelp() {
+		helpButtonJPanel.setVisible(true);
+		helpJPanel.setVisible(true);
+	}
+	
+	// 隐藏帮助界面的方法
+	public void concealHelp() {
+		helpButtonJPanel.setVisible(false);
+		helpJPanel.setVisible(false);
 	}
 	
 	public static void main(String[] args) {
