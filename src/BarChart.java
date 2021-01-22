@@ -105,13 +105,13 @@ public class BarChart {
             ChartUtilities.writeChartAsPNG(fos_jpg,chart, 300, 300, null);
             System.out.println("成功显示环形图！");
             
-            //以下由于jfreechart设置背景色后，背景会有留白，直接将目标图片截取
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ChartUtilities.writeChartAsPNG(baos,chart, 300,300, null);
-            
-            BufferedImage bi = ImageIO.read(new ByteArrayInputStream(baos.toByteArray()));
-            BufferedImage sub = bi.getSubimage(5, 0, 290, 290);
-            ImageIO.write(sub, "png", new File("E:\\Desktop\\ring_sub.png"));
+//            //以下由于jfreechart设置背景色后，背景会有留白，直接将目标图片截取
+//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//            ChartUtilities.writeChartAsPNG(baos,chart, 300,300, null);
+//            
+//            BufferedImage bi = ImageIO.read(new ByteArrayInputStream(baos.toByteArray()));
+//            BufferedImage sub = bi.getSubimage(5, 0, 290, 290);
+//            ImageIO.write(sub, "png", new File("E:\\Desktop\\ring_sub.png"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

@@ -1,8 +1,12 @@
+import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -19,6 +23,8 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -217,6 +223,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 	public boolean ismodify = false;								// 布尔判断当前是否是修改界面
 	public boolean isSelect = false;								// 布尔判断是否在搜索内容
 	public boolean isAnalyse = false;								// 布尔判断是否按下了分析按钮
+	public boolean isDerive = false;
 	
 	
 	
@@ -1275,7 +1282,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 		ImageIcon icon = new ImageIcon("image\\icon.png");			// 设置系统图标
 		this.setIconImage(icon.getImage());							// 设置JFrame窗口标题图标
 	    this.setLayout(null);										// 清空布局管理器
-		this.setSize(1547, 835);									// 设置窗口宽高
+		this.setSize(1545, 835);									// 设置窗口宽高
 		this.setLocationRelativeTo(null);							// 窗体居中显示
 	    
 	    setWindows();												// 调用setWindows方法，设置窗口
@@ -1442,6 +1449,8 @@ public class Assess_modules extends JFrame implements ActionListener{
 			assess_messageJTable.setEnabled(true);
 		}
 		else if(e.getSource() == visual_deriveButton) {				// 如果按下结果可视化界面的导出按钮
+			isDerive = true;
+			// 对坐标区域进行截图保存
 			derive();
 		}
 		else if(e.getSource() == usernameButton) {				    // 如果按下个人中心按钮
@@ -1942,9 +1951,66 @@ public class Assess_modules extends JFrame implements ActionListener{
 	
 	// 导出方法
 	public void derive(){
-		Screenshot ss = new Screenshot();
+		
+		if(isDerive == true) {
+			// 对坐标区域截图
+			Date now = new Date();
+			// 文件夹名称
+			SimpleDateFormat sdfPath = new SimpleDateFormat("yyyyMMdd");
+			// 文件前一部分名称
+			SimpleDateFormat sdfName = new SimpleDateFormat("yyyyMMddHHmmss");
+			String path = sdfPath.format(now);
+			String name = sdfName.format(now) +staff_name;
+			captureScreen("E:\\Desktop" + File.separator + path + File.separator, name + ".png");
+			System.out.println("成功导出" + staff_name + "的考核信息！");
+			// 截图成功后将布尔值改为false，待下一次截图
+			isDerive = false;
+		}
 	}
 	
+	/**
+	 * 截图
+	 * 
+	 * @param filePath
+	 *            截图保存文件夹路径
+	 * @param fileName
+	 *            截图文件名称
+	 * @throws Exception
+	 */
+	
+	public void captureScreen(String filePath, String fileName){
+		
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		Rectangle screenRectangle = new Rectangle(screenSize);
+		FileOutputStream fos_jpg = null;
+		try {
+			Robot robot = new Robot();
+			BufferedImage image = robot.createScreenCapture(screenRectangle);
+			// 截图保存的路径
+			File screenFile = new File(filePath + fileName);
+			// 如果文件夹路径不存在，则创建
+			if (!screenFile.getParentFile().exists()) {
+				screenFile.getParentFile().mkdirs();
+			}
+		 
+			// 指定屏幕区域，参数为截图左上角坐标+右下角坐标
+			BufferedImage subimage = image.getSubimage(405, 215, 1300, 645);
+			ImageIO.write(subimage, "png", screenFile);
+		}catch (FileNotFoundException e) {
+	        e.printStackTrace();
+	    }catch (IOException e) {
+	        e.printStackTrace();
+	    } catch (AWTException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+	        try {
+	            fos_jpg.close();
+	        }catch (Exception e) {
+	        	
+	        }
+	    }
+	}
 	
 	// 修改界面获取表格行内容的方法
 	public void getRow() {
@@ -2115,7 +2181,6 @@ public class Assess_modules extends JFrame implements ActionListener{
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		
 		new Assess_modules();
 		
 	}
