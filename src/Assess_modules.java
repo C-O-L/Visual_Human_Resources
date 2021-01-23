@@ -4,9 +4,11 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
+import java.awt.desktop.ScreenSleepEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -20,13 +22,17 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Path;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.imageio.ImageIO;
+import javax.security.auth.Refreshable;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -92,7 +98,8 @@ public class Assess_modules extends JFrame implements ActionListener{
 	JPanel amWarning_textJPanel;									// 放置添加或修改警告文字的面板
 	JPanel amWarning_buttonJPanel;									// 放置添加或修改警告按钮的面板
 	
-	JPanel visualPieJPanel;											// 放置分析结果环形图标签的面板
+	JPanel visualPieJPanel;											// 放置分析结果环形图和折线图标签的面板
+	JPanel visualTextJPanel;										// 放置分析结果文字标签的面板
 	JPanel visualButtonJPanel;										// 放置分析结果可视化界面中按钮的面板
 	JPanel visualBLJPanel;											// 放置分析结果可视化界面按钮标签的面板
 	
@@ -125,6 +132,13 @@ public class Assess_modules extends JFrame implements ActionListener{
 	JLabel amWarning_windowJLabel;									// 放置添加或修改警告界面图片的标签
 	JLabel amWarning_textJLabel;									// 放置添加或修改警告界面文字的标签
 	JLabel visualPieJLabel;											// 放置分析结果环形图的标签
+	JLabel visualPolyJLabel;										// 放置分析结果折线图的标签
+	JLabel visualWorkhoursJLabel;									// 放置工作时长的标签
+	JLabel visualLatehoursJLabel;									// 放置迟到时长的标签
+	JLabel visualLeavehoursJLabel;									// 放置请假时长的标签
+	JLabel visualAbsenthoursJLabel;									// 放置旷工时长的标签
+	JLabel visualWorkPieceJLabel;									// 放置工作计件的标签
+	JLabel visualPotentialJLabel;									// 放置潜力分析的标签
 	JLabel visualBLabel;											// 放置分析结果按钮的标签
 	
 	// 修改界面的标签
@@ -223,14 +237,36 @@ public class Assess_modules extends JFrame implements ActionListener{
 	public boolean ismodify = false;								// 布尔判断当前是否是修改界面
 	public boolean isSelect = false;								// 布尔判断是否在搜索内容
 	public boolean isAnalyse = false;								// 布尔判断是否按下了分析按钮
-	public boolean isDerive = false;
+	public boolean isDerive = false;								// 布尔判断是否按下了导出按钮
+	public boolean isPie = false;									// 布尔判断是否显示了环形图
+	public boolean isPoly = false;									// 布尔判断是否显示了折线图
 	
 	
-	
+	// 存储获取的表格内容
 	String id; String staff_name; String staff_number; String normal_days; String late_days; 
 	String leave_days; String absenteeism_days; String work_hours; String work_piece; 
 	String work_content; String technology_improve; String rewards_time; 
 	String punishment_time; String many_quarter; String quarter_class; String assess_result;
+	// 存储四个季度的考核结果
+	String oneString;	String twoString;	String threeString;    String fourString;
+	// 存储四个季度的迟到天数
+	String oneLateString;	String twoLateString;	String threeLateString;		String fourLateString;
+	// 存储四个季度的请假天数
+	String oneLeaveString;	String twoLeaveString;	String threeLeaveString;	String fourLeaveString;
+	// 存储四个季度的旷工天数
+	String oneAbsentString;	String twoAbsentString;	String threeAbsentString;	String fourAbsentString;
+	// 存储四个季度的工作时长
+	String oneWhString;		String twoWhString;		String threeWhString;		String fourWhString;
+	// 存储四个季度的工作件数
+	String oneWpString;		String twoWpString;		String threeWpString;		String fourWpString;
+	// 存储四个季度的奖励次数
+	String oneRewardString;	String twoRewardString;	String threeRewardString;	String fourRewardString;
+	// 存储四个季度的惩罚次数
+	String onePunishString;	String twoPunishString;	String threePunishString;	String fourPunishString;
+	
+	// 存储时间
+	String timeString;
+	
 
 	// 构造方法
 	public Assess_modules() {
@@ -1246,10 +1282,17 @@ public class Assess_modules extends JFrame implements ActionListener{
 		select_tableJScrollPane.getViewport().setOpaque(false);	
 		select_tableJScrollPane.setBounds(210, 80, 1300, 695);
 		
-		// 设置分析结果可视化——环形图面板
+		// 设置分析结果可视化——环形图、折线图面板
 		visualPieJPanel = new JPanel();
 		visualPieJPanel.setOpaque(false);
-		visualPieJPanel.setBounds(210, 80, 300, 300);
+		visualPieJPanel.setLayout(new GridLayout(1, 2, 50, 0));
+		visualPieJPanel.setBounds(210, 80, 1200, 400);
+		
+		// 设置分析结果可视化——文字标签面板
+		visualTextJPanel = new JPanel();
+		visualTextJPanel.setOpaque(false);
+		visualTextJPanel.setLayout(new GridLayout(6, 1, 0, 0));
+		visualTextJPanel.setBounds(230, 480, 1300, 250);
 		
 		// 设置分析结果可视化按钮标签的面板
 		visualBLJPanel = new JPanel();
@@ -1315,6 +1358,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 	    Bottom_container.add(delete_textJPanel);
 	    Bottom_container.add(delete_windowJPanel);
 	    Bottom_container.add(visualPieJPanel);
+	    Bottom_container.add(visualTextJPanel);
 	    Bottom_container.add(visualButtonJPanel);
 	    Bottom_container.add(visualBLJPanel);
 	    Bottom_container.add(helpButtonJPanel);
@@ -1431,22 +1475,60 @@ public class Assess_modules extends JFrame implements ActionListener{
 			}
 		}
 		else if(e.getSource() == modify_analyseButton) {			// 如果按下修改界面的分析按钮
-			System.out.println("分析 " + usernameString);	
+	        
+			System.out.println("分析 " + staff_name);	
+			// 设置日期格式
+			SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");  			
+			timeString = df.format(new Date()); 					// new Date()为获取当前系统时间
+			
 			visualAnalys();
+			
 			concealasMessage();
 			concealseMessage();
 			concealModify_window();									// 隐藏修改界面
-			assess_messageJTable.setEnabled(true);					// 可以对表格进行操作
+			assess_messageJTable.setEnabled(false);					
 			ismodify = false;
 			if(isSelect == true) {
-				select_messageJTable.setEnabled(true);
+				select_messageJTable.setEnabled(false);
 			}
-			showVisual();
+			
+			if(isPie == true && isPoly == true) {
+				showVisual();
+			}
 		}
 		else if(e.getSource() == visual_quitButton) {				// 如果按下结果可视化界面的退出按钮
 			concealVisual();
+			// 删除指定位置的本地图片(删除成功返回true,失败返回false)
+	        System.out.println(new File("image\\" + timeString + "pie.png").delete());
+	        System.out.println(new File("image\\" + timeString + "poly.png").delete());
+	        // 刷新可视化界面
+	        visualPieJLabel.removeAll();
+	        visualPieJLabel.updateUI();
+	        visualPieJLabel.repaint();
+	        visualPieJLabel.setIcon(null);
+	        visualPolyJLabel.removeAll();
+	        visualPolyJLabel.updateUI();
+	        visualPolyJLabel.repaint();
+	        visualPolyJLabel.setIcon(null);
+	        visualPieJPanel.removeAll();
+	        visualPieJPanel.repaint();
+	        visualPieJPanel.validate();
+	        visualPieJPanel.updateUI();
+	        visualPieJPanel.revalidate();
+	        visualWorkhoursJLabel.setText("");
+	        visualWorkhoursJLabel.setText("");
+	        visualLeavehoursJLabel.setText("");
+	        visualAbsenthoursJLabel.setText("");
+	        visualWorkPieceJLabel.setText("");
+	        visualPotentialJLabel.setText("");
+	        visualTextJPanel.removeAll();
+	        visualTextJPanel.updateUI();
+	        visualTextJPanel.revalidate();
+	        
 			showasMessage();
 			assess_messageJTable.setEnabled(true);
+			isPie = false;
+			isPoly = false;
 		}
 		else if(e.getSource() == visual_deriveButton) {				// 如果按下结果可视化界面的导出按钮
 			isDerive = true;
@@ -1487,6 +1569,12 @@ public class Assess_modules extends JFrame implements ActionListener{
 		}
 		else if(e.getSource() == amWarning_nextButton) {			// 如果按下警告界面的继续按钮
 			concealWarning();										// 关闭警告界面
+			if(isAdd == true) {										// 如果当前是添加界面
+				assess_messageJTable.setEnabled(true);				// 可以对表格进行操作
+			}
+			if(ismodify == true) {									// 如果当前是修改界面
+				assess_messageJTable.setEnabled(true);				// 可以对表格进行操作
+			}
 		}
 		else if(e.getSource() == amWarning_cancelButton) {			// 如果按下警告界面的取消按钮
 			concealWarning();										// 关闭警告界面
@@ -1674,6 +1762,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 					many_quarter = (String) assess_messageJTable.getValueAt(row, 13);
 					quarter_class = (String) assess_messageJTable.getValueAt(row, 14);
 					assess_result = (String) assess_messageJTable.getValueAt(row, 15);
+					
 					
 					// 将选中行的布尔值改为true，可以显示删除界面
 					isrow = true;
@@ -1943,10 +2032,244 @@ public class Assess_modules extends JFrame implements ActionListener{
 	
 	// 分析结果可视化方法
 	public void visualAnalys() {
+		
+		// 查询绘图所数据
+		Mysql ms = new Mysql();
+		ms.ConnectSQL();
+		
+		String b = "_performance_appraisal_list";
+		String tabelName = usernameString + b;
+		
+		try {
+			ms.ps = ms.ct.prepareStatement("select assess_result, late_days, leave_days, "
+					+ "absenteeism_days, work_hours, work_piece, rewards_time, punishment_time "
+					+ "from "+tabelName+" where staff_name = ? and many_quarter like '%-1'");
+			ms.ps.setString(1, staff_name);
+			ms.rs = ms.ps.executeQuery();
+			
+			if(ms.rs.next())
+			{
+				ms.loginClose();
+				oneString = ms.rs.getString(1);
+				oneLateString = ms.rs.getString(2);
+				oneLeaveString = ms.rs.getString(3);
+				oneAbsentString = ms.rs.getString(4);
+				oneWhString = ms.rs.getString(5);
+				oneWpString = ms.rs.getString(6);
+				oneRewardString = ms.rs.getString(7);
+				onePunishString = ms.rs.getString(8);
+			}else
+			{
+				ms.loginClose();
+				oneString = 0 + "";
+				oneLateString = 0 + "";
+				oneLeaveString = 0 + "";
+				oneAbsentString = 0 + "";
+				oneWhString = 0 + "";
+				oneWpString = 0 + "";
+				oneRewardString = 0 + "";
+				onePunishString = 0 + "";
+			}
+			
+			ms.ps = ms.ct.prepareStatement("select assess_result, late_days, leave_days, "
+					+ "absenteeism_days, work_hours, work_piece, rewards_time, punishment_time "
+					+ "from "+tabelName+" where staff_name = ? and many_quarter like '%-2'");
+			ms.ps.setString(1, staff_name);
+			ms.rs = ms.ps.executeQuery();
+			
+			if(ms.rs.next())
+			{
+				ms.loginClose();
+				twoString = ms.rs.getString(1);
+				twoLateString = ms.rs.getString(2);
+				twoLeaveString = ms.rs.getString(3);
+				twoAbsentString = ms.rs.getString(4);
+				twoWhString = ms.rs.getString(5);
+				twoWpString = ms.rs.getString(6);
+				twoRewardString = ms.rs.getString(7);
+				twoPunishString = ms.rs.getString(8);
+			}else
+			{
+				ms.loginClose();
+				twoString = 0 + "";
+				twoLateString = 0 + "";
+				twoLeaveString = 0 + "";
+				twoAbsentString = 0 + "";
+				twoWhString = 0 + "";
+				twoWpString = 0 + "";
+				twoRewardString = 0 + "";
+				twoPunishString = 0 + "";
+			}
+			
+			ms.ps = ms.ct.prepareStatement("select assess_result, late_days, leave_days, "
+					+ "absenteeism_days, work_hours, work_piece, rewards_time, punishment_time "
+					+ "from "+tabelName+" where staff_name = ? and many_quarter like '%-3'");
+			ms.ps.setString(1, staff_name);
+			ms.rs = ms.ps.executeQuery();
+			
+			if(ms.rs.next())
+			{
+				ms.loginClose();
+				threeString = ms.rs.getString(1);
+				threeLateString = ms.rs.getString(2);
+				threeLeaveString = ms.rs.getString(3);
+				threeAbsentString = ms.rs.getString(4);
+				threeWhString = ms.rs.getString(5);
+				threeWpString = ms.rs.getString(6);
+				threeRewardString = ms.rs.getString(7);
+				threePunishString = ms.rs.getString(8);
+			}else
+			{
+				ms.loginClose();
+				threeString = 0 + "";
+				threeLateString = 0 + "";
+				threeLeaveString = 0 + "";
+				threeAbsentString = 0 + "";
+				threeWhString = 0 + "";
+				threeWpString = 0 + "";
+				threeRewardString = 0 + "";
+				threePunishString = 0 + "";
+			}
+			
+			ms.ps = ms.ct.prepareStatement("select assess_result, late_days, leave_days, "
+					+ "absenteeism_days, work_hours, work_piece, rewards_time, punishment_time "
+					+ "from "+tabelName+" where staff_name = ? and many_quarter like '%-4'");
+			ms.ps.setString(1, staff_name);
+			ms.rs = ms.ps.executeQuery();
+			
+			if(ms.rs.next())
+			{
+				ms.loginClose();
+				fourString = ms.rs.getString(1);
+				fourLateString = ms.rs.getString(2);
+				fourLeaveString = ms.rs.getString(3);
+				fourAbsentString = ms.rs.getString(4);
+				fourWhString = ms.rs.getString(5);
+				fourWpString = ms.rs.getString(6);
+				fourRewardString = ms.rs.getString(7);
+				fourPunishString = ms.rs.getString(8);
+			}else
+			{
+				ms.loginClose();
+				fourString = 0 + "";
+				fourLateString = 0 + "";
+				fourLeaveString = 0 + "";
+				fourAbsentString = 0 + "";
+				fourWhString = 0 + "";
+				fourWpString = 0 + "";
+				fourRewardString = 0 + "";
+				fourPunishString = 0 + "";
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			try {
+				ms.ct.close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		
+		// 调用绘图工具类进行绘图展示
 		BarChart bc = new BarChart();
-		bc.getDataset(staff_name, assess_result);
-    	visualPieJLabel = new JLabel(new ImageIcon("image/ring.png"));
-		visualPieJPanel.add(visualPieJLabel);
+		bc.getDataset(timeString, staff_name, assess_result, oneString, twoString, threeString, fourString);
+		if(bc.isPie == true && bc.isPoly == true) {
+			// 显示环形图和折线图
+			visualPieJLabel = new JLabel(new ImageIcon("image\\" + timeString + "pie.png"));
+			visualPolyJLabel = new JLabel(new ImageIcon("image\\" + timeString + "poly.png"));
+			visualPieJPanel.add(visualPieJLabel);
+			visualPieJPanel.add(visualPolyJLabel);
+			isPie = true;
+			bc.isPie = false;
+			isPoly = true;
+			bc.isPoly = false;
+			
+			// 显示文字标签
+			// 总工作时长，先转换成double类型计算，然后再转化为String类型，保留两位小数
+			double workhour = Double.parseDouble(oneWhString) + Double.parseDouble(twoWhString) 
+				+ Double.parseDouble(threeWhString) + Double.parseDouble(fourWhString);
+			BigDecimal bD1 = new BigDecimal(workhour);
+			workhour = bD1.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+			String workhourString = "" + workhour;
+			// 总迟到时长
+			int latehour = Integer.parseInt(oneLateString) + Integer.parseInt(twoLateString)
+				+ Integer.parseInt(threeLateString) + Integer.parseInt(fourLateString);
+			String latehourString = "" + latehour;
+			// 总请假时长
+			double leavehour = Double.parseDouble(oneLeaveString) + Double.parseDouble(twoLeaveString)
+				+ Double.parseDouble(threeLeaveString) + Double.parseDouble(fourLeaveString);
+			BigDecimal bD3 = new BigDecimal(leavehour);
+			leavehour = bD3.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+			String leavehourString = "" + leavehour;
+			// 总旷工时长
+			double absenthour = Double.parseDouble(oneAbsentString) + Double.parseDouble(twoAbsentString)
+				+ Double.parseDouble(threeAbsentString) + Double.parseDouble(fourAbsentString);
+			BigDecimal bD4 = new BigDecimal(absenthour);
+			leavehour = bD4.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+			String absenthourString = "" + absenthour;
+			// 总工作件数
+			int workPiece = Integer.parseInt(oneWpString) + Integer.parseInt(twoWpString)
+				+ Integer.parseInt(threeWpString) + Integer.parseInt(fourWpString);
+			String workPieceString = "" + workPiece;
+			// 总奖励次数
+			int Rewardtime = Integer.parseInt(oneRewardString) + Integer.parseInt(twoRewardString)
+				+ Integer.parseInt(threeRewardString) + Integer.parseInt(fourRewardString);
+			String RewardString = "" + Rewardtime;
+			// 总惩罚次数
+			int Punishtime = Integer.parseInt(onePunishString) + Integer.parseInt(twoPunishString)
+				+ Integer.parseInt(threePunishString) + Integer.parseInt(fourPunishString);
+			String PunishtimeString = "" + Punishtime;
+			
+			String Potential = "";
+			// 如果绩效稳步上升
+			if(Double.parseDouble(oneString) <= Double.parseDouble(twoString) 
+				&& Double.parseDouble(twoString) <= Double.parseDouble(threeString)
+				&& Double.parseDouble(threeString) <= Double.parseDouble(fourString)) {
+				Potential = "在本年度内，绩效稳中有进，可加大培养力度！";
+			}
+			else if(Double.parseDouble(oneString) <= Double.parseDouble(twoString) 
+					&& Double.parseDouble(twoString) <= Double.parseDouble(threeString)
+					&& Double.parseDouble(oneString) >= Double.parseDouble(fourString)) {
+				Potential = "在本年度内，临近年末，绩效倒退，建议多加观察！";
+			}
+			
+			visualWorkhoursJLabel = new JLabel(staff_name + "在本年度中总工作时长为：" + workhourString + "小时，"
+					+ "其中第一季度为：" + oneWhString + "小时，第二季度为：" + twoWhString + "小时，第三季度为："
+					+ threeWhString + "小时，第四季度为：" + fourWhString + "小时。");
+			visualWorkhoursJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+			
+			visualLatehoursJLabel = new JLabel(staff_name + "在本年度中总迟到时长为：" + latehourString + "分钟，"
+					+ "其中第一季度为：" + oneLateString + "分钟，第二季度为：" + twoLateString + "分钟，第三季度为："
+					+ threeLateString + "分钟，第四季度为：" + fourLateString + "分钟。");
+			visualLatehoursJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+			
+			visualLeavehoursJLabel = new JLabel(staff_name + "在本年度中总请假天数为：" + leavehourString + "天，"
+					+ "其中第一季度为：" + oneLeaveString + "天，第二季度为：" + twoLeaveString + "天，第三季度为："
+					+ threeLeaveString + "天，第四季度为：" + fourLeaveString + "天。");
+			visualLeavehoursJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+			
+			visualAbsenthoursJLabel = new JLabel(staff_name + "在本年度中总旷工天数为：" + absenthourString + "天，"
+					+ "其中第一季度为：" + oneAbsentString + "天，第二季度为：" + twoAbsentString + "天，第三季度为："
+					+ threeAbsentString + "天，第四季度为：" + fourAbsentString + "天。");
+			visualAbsenthoursJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+			
+			visualWorkPieceJLabel = new JLabel(staff_name + "在本年度中总工作件数为：" + workPieceString + "件，"
+					+ "其中第一季度为：" + oneWpString + "件，第二季度为：" + twoWpString + "件，第三季度为："
+					+ threeWpString + "件，第四季度为：" + fourWpString + "件。");
+			visualWorkPieceJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+			
+			visualPotentialJLabel = new JLabel(staff_name + "在本年度中总奖励次数为：" + RewardString + "次，"
+					+ "总惩罚次数为：" + PunishtimeString + "次；" + Potential);
+			visualPotentialJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
+	    	
+	    	visualTextJPanel.add(visualWorkhoursJLabel);
+	    	visualTextJPanel.add(visualLatehoursJLabel);
+	    	visualTextJPanel.add(visualLeavehoursJLabel);
+	    	visualTextJPanel.add(visualAbsenthoursJLabel);
+	    	visualTextJPanel.add(visualWorkPieceJLabel);
+	    	visualTextJPanel.add(visualPotentialJLabel);
+		}
 	}
 	
 	// 导出方法
@@ -2158,6 +2481,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 		visualPieJPanel.setVisible(true);
 		visualBLJPanel.setVisible(true);
 		visualButtonJPanel.setVisible(true);
+		visualTextJPanel.setVisible(true);
 	}
 	
 	// 隐藏分析结果可视化界面的方法
@@ -2165,6 +2489,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 		visualPieJPanel.setVisible(false);
 		visualBLJPanel.setVisible(false);
 		visualButtonJPanel.setVisible(false);
+		visualTextJPanel.setVisible(false);
 	}
 	
 	// 显示帮助界面的方法

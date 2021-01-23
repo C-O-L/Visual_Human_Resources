@@ -144,15 +144,7 @@ public class Login_modules extends JFrame implements ActionListener{
 		password_registertwo.setBorder(null);						// 将password_registertwo控件设置为无边框
 		// 设置password_registertwo的字体、普通、大小
 		password_registertwo.setFont(new Font("微软雅黑", Font.PLAIN, 14));	
-		
-//		// 设置注册面板的验证码文本框
-//		veriflcationCode_register = new JTextField();
-//		veriflcationCode_register.setOpaque(false); 				// 将veriflcationCode_register控件设置为透明
-//		veriflcationCode_register.setBorder(null); 					// 将veriflcationCode_register控件设置为无边框
-//		// 设置veriflcationCode_register的字体、斜体加粗、大小
-//		veriflcationCode_register.setFont(new Font("微软雅黑", Font.ITALIC|Font.BOLD, 16));
-//		veriflcationCode_register.setForeground(Color.red);			// 设置veriflcationCode_register的字体颜色为红色			
-		
+
 		// 设置注册面板的返回按钮
 		helpButton = new JButton();
 		helpButton.setContentAreaFilled(false); 					// 将helpButton按钮设置为透明
@@ -348,7 +340,6 @@ public class Login_modules extends JFrame implements ActionListener{
 			if(s.thisclose == true) {								// 如果登录成功关闭当前窗口
 				this.setVisible(false);
 			}
-			
  		}
 	}
 	

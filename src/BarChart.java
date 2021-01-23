@@ -31,6 +31,8 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.RingPlot;
 import org.jfree.chart.title.LegendTitle;
 import org.jfree.chart.title.TextTitle;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 import org.jfree.ui.Layer;
@@ -40,8 +42,17 @@ import org.jfree.ui.TextAnchor;
 public class BarChart {
 	
 	String staffName;										// 员工姓名
+	String timePie;
+	String timePoly;
 	double assessResult;									// 考核结果
 	double deductMarks;										// 扣分
+	double one;												// 第一季度绩效
+	double two;												// 第二季度绩效
+	double three;
+	double four;
+	
+	public boolean isPie = false;							// 判断是否生成环形图
+	public boolean isPoly = false;							// 布尔判断是否生成了折线图
 	
     public BarChart() {
     	 
@@ -55,7 +66,8 @@ public class BarChart {
 	    	super.apply(chart);  
 	    }  
 	};
-        
+      
+	// 环形图
     @SuppressWarnings("deprecation")
     public void createChart() {
     	
@@ -66,7 +78,7 @@ public class BarChart {
         ringplot.setOutlineVisible(false);							// 坐标区表框是否显示
         // {0}表示section名	{1}表示显示具体分数		{2}表示显示百分比
         ringplot.setLabelGenerator(new StandardPieSectionLabelGenerator(" {0} {1}"));
-        ringplot.setBackgroundPaint(new Color(253,253,253));
+        ringplot.setBackgroundPaint(new Color(255,255,255));
         ringplot.setOutlineVisible(false);
         
         //设置标签样式
@@ -101,10 +113,11 @@ public class BarChart {
 
         FileOutputStream fos_jpg = null;
         try {
-            fos_jpg = new FileOutputStream("image\\ring.png");
-            ChartUtilities.writeChartAsPNG(fos_jpg,chart, 300, 300, null);
+        	// 保存的图片用日期时间命名
+            fos_jpg = new FileOutputStream(timePie);
+            ChartUtilities.writeChartAsPNG(fos_jpg,chart, 350, 350, null);
             System.out.println("成功显示环形图！");
-            
+            isPie = true;
 //            //以下由于jfreechart设置背景色后，背景会有留白，直接将目标图片截取
 //            ByteArrayOutputStream baos = new ByteArrayOutputStream();
 //            ChartUtilities.writeChartAsPNG(baos,chart, 300,300, null);
@@ -132,15 +145,88 @@ public class BarChart {
         dataSet.setValue("扣分", deductMarks);
         return dataSet;
     }
-     
+    
+    
+    // 折线图
+    public void createPoly() {
+		StandardChartTheme mChartTheme = new StandardChartTheme("CN");
+        mChartTheme.setLargeFont(new Font("微软雅黑", Font.BOLD, 20));
+        mChartTheme.setExtraLargeFont(new Font("微软雅黑", Font.PLAIN, 15));
+        mChartTheme.setRegularFont(new Font("微软雅黑", Font.PLAIN, 15));
+        ChartFactory.setChartTheme(mChartTheme);
+        
+        CategoryDataset mDataset = GetDataset();
+        JFreeChart mChart = ChartFactory.createLineChart(
+                "潜力分析",						// 图名字
+                "季度",						// 横坐标
+                "绩效",						// 纵坐标
+                mDataset,					// 数据集
+                PlotOrientation.VERTICAL,
+                true, 						// 显示图例
+                true, 						// 采用标准生成器
+                false);						// 是否生成超链接
+
+        mChart.getLegend().setVisible(false);
+        CategoryPlot mPlot = (CategoryPlot)mChart.getPlot();
+        mPlot.setBackgroundPaint(Color.LIGHT_GRAY);
+        mPlot.setRangeGridlinePaint(Color.BLUE);		// 背景底部横虚线
+        mPlot.setOutlinePaint(Color.RED);				// 边界线
+
+        // 保存为图片
+        FileOutputStream fos_jpg = null;
+        try {
+            fos_jpg = new FileOutputStream(timePoly);
+            ChartUtilities.writeChartAsPNG(fos_jpg, mChart, 600, 400, null);
+            System.out.println("成功显示折线图！");
+            isPoly = true;
+            
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fos_jpg.close();
+            } catch (Exception e) {
+            	
+            }
+        }
+    }
+
+    private DefaultCategoryDataset GetDataset(){
+    	DefaultCategoryDataset mDataset = new DefaultCategoryDataset();
+        mDataset.addValue(one, "", "第一季度");
+        mDataset.addValue(two, "", "第二季度");
+        mDataset.addValue(three, "", "第三季度");
+        mDataset.addValue(four, "", "第四季度");
+        return mDataset;
+    }
      
     // 接收员工姓名与考核结果
-    public void getDataset(String name, String result) {
-		staffName = name;
+    public void getDataset(String time, String name, String result, String oneString, String twoString, String threeString, String fourString) {
+    	
+    	staffName = name;
+    	timePie = "image\\" + time + "pie.png";
+    	timePoly = "image\\" + time + "poly.png";
+    	
 		assessResult = Double.parseDouble(result);
 		deductMarks = 100.00 - Double.parseDouble(result);
 		createChart();
+    	
+    	one = Double.parseDouble(oneString);
+    	two = Double.parseDouble(twoString);
+    	three = Double.parseDouble(threeString);
+    	four = Double.parseDouble(fourString);
+		createPoly();
 	}
+     
+//    // 接收员工姓名与考核结果
+//    public void getDataset(String name, String result) {
+//		staffName = name;
+//		assessResult = Double.parseDouble(result);
+//		deductMarks = 100.00 - Double.parseDouble(result);
+//		createChart();
+//	}
      
     
 	public static void main(String[] args) {
