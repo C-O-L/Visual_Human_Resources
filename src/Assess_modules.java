@@ -1292,7 +1292,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 		visualTextJPanel = new JPanel();
 		visualTextJPanel.setOpaque(false);
 		visualTextJPanel.setLayout(new GridLayout(6, 1, 0, 0));
-		visualTextJPanel.setBounds(230, 480, 1300, 250);
+		visualTextJPanel.setBounds(220, 480, 1300, 250);
 		
 		// 设置分析结果可视化按钮标签的面板
 		visualBLJPanel = new JPanel();
@@ -2221,19 +2221,6 @@ public class Assess_modules extends JFrame implements ActionListener{
 				+ Integer.parseInt(threePunishString) + Integer.parseInt(fourPunishString);
 			String PunishtimeString = "" + Punishtime;
 			
-			String Potential = "";
-			// 如果绩效稳步上升
-			if(Double.parseDouble(oneString) <= Double.parseDouble(twoString) 
-				&& Double.parseDouble(twoString) <= Double.parseDouble(threeString)
-				&& Double.parseDouble(threeString) <= Double.parseDouble(fourString)) {
-				Potential = "在本年度内，绩效稳中有进，可加大培养力度！";
-			}
-			else if(Double.parseDouble(oneString) <= Double.parseDouble(twoString) 
-					&& Double.parseDouble(twoString) <= Double.parseDouble(threeString)
-					&& Double.parseDouble(oneString) >= Double.parseDouble(fourString)) {
-				Potential = "在本年度内，临近年末，绩效倒退，建议多加观察！";
-			}
-			
 			visualWorkhoursJLabel = new JLabel(staff_name + "在本年度中总工作时长为：" + workhourString + "小时，"
 					+ "其中第一季度为：" + oneWhString + "小时，第二季度为：" + twoWhString + "小时，第三季度为："
 					+ threeWhString + "小时，第四季度为：" + fourWhString + "小时。");
@@ -2260,7 +2247,10 @@ public class Assess_modules extends JFrame implements ActionListener{
 			visualWorkPieceJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
 			
 			visualPotentialJLabel = new JLabel(staff_name + "在本年度中总奖励次数为：" + RewardString + "次，"
-					+ "总惩罚次数为：" + PunishtimeString + "次；" + Potential);
+					+ "总惩罚次数为：" + PunishtimeString + "次；第一季度奖惩次数各为：" + oneRewardString + "次、" + onePunishString
+					+ "次；第二季度各为：" + twoRewardString + "次、" + twoPunishString+ "次；第三季度各为：" 
+					+ threeRewardString + "次、" + threePunishString+ "次；第四季度各为：" + fourRewardString + "次、" 
+					+ fourPunishString+ "次。");
 			visualPotentialJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 16));
 	    	
 	    	visualTextJPanel.add(visualWorkhoursJLabel);
@@ -2284,7 +2274,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 			SimpleDateFormat sdfName = new SimpleDateFormat("yyyyMMddHHmmss");
 			String path = sdfPath.format(now);
 			String name = sdfName.format(now) +staff_name;
-			captureScreen("E:\\Desktop" + File.separator + path + File.separator, name + ".png");
+			captureScreen("E:\\Desktop\\" + File.separator + path + File.separator, name + ".png");
 			System.out.println("成功导出" + staff_name + "的考核信息！");
 			// 截图成功后将布尔值改为false，待下一次截图
 			isDerive = false;
