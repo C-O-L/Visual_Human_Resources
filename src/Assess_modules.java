@@ -240,7 +240,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 	public boolean isDerive = false;								// 布尔判断是否按下了导出按钮
 	public boolean isPie = false;									// 布尔判断是否显示了环形图
 	public boolean isPoly = false;									// 布尔判断是否显示了折线图
-	
+
 	
 	// 存储获取的表格内容
 	String id; String staff_name; String staff_number; String normal_days; String late_days; 
@@ -606,7 +606,7 @@ public class Assess_modules extends JFrame implements ActionListener{
     	add_closeButton.addActionListener((ActionListener) this);	// 给添加界面的关闭按钮添加事件监听
 		
     	// 设置放置添加界面图片的标签
-    	add_windowJLabel = new JLabel(new ImageIcon("image/添加界面.png"));
+    	add_windowJLabel = new JLabel(new ImageIcon("E:\\user\\Documents\\UI\\绩效考核系统UI\\界面\\添加界面.png"));
     	
 //    修改界面*************************************************************************************************	
     	
@@ -868,7 +868,7 @@ public class Assess_modules extends JFrame implements ActionListener{
     	modify_closeButton.addActionListener((ActionListener) this);	// 给修改界面的关闭按钮添加事件监听
     			
     	// 设置放置修改界面图片的标签
-    	modify_windowJLabel = new JLabel(new ImageIcon("image/添加界面.png"));
+    	modify_windowJLabel = new JLabel(new ImageIcon("E:\\user\\Documents\\UI\\绩效考核系统UI\\界面\\添加界面.png"));
     	
     	
     	// 设置修改按钮
@@ -884,7 +884,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 //    	目标卡*************************************************************************************************
     	
     	// 设置放置目标卡图片的标签
-    	plan_windowJLabel = new JLabel(new ImageIcon("image/目标卡.png"));
+    	plan_windowJLabel = new JLabel(new ImageIcon("E:\\user\\Documents\\UI\\绩效考核系统UI\\界面\\目标卡.png"));
     	
     	// 设置目标卡界面的目标工时标签
     	plan_hoursJLabel = new JLabel("目标工时");
@@ -964,14 +964,14 @@ public class Assess_modules extends JFrame implements ActionListener{
     	delete_cancelButton.addActionListener((ActionListener) this);		// 给取消按钮添加事件监听
     	
     	// 设置放置添加界面图片的标签
-    	delete_windowJLabel = new JLabel(new ImageIcon("image/警告.png"));
+    	delete_windowJLabel = new JLabel(new ImageIcon("E:\\user\\Documents\\UI\\绩效考核系统UI\\界面\\警告.png"));
     	
     	
 //    	添加或修改警告界面******************************************************************************************************
     	
     	// 设置警告界面的文字标签
-    	amWarning_textJLabel = new JLabel("当前页面所有内容不能为空！");
-    	amWarning_textJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 15));
+    	amWarning_textJLabel = new JLabel("格式不正确或部分内容为空，请重新输入！");
+    	amWarning_textJLabel.setFont(new Font("微软雅黑",Font.PLAIN, 14));
     	amWarning_textJLabel.setForeground(new java.awt.Color(255, 255, 255));
     	
     	// 设置警告界面的继续按钮
@@ -989,7 +989,7 @@ public class Assess_modules extends JFrame implements ActionListener{
     	amWarning_cancelButton.addActionListener((ActionListener) this);		// 给取消按钮添加事件监听
     	
     	// 设置放置警告界面图片的标签
-    	amWarning_windowJLabel = new JLabel(new ImageIcon("image/警告.png"));
+    	amWarning_windowJLabel = new JLabel(new ImageIcon("E:\\user\\Documents\\UI\\绩效考核系统UI\\界面\\警告.png"));
     	
 //    	帮助界面*****************************************************************************************************************************************************************************
     	// 退出按钮
@@ -1000,7 +1000,7 @@ public class Assess_modules extends JFrame implements ActionListener{
     	help_quitButton.addActionListener((ActionListener) this);	
     	
     	// 帮助界面的标签
-    	helpJLabel = new JLabel(new ImageIcon("image/帮助界面.png"));
+    	helpJLabel = new JLabel(new ImageIcon("E:\\user\\Documents\\UI\\绩效考核系统UI\\界面\\帮助界面.png"));
     	
 //    	分析结果可视化界面********************************************************************************************************************************************************************
     	// 导出按钮
@@ -1020,7 +1020,7 @@ public class Assess_modules extends JFrame implements ActionListener{
     	visual_quitButton.addActionListener((ActionListener) this);		
     	
     	// 按钮标签
-    	visualBLabel = new JLabel(new ImageIcon("image/可视化按钮.png"));
+    	visualBLabel = new JLabel(new ImageIcon("E:\\user\\Documents\\UI\\绩效考核系统UI\\界面\\可视化按钮.png"));
 		
 //		panel******************************************************************************************************
 		
@@ -1322,7 +1322,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 		
 		
 		this.setTitle("绩效考核系统");									// 设置系统标签
-		ImageIcon icon = new ImageIcon("image\\icon.png");			// 设置系统图标
+		ImageIcon icon = new ImageIcon("E:\\user\\Documents\\UI\\绩效考核系统UI\\界面\\icon.png");			// 设置系统图标
 		this.setIconImage(icon.getImage());							// 设置JFrame窗口标题图标
 	    this.setLayout(null);										// 清空布局管理器
 		this.setSize(1545, 835);									// 设置窗口宽高
@@ -1383,7 +1383,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 	// 设置窗口的方法
 	public void setWindows(){
 	    ((JPanel)this.getContentPane()).setOpaque(false);
-	    ImageIcon img = new ImageIcon("image/绩效考核界面背景.png");
+	    ImageIcon img = new ImageIcon("E:\\user\\Documents\\UI\\绩效考核系统UI\\界面\\绩效考核界面背景.png");
 	    JLabel background = new JLabel(img);
 	    this.getLayeredPane().add(background, new Integer(Integer.MIN_VALUE));
 	    background.setBounds(0, 0, img.getIconWidth(), img.getIconHeight());
@@ -1499,8 +1499,8 @@ public class Assess_modules extends JFrame implements ActionListener{
 		else if(e.getSource() == visual_quitButton) {				// 如果按下结果可视化界面的退出按钮
 			concealVisual();
 			// 删除指定位置的本地图片(删除成功返回true,失败返回false)
-	        System.out.println(new File("image\\" + timeString + "pie.png").delete());
-	        System.out.println(new File("image\\" + timeString + "poly.png").delete());
+	        System.out.println(new File("E:\\user\\Documents\\UI\\绩效考核系统UI\\界面\\" + timeString + "pie.png").delete());
+	        System.out.println(new File("E:\\user\\Documents\\UI\\绩效考核系统UI\\界面\\" + timeString + "poly.png").delete());
 	        // 刷新可视化界面
 	        visualPieJLabel.removeAll();
 	        visualPieJLabel.updateUI();
@@ -1541,7 +1541,6 @@ public class Assess_modules extends JFrame implements ActionListener{
 		else if(e.getSource() == add_saveButton) {					// 如果按下添加界面的保存按钮
 			saveMessage();											// 保存到数据库
 			messageTabel(usernameString);							// 刷新考核表
-			cleanAdd(); 											// 清空文本框
 			assess_messageJTable.setEnabled(false);					// 不能对表格进行操作
 			isAdd = true;
 			if(isSelect == true) {
@@ -1557,6 +1556,7 @@ public class Assess_modules extends JFrame implements ActionListener{
 		else if(e.getSource() == delete_okButton) {					// 如果按下删除界面的确认按钮
 			deleteMessage();										// 删除数据
 			messageTabel(usernameString);							// 刷新考核表
+			selectTabel();
 			concealDelete();										// 关闭删除界面
 		}
 		else if(e.getSource() == delete_cancelButton) {				// 如果按下删除界面的取消按钮
@@ -1570,10 +1570,10 @@ public class Assess_modules extends JFrame implements ActionListener{
 		else if(e.getSource() == amWarning_nextButton) {			// 如果按下警告界面的继续按钮
 			concealWarning();										// 关闭警告界面
 			if(isAdd == true) {										// 如果当前是添加界面
-				assess_messageJTable.setEnabled(true);				// 可以对表格进行操作
+				assess_messageJTable.setEnabled(false);				// 不可以对表格进行操作
 			}
 			if(ismodify == true) {									// 如果当前是修改界面
-				assess_messageJTable.setEnabled(true);				// 可以对表格进行操作
+				assess_messageJTable.setEnabled(false);				// 不可以对表格进行操作
 			}
 		}
 		else if(e.getSource() == amWarning_cancelButton) {			// 如果按下警告界面的取消按钮
@@ -1932,34 +1932,61 @@ public class Assess_modules extends JFrame implements ActionListener{
 	
 	// 保存员工信息的方法，所有文本框和下拉框都不能为空
 	public void saveMessage() {
-		if(nameField.getText().equals("") || nameField.getText().equals("请输入员工姓名")) {
+		if(nameField.getText().equals("") || nameField.getText().equals("请输入员工姓名")
+				|| nameField.getText().matches("\\d{1,}")) {			// 不匹配数字
 			showWarning();
-		}else if(jobNumberField.getText().equals("") || jobNumberField.getText().equals("请输入员工号")) {
+			nameField.setText("");
+			System.out.println("qbq");
+		}else if(jobNumberField.getText().equals("") || jobNumberField.getText().equals("请输入员工号")
+				|| Integer.parseInt(jobNumberField.getText()) < 0) {
 			showWarning();
-		}else if(normalDaysField.getText().equals("") || normalDaysField.getText().equals("请输入正常天数")) {
+			jobNumberField.setText("");
+		}else if(normalDaysField.getText().equals("") || normalDaysField.getText().equals("请输入正常天数")
+				|| Double.parseDouble(normalDaysField.getText()) < 0.00) {
 			showWarning();
-		}else if(lateDaysField.getText().equals("") || lateDaysField.getText().equals("请输入迟到时长")) {
+			normalDaysField.setText("");
+		}else if(lateDaysField.getText().equals("") || lateDaysField.getText().equals("请输入迟到时长")
+				|| Integer.parseInt(lateDaysField.getText()) < 0) {
 			showWarning();
-		}else if(leaveDaysField.getText().equals("") || leaveDaysField.getText().equals("请输入请假天数")) {
+			lateDaysField.setText("");
+		}else if(leaveDaysField.getText().equals("") || leaveDaysField.getText().equals("请输入请假天数")
+				|| Double.parseDouble(leaveDaysField.getText()) < 0.00) {
 			showWarning();
-		}else if(absenteeismDaysField.getText().equals("") || absenteeismDaysField.getText().equals("请输入旷工天数")) {
+			leaveDaysField.setText("");
+		}else if(absenteeismDaysField.getText().equals("") || absenteeismDaysField.getText().equals("请输入旷工天数")
+				|| Double.parseDouble(absenteeismDaysField.getText()) < 0.00) {
 			showWarning();
-		}else if(workHoursField.getText().equals("") || workHoursField.getText().equals("请输入工作时长")) {
+			absenteeismDaysField.setText("");
+		}else if(workHoursField.getText().equals("") || workHoursField.getText().equals("请输入工作时长")
+				|| Integer.parseInt(workHoursField.getText()) < 0) {
 			showWarning();
-		}else if(workPieceField.getText().equals("") || workPieceField.getText().equals("请输入工作计件")) {
+			workHoursField.setText("");
+		}else if(workPieceField.getText().equals("") || workPieceField.getText().equals("请输入工作计件")
+				|| Integer.parseInt(workPieceField.getText()) < 0) {
 			showWarning();
+			workPieceField.setText("");
 		}else if(jobContentBox.getSelectedItem().toString().equals("请选择工作质量")) {
 			showWarning();
+			jobContentBox.setSelectedItem(0);
 		}else if(processImproveBox.getSelectedItem().toString().equals("请选择工艺改善情况")) {
 			showWarning();
-		}else if(awardNumberField.getText().equals("") || awardNumberField.getText().equals("请输入奖励次数")) {
+			processImproveBox.setSelectedItem(0);
+		}else if(awardNumberField.getText().equals("") || awardNumberField.getText().equals("请输入奖励次数")
+				|| Integer.parseInt(awardNumberField.getText()) < 0) {
 			showWarning();
-		}else if(punishmentNumberField.getText().equals("") || punishmentNumberField.getText().equals("请输入惩罚次数")) {
+			awardNumberField.setText("");
+		}else if(punishmentNumberField.getText().equals("") || punishmentNumberField.getText().equals("请输入惩罚次数")
+				|| Integer.parseInt(punishmentNumberField.getText()) < 0) {
 			showWarning();
-		}else if(manyQuartersField.getText().equals("") || manyQuartersField.getText().equals("例：2021-1")) {
+			punishmentNumberField.setText("");
+		}else if(manyQuartersField.getText().equals("") || manyQuartersField.getText().equals("例：2021-1")
+				|| !manyQuartersField.getText().matches("\\d{4}[-][1234]{1}")) {	//固定为2020-1格式
 			showWarning();
+			manyQuartersField.setText("");
+			System.out.println("qaq");
 		}else if(quarterClassBox.getSelectedItem().toString().equals("请选择季度等级")) {
 			showWarning();
+			quarterClassBox.setSelectedItem(0);
 		}
 		else {
 			Mysql ms = new Mysql();
@@ -1971,40 +1998,67 @@ public class Assess_modules extends JFrame implements ActionListener{
 				, processImproveBox.getSelectedItem().toString(), awardNumberField.getText()
 				, punishmentNumberField.getText(), manyQuartersField.getText()
 				, quarterClassBox.getSelectedItem().toString());
-			System.out.println("保存方法正常");
+			
+
+			cleanAdd(); 											// 清空文本框
 		}
 	}
 	
 	// 修改员工信息的方法,所有文本框和下拉框都不能为空
 	public void modifyMessage() {
-		if(modify_nameField.getText().equals("") || modify_nameField.getText().equals("请输入员工姓名")) {
+		if(modify_nameField.getText().equals("") || modify_nameField.getText().equals("请输入员工姓名")
+				|| modify_nameField.getText().matches("\\d{1,}")) {
 			showWarning();
-		}else if(modify_jobNumberField.getText().equals("") || modify_jobNumberField.getText().equals("请输入员工号")) {
+			modify_nameField.setText("");
+		}else if(modify_jobNumberField.getText().equals("") || modify_jobNumberField.getText().equals("请输入员工号")
+				|| Integer.parseInt(modify_jobNumberField.getText()) < 0) {
 			showWarning();
-		}else if(modify_normalDaysField.getText().equals("") || modify_normalDaysField.getText().equals("请输入正常天数")) {
+			modify_jobNumberField.setText("");
+		}else if(modify_normalDaysField.getText().equals("") || modify_normalDaysField.getText().equals("请输入正常天数")
+				|| Double.parseDouble(modify_normalDaysField.getText()) < 0.00) {
 			showWarning();
-		}else if(modify_lateDaysField.getText().equals("") || modify_lateDaysField.getText().equals("请输入迟到时长")) {
+			modify_normalDaysField.setText("");
+		}else if(modify_lateDaysField.getText().equals("") || modify_lateDaysField.getText().equals("请输入迟到时长")
+				|| Integer.parseInt(modify_lateDaysField.getText()) < 0) {
 			showWarning();
-		}else if(modify_leaveDaysField.getText().equals("") || modify_leaveDaysField.getText().equals("请输入请假天数")) {
+			modify_lateDaysField.setText("");
+		}else if(modify_leaveDaysField.getText().equals("") || modify_leaveDaysField.getText().equals("请输入请假天数")
+				|| Double.parseDouble(modify_leaveDaysField.getText()) < 0.00) {
 			showWarning();
-		}else if(modify_absenteeismDaysField.getText().equals("") || modify_absenteeismDaysField.getText().equals("请输入旷工天数")) {
+			modify_leaveDaysField.setText("");
+		}else if(modify_absenteeismDaysField.getText().equals("") || modify_absenteeismDaysField.getText().equals("请输入旷工天数")
+				|| Double.parseDouble(modify_absenteeismDaysField.getText()) < 0.00) {
 			showWarning();
-		}else if(modify_workHoursField.getText().equals("") || modify_workHoursField.getText().equals("请输入工作时长")) {
+			modify_absenteeismDaysField.setText("");
+		}else if(modify_workHoursField.getText().equals("") || modify_workHoursField.getText().equals("请输入工作时长")
+				|| Integer.parseInt(modify_workHoursField.getText()) < 0) {
 			showWarning();
-		}else if(modify_workPieceField.getText().equals("") || modify_workPieceField.getText().equals("请输入工作计件")) {
+			modify_workHoursField.setText("");
+		}else if(modify_workPieceField.getText().equals("") || modify_workPieceField.getText().equals("请输入工作计件")
+				|| Integer.parseInt(modify_workPieceField.getText()) < 0) {
 			showWarning();
+			modify_workPieceField.setText("");
 		}else if(modify_jobContentBox.getSelectedItem().toString().equals("请选择工作质量")) {
 			showWarning();
+			modify_jobContentBox.setSelectedItem(0);
 		}else if(modify_processImproveBox.getSelectedItem().toString().equals("请选择工艺改善情况")) {
 			showWarning();
-		}else if(modify_awardNumberField.getText().equals("") || modify_awardNumberField.getText().equals("请输入奖励次数")) {
+			modify_processImproveBox.setSelectedItem(0);
+		}else if(modify_awardNumberField.getText().equals("") || modify_awardNumberField.getText().equals("请输入奖励次数")
+				|| Integer.parseInt(modify_awardNumberField.getText()) < 0) {
 			showWarning();
-		}else if(modify_punishmentNumberField.getText().equals("") || modify_punishmentNumberField.getText().equals("请输入惩罚次数")) {
+			modify_awardNumberField.setText("");
+		}else if(modify_punishmentNumberField.getText().equals("") || modify_punishmentNumberField.getText().equals("请输入惩罚次数")
+				|| Integer.parseInt(modify_punishmentNumberField.getText()) < 0) {
 			showWarning();
-		}else if(modify_manyQuartersField.getText().equals("") || modify_manyQuartersField.getText().equals("例：2021-1")) {
+			modify_punishmentNumberField.setText("");
+		}else if(modify_manyQuartersField.getText().equals("") || modify_manyQuartersField.getText().equals("例：2021-1")
+				|| !modify_manyQuartersField.getText().matches("\\d{4}[-][1234]{1}")) {		//固定为2020-1格式
 			showWarning();
+			modify_manyQuartersField.setText("");
 		}else if(modify_quarterClassBox.getSelectedItem().toString().equals("请选择季度等级")) {
 			showWarning();
+			modify_quarterClassBox.setSelectedItem(0);
 		}
 		else {
 			Mysql ms = new Mysql();
@@ -2176,8 +2230,8 @@ public class Assess_modules extends JFrame implements ActionListener{
 		bc.getDataset(timeString, staff_name, assess_result, oneString, twoString, threeString, fourString);
 		if(bc.isPie == true && bc.isPoly == true) {
 			// 显示环形图和折线图
-			visualPieJLabel = new JLabel(new ImageIcon("image\\" + timeString + "pie.png"));
-			visualPolyJLabel = new JLabel(new ImageIcon("image\\" + timeString + "poly.png"));
+			visualPieJLabel = new JLabel(new ImageIcon("E:\\user\\Documents\\UI\\绩效考核系统UI\\界面\\" + timeString + "pie.png"));
+			visualPolyJLabel = new JLabel(new ImageIcon("E:\\user\\Documents\\UI\\绩效考核系统UI\\界面\\" + timeString + "poly.png"));
 			visualPieJPanel.add(visualPieJLabel);
 			visualPieJPanel.add(visualPolyJLabel);
 			isPie = true;

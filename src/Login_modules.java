@@ -116,7 +116,7 @@ public class Login_modules extends JFrame implements ActionListener{
 		loginJPanel.setBounds(665, 250, 400, 300);					// 设置loginJPanel的位置和大小
 		
 		// 初始化loginJLable，显示loginInterface图片
-		loginJLabel = new JLabel(new ImageIcon("image/loginInterface.png"));
+		loginJLabel = new JLabel(new ImageIcon("E:\\user\\Documents\\UI\\绩效考核系统UI\\界面\\loginInterface.png"));
 		loginJPanel.add(loginJLabel);								// 将loginJLabel添加到loginJPanel容器
 		
 /************************************************************************************************************************/
@@ -195,13 +195,13 @@ public class Login_modules extends JFrame implements ActionListener{
 		registerJPanel.setBounds(665, 200, 400, 400);				// 设置registerJPanel的位置和大小
 				
 		// 初始化registerJLabel，显示registerInterface图片
-		registerJLabel = new JLabel(new ImageIcon("image/注册界面.png"));
+		registerJLabel = new JLabel(new ImageIcon("E:\\user\\Documents\\UI\\绩效考核系统UI\\界面\\注册界面.png"));
 		registerJPanel.add(registerJLabel);							// 将registerJLabel添加到registerJPanel容器
 		
 /************************************************************************************************************************/
 		
 		this.setTitle("绩效考核系统");									// 设置系统标签
-		ImageIcon icon = new ImageIcon("image\\icon.png");			// 设置系统图标
+		ImageIcon icon = new ImageIcon("E:\\user\\Documents\\UI\\绩效考核系统UI\\界面\\icon.png");			// 设置系统图标
 		this.setIconImage(icon.getImage());							// 设置JFrame窗口标题图标
 	    this.setLayout(null);										// 清空布局管理器
 		this.setSize(1014, 592);									// 设置窗口宽高
@@ -232,7 +232,7 @@ public class Login_modules extends JFrame implements ActionListener{
 	// 设置窗口的方法
 	public void setWindows(){
         ((JPanel)this.getContentPane()).setOpaque(false);
-        ImageIcon img = new ImageIcon("image/background.png");
+        ImageIcon img = new ImageIcon("E:\\user\\Documents\\UI\\绩效考核系统UI\\界面\\background.png");
         JLabel background = new JLabel(img);
         this.getLayeredPane().add(background, new Integer(Integer.MIN_VALUE));
         background.setBounds(0, 0, img.getIconWidth(), img.getIconHeight());
@@ -256,10 +256,10 @@ public class Login_modules extends JFrame implements ActionListener{
 	
 	// 注册方法	
 	public void register() {
-    	String regex1 = "\\w{3,12}"; 								// 输入3-12位用户名（数字或者字母组合）
+    	String regex1 = "\\w{3,12}"; 								// 输入3-12位用户名（数字或字母）
  		boolean flag1 = username_register.getText().matches(regex1);// 将用户名标记为boolean值，方便判断
  		
- 		String regex2 = "\\w{6,12}"; 								// 输入6-12位密码（数字或者字母组合）
+ 		String regex2 = "\\w{6,12}"; 								// 输入6-12位密码（数字或字母）
  		boolean flag2 = password_register.getText().matches(regex2);// 将密码标记为boolean值，方便判断
  		
 // 		String regex3 = "\\w{6,12}";								// 输入6-12位密码，确认密码，需要与regex2一致
@@ -311,10 +311,10 @@ public class Login_modules extends JFrame implements ActionListener{
 	// 登录方法
 	public void login() {
 		
-		String regex1 = "\\w{3,12}"; 								// 输入3-12位用户名（数字或者字母组合）
+		String regex1 = "\\w{3,12}"; 								// 输入3-12位用户名（字母或数字）
  		boolean flag1 = username_login.getText().matches(regex1);	// 将用户名标记为boolean值，方便判断
  		
- 		String regex2 = "\\w{6,12}"; 								// 输入6-12位密码（数字或者字母组合）
+ 		String regex2 = "\\w{6,12}"; 								// 输入6-12位密码（字母或数字）
  		boolean flag2 = password_login.getText().matches(regex2);	// 将密码标记为boolean值，方便判断
  		
  		if(flag1 == false)											// 如果用户名格式不正确

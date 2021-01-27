@@ -206,8 +206,8 @@ public class BarChart {
     public void getDataset(String time, String name, String result, String oneString, String twoString, String threeString, String fourString) {
     	
     	staffName = name;
-    	timePie = "image\\" + time + "pie.png";
-    	timePoly = "image\\" + time + "poly.png";
+    	timePie = "E:\\user\\Documents\\UI\\绩效考核系统UI\\界面\\" + time + "pie.png";
+    	timePoly = "E:\\user\\Documents\\UI\\绩效考核系统UI\\界面\\" + time + "poly.png";
     	
 		assessResult = Double.parseDouble(result);
 		deductMarks = 100.00 - Double.parseDouble(result);
